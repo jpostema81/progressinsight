@@ -3,7 +3,8 @@ export const LearningGoalsStore = {
     state: 
     {
         learningGoals: [],
-        // meta: [],
+        progressLevels: [],
+        meta: [],
         // status: '',
         // errors: {},
     },
@@ -13,41 +14,63 @@ export const LearningGoalsStore = {
         {
             state.learningGoals = learningGoals;
         },
-        // setMeta(state, meta) 
-        // {
-        //     state.meta = meta;
-        // },
+        setProgressLevels(state, progressLevels) 
+        {
+            state.progressLevels = progressLevels;
+        },
+        setMeta(state, meta) 
+        {
+            state.meta = meta;
+        },
     },
     actions: 
     {
-        fetchLearningGoals({commit, state, rootState, rootGetters}, pageNumber = 1) 
+        fetchLearningGoals({commit, state, rootState, rootGetters}) 
         {
             return new Promise((resolve, reject) => {
                 let url = '/api/learning_goals';
-                // let data = { page: pageNumber };
-
-                // include filters
-                // if(state.filter.selectedCategories.length) 
-                // {
-                //     data.categories = state.filter.selectedCategories.map(a => a.id).join();
-                // }
-
-                // if(state.filter.keyWord.length)
-                // {
-                //     data.keyword = state.filter.keyWord;
-                // }
-
-                // if(state.filter.userId)
-                // {
-                //     data.userId = state.filter.userId;
-                // }
+                let data = { user_id: 1 };
 
                 axios({
                     method: 'get',
                     url: url,
-                    // params: data,
+                    params: data,
                 }).then(response => {
                     commit('setLearningGoals', response.data.data);
+                    commit('setMeta', response.data.meta);
+                    resolve();
+                }).catch(function (error) {
+                    reject(error);
+                });
+            });   
+        },
+        fetchProgressLevels({commit, state, rootState, rootGetters}) 
+        {
+            return new Promise((resolve, reject) => {
+                let url = '/api/progress_levels';
+
+                axios({
+                    method: 'get',
+                    url: url,
+                }).then(response => {
+                    commit('setProgressLevels', response.data.data);
+                    commit('setMeta', response.data.meta);
+                    resolve();
+                }).catch(function (error) {
+                    reject(error);
+                });
+            });   
+        },
+        updateLearningGoals({commit, state, rootState, rootGetters}) 
+        {
+            return new Promise((resolve, reject) => {
+                let url = '/api/progress_levels';
+
+                axios({
+                    method: 'get',
+                    url: url,
+                }).then(response => {
+                    commit('setProgressLevels', response.data.data);
                     commit('setMeta', response.data.meta);
                     resolve();
                 }).catch(function (error) {
@@ -61,8 +84,11 @@ export const LearningGoalsStore = {
         learningGoals: (state, commit, rootState) => {
             return state.learningGoals;
         },
-        // meta: (state, commit, rootState) => {
-        //     return state.meta;
-        // }
+        progressLevels: (state, commit, rootState) => {
+          return state.progressLevels;
+        },
+        meta: (state, commit, rootState) => {
+            return state.meta;
+        }
     }
 }

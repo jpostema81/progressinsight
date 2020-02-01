@@ -12,6 +12,8 @@ class LearningGoalsSeeder extends Seeder
      */
     public function run()
     {
+        DB::table('learning_goals')->delete();
+
         $topic = Topic::where('name', '=', 'HTML');
 
         if($topic->count())

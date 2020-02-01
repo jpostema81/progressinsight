@@ -11,6 +11,8 @@ class ProgressLevelsSeeder extends Seeder
      */
     public function run()
     {
+        DB::table('progress_levels')->delete();
+
         // DB::table('users')->insert([
         //     'name' => Str::random(10),
         //     'email' => Str::random(10).'@gmail.com',

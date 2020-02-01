@@ -1,13 +1,18 @@
 <template>
     <div>
-        LearningGoals page
+        <h2>LearningGoals</h2>
+      
+        <b-table hover :items="learningGoals" :fields="fields">
+            <template v-slot:cell(progressLevel)="row">
+                <b-form-select 
+                  v-model="selected" 
+                  :options="progressLevels"
+                  value-field="id"
+                  text-field="name"></b-form-select>
+            </template>
+        </b-table>
 
-        <div v-for="learningGoal in learningGoals" :key="learningGoal.id">
-            {{ learningGoal }}
-            <b-form-select v-model="selected" :options="options"></b-form-select>
-        </div>
-
-        <b-button @click="testCall()">test</b-button>
+        <b-button @click="updateLearningGoals()">Update</b-button>
     </div>
 </template>
 
@@ -16,38 +21,26 @@
 
     export default 
     {
-        // data() {
-        //     return {
-        //     }
-        // },
+        data() {
+            return {
+              fields: ['description', 'criterion', 'progressLevel'],
+              selected: 3,
+            }
+        },
         mounted() {
             this.$store.dispatch('LearningGoalsStore/fetchLearningGoals');
+            this.$store.dispatch('LearningGoalsStore/fetchProgressLevels');
         },
-        // components: 
-        // {
-            
-        // },
         methods: {   
-            testCall() {
-                this.$store.dispatch('LearningGoalsStore/fetchLearningGoals');
-            }     
-            // updateKeyword: function(keyword) 
-            // {
-            //     this.$store.commit('MessageStore/setKeyword', keyword);
-            //     this.$store.dispatch('MessageStore/fetchMessages');
-            // },
-            // loadPage(pageNumber)
-            // {
-            //     this.$store.dispatch('MessageStore/fetchMessages', pageNumber);
-            // },
+            updateLearningGoals() {
+                this.$store.dispatch('LearningGoalsStore/updateLearningGoals');
+            },
         },
         computed: {
-            // ...mapState('MessageStore', {
-            //     keyword: state => state.filter.keyWord,
-            // }),
             ...mapGetters({
                 learningGoals: 'LearningGoalsStore/learningGoals',
-                // meta: 'LearningGoalsStore/meta'
+                progressLevels: 'LearningGoalsStore/progressLevels',
+                meta: 'LearningGoalsStore/meta'
             }),
         },
     }

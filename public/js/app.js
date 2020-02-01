@@ -2005,35 +2005,32 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  // data() {
-  //     return {
-  //     }
-  // },
+  data: function data() {
+    return {
+      fields: ['description', 'criterion', 'progressLevel'],
+      selected: 3
+    };
+  },
   mounted: function mounted() {
     this.$store.dispatch('LearningGoalsStore/fetchLearningGoals');
+    this.$store.dispatch('LearningGoalsStore/fetchProgressLevels');
   },
-  // components: 
-  // {
-  // },
   methods: {
-    testCall: function testCall() {
-      this.$store.dispatch('LearningGoalsStore/fetchLearningGoals');
-    } // updateKeyword: function(keyword) 
-    // {
-    //     this.$store.commit('MessageStore/setKeyword', keyword);
-    //     this.$store.dispatch('MessageStore/fetchMessages');
-    // },
-    // loadPage(pageNumber)
-    // {
-    //     this.$store.dispatch('MessageStore/fetchMessages', pageNumber);
-    // },
-
+    updateLearningGoals: function updateLearningGoals() {
+      this.$store.dispatch('LearningGoalsStore/updateLearningGoals');
+    }
   },
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])({
-    learningGoals: 'LearningGoalsStore/learningGoals' // meta: 'LearningGoalsStore/meta'
-
+    learningGoals: 'LearningGoalsStore/learningGoals',
+    progressLevels: 'LearningGoalsStore/progressLevels',
+    meta: 'LearningGoalsStore/meta'
   }))
 });
 
@@ -40165,26 +40162,33 @@ var render = function() {
   return _c(
     "div",
     [
-      _vm._v("\n    LearningGoals page\n\n    "),
-      _vm._l(_vm.learningGoals, function(learningGoal) {
-        return _c(
-          "div",
-          { key: learningGoal.id },
-          [
-            _vm._v("\n        " + _vm._s(learningGoal) + "\n        "),
-            _c("b-form-select", {
-              attrs: { options: _vm.options },
-              model: {
-                value: _vm.selected,
-                callback: function($$v) {
-                  _vm.selected = $$v
-                },
-                expression: "selected"
-              }
-            })
-          ],
-          1
-        )
+      _c("h2", [_vm._v("LearningGoals")]),
+      _vm._v(" "),
+      _c("b-table", {
+        attrs: { hover: "", items: _vm.learningGoals, fields: _vm.fields },
+        scopedSlots: _vm._u([
+          {
+            key: "cell(progressLevel)",
+            fn: function(row) {
+              return [
+                _c("b-form-select", {
+                  attrs: {
+                    options: _vm.progressLevels,
+                    "value-field": "id",
+                    "text-field": "name"
+                  },
+                  model: {
+                    value: _vm.selected,
+                    callback: function($$v) {
+                      _vm.selected = $$v
+                    },
+                    expression: "selected"
+                  }
+                })
+              ]
+            }
+          }
+        ])
       }),
       _vm._v(" "),
       _c(
@@ -40192,14 +40196,14 @@ var render = function() {
         {
           on: {
             click: function($event) {
-              return _vm.testCall()
+              return _vm.updateLearningGoals()
             }
           }
         },
-        [_vm._v("test")]
+        [_vm._v("Update")]
       )
     ],
-    2
+    1
   )
 }
 var staticRenderFns = []
@@ -57268,19 +57272,22 @@ __webpack_require__.r(__webpack_exports__);
 var LearningGoalsStore = {
   namespaced: true,
   state: {
-    learningGoals: [] // meta: [],
-    // status: '',
+    learningGoals: [],
+    progressLevels: [],
+    meta: [] // status: '',
     // errors: {},
 
   },
   mutations: {
     setLearningGoals: function setLearningGoals(state, learningGoals) {
       state.learningGoals = learningGoals;
-    } // setMeta(state, meta) 
-    // {
-    //     state.meta = meta;
-    // },
-
+    },
+    setProgressLevels: function setProgressLevels(state, progressLevels) {
+      state.progressLevels = progressLevels;
+    },
+    setMeta: function setMeta(state, meta) {
+      state.meta = meta;
+    }
   },
   actions: {
     fetchLearningGoals: function fetchLearningGoals(_ref) {
@@ -57288,29 +57295,55 @@ var LearningGoalsStore = {
           state = _ref.state,
           rootState = _ref.rootState,
           rootGetters = _ref.rootGetters;
-      var pageNumber = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1;
       return new Promise(function (resolve, reject) {
-        var url = '/api/learning_goals'; // let data = { page: pageNumber };
-        // include filters
-        // if(state.filter.selectedCategories.length) 
-        // {
-        //     data.categories = state.filter.selectedCategories.map(a => a.id).join();
-        // }
-        // if(state.filter.keyWord.length)
-        // {
-        //     data.keyword = state.filter.keyWord;
-        // }
-        // if(state.filter.userId)
-        // {
-        //     data.userId = state.filter.userId;
-        // }
-
+        var url = '/api/learning_goals';
+        var data = {
+          user_id: 1
+        };
         axios({
           method: 'get',
-          url: url // params: data,
-
+          url: url,
+          params: data
         }).then(function (response) {
           commit('setLearningGoals', response.data.data);
+          commit('setMeta', response.data.meta);
+          resolve();
+        })["catch"](function (error) {
+          reject(error);
+        });
+      });
+    },
+    fetchProgressLevels: function fetchProgressLevels(_ref2) {
+      var commit = _ref2.commit,
+          state = _ref2.state,
+          rootState = _ref2.rootState,
+          rootGetters = _ref2.rootGetters;
+      return new Promise(function (resolve, reject) {
+        var url = '/api/progress_levels';
+        axios({
+          method: 'get',
+          url: url
+        }).then(function (response) {
+          commit('setProgressLevels', response.data.data);
+          commit('setMeta', response.data.meta);
+          resolve();
+        })["catch"](function (error) {
+          reject(error);
+        });
+      });
+    },
+    updateLearningGoals: function updateLearningGoals(_ref3) {
+      var commit = _ref3.commit,
+          state = _ref3.state,
+          rootState = _ref3.rootState,
+          rootGetters = _ref3.rootGetters;
+      return new Promise(function (resolve, reject) {
+        var url = '/api/progress_levels';
+        axios({
+          method: 'get',
+          url: url
+        }).then(function (response) {
+          commit('setProgressLevels', response.data.data);
           commit('setMeta', response.data.meta);
           resolve();
         })["catch"](function (error) {
@@ -57322,10 +57355,13 @@ var LearningGoalsStore = {
   getters: {
     learningGoals: function learningGoals(state, commit, rootState) {
       return state.learningGoals;
-    } // meta: (state, commit, rootState) => {
-    //     return state.meta;
-    // }
-
+    },
+    progressLevels: function progressLevels(state, commit, rootState) {
+      return state.progressLevels;
+    },
+    meta: function meta(state, commit, rootState) {
+      return state.meta;
+    }
   }
 };
 

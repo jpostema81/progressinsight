@@ -3,36 +3,21 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\LearningGoal;
-use App\Http\Resources\LearningGoalResource;
-use Illuminate\Database\Eloquent\Builder;
-use App\User;
+use App\Http\Resources\ProgressLevelResource;
+use App\ProgressLevel;
 
-
-class LearningGoalsController extends Controller
+class ProgressLevelsController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
-        $learningGoals = LearningGoal::all();
+      $progressLevels = ProgressLevel::all();
 
-        if($request->has('user_id'))
-        {
-            $user_id = $request->get('user_id');
-            $user = User::find($user_id);
-            
-            $learningGoals = $user->learningGoals;
-            
-            // $learningGoals = LearningGoal::whereHas('users', function (Builder $query) use ($request) {
-            //   $query->where('user_id', $request->get('user_id'));
-            // })->get();
-        }
-
-        return LearningGoalResource::collection($learningGoals);
+      return ProgressLevelResource::collection($progressLevels);
     }
 
     /**

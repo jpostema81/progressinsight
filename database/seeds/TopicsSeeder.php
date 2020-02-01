@@ -11,6 +11,8 @@ class TopicsSeeder extends Seeder
      */
     public function run()
     {
+        DB::table('topics')->delete();
+
         $data = array(
             array('name' => 'HTML'),
             array('name' => 'HTML verdieping'),

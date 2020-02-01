@@ -12,6 +12,8 @@ class UsersSeeder extends Seeder
      */
     public function run()
     {
+        DB::table('users')->delete();
+
         $data = array(
             'first_name' => 'Jeroen',
             'last_name' => 'Postema',

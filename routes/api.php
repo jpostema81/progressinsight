@@ -28,4 +28,8 @@ Route::post('/get_user_by_token', 'Auth\Api\AuthController@getUserByToken')->nam
     Route::resource('/learning_goals', 'LearningGoalsController', [
         'as' => 'admin'
     ]);
+
+    Route::resource('/progress_levels', 'ProgressLevelsController', [
+      'as' => 'admin'
+  ]);
 //}

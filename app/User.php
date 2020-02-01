@@ -39,11 +39,23 @@ class User extends Authenticatable implements JWTSubject
         'email_verified_at' => 'datetime',
     ];
 
+    /**
+     * The event map for the model.
+     *
+     * @var array
+     */
+    protected $dispatchesEvents = [
+      // 'created' => UserSaved::class,
+      // 'deleted' => UserDeleted::class,
+    ];
+
     public function learningGoals()
     {
-        return $this->belongsToMany('App\LearningGoal')
-            ->withPivot('users_goals', 'progress_level_id')
-    	      ->withTimestamps();;
+        return $this->belongsToMany('App\LearningGoal', 'users_learning_goals')
+            ->withPivot('progress_level_id')
+            ->join('progress_levels', 'progress_level_id', 'progress_levels.id')
+            ->select('progress_levels.id AS progress_level_id', 'progress_levels.name AS progress_level_name')
+    	      ->withTimestamps();
     }
 
     /**
