@@ -1,14 +1,20 @@
 <template>
     <div>
-        <h2>LearningGoals</h2>
+        <h2 class="mb-5">LearningGoals</h2>
       
         <b-table hover :items="learningGoals" :fields="fields">
-            <template v-slot:cell(progressLevel)="row">
-                <b-form-select 
-                  v-model="selected" 
-                  :options="progressLevels"
-                  value-field="id"
-                  text-field="name"></b-form-select>
+            <template v-slot:cell(progressLevel)="item">
+                <b-form-group>
+                    <b-form-radio-group
+                        v-model="item.item.progress_level.id"
+                        :options="progressLevels"
+                        value-field="id"
+                        text-field="name"
+                        buttons
+                        name="radios-btn-default"
+                        button-variant="success"
+                      ></b-form-radio-group>
+                </b-form-group>
             </template>
         </b-table>
 
@@ -24,7 +30,7 @@
         data() {
             return {
               fields: ['description', 'criterion', 'progressLevel'],
-              selected: 3,
+              progressColor: { 'background-color': 'green' },
             }
         },
         mounted() {

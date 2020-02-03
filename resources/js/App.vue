@@ -1,5 +1,5 @@
 <template>
-  <div id="myApp">
+  <div id="myApp" class="container">
     <div id="nav">
       <router-link to="/learning_goals">Learning Goals</router-link> |
       <router-link to="/login">Login</router-link>

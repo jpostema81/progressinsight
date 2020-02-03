@@ -2010,12 +2010,20 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       fields: ['description', 'criterion', 'progressLevel'],
-      selected: 3
+      progressColor: {
+        'background-color': 'green'
+      }
     };
   },
   mounted: function mounted() {
@@ -2052,7 +2060,6 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-//
 //
 //
 //
@@ -40117,7 +40124,7 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "div",
-    { attrs: { id: "myApp" } },
+    { staticClass: "container", attrs: { id: "myApp" } },
     [
       _c(
         "div",
@@ -40162,29 +40169,38 @@ var render = function() {
   return _c(
     "div",
     [
-      _c("h2", [_vm._v("LearningGoals")]),
+      _c("h2", { staticClass: "mb-5" }, [_vm._v("LearningGoals")]),
       _vm._v(" "),
       _c("b-table", {
         attrs: { hover: "", items: _vm.learningGoals, fields: _vm.fields },
         scopedSlots: _vm._u([
           {
             key: "cell(progressLevel)",
-            fn: function(row) {
+            fn: function(item) {
               return [
-                _c("b-form-select", {
-                  attrs: {
-                    options: _vm.progressLevels,
-                    "value-field": "id",
-                    "text-field": "name"
-                  },
-                  model: {
-                    value: _vm.selected,
-                    callback: function($$v) {
-                      _vm.selected = $$v
-                    },
-                    expression: "selected"
-                  }
-                })
+                _c(
+                  "b-form-group",
+                  [
+                    _c("b-form-radio-group", {
+                      attrs: {
+                        options: _vm.progressLevels,
+                        "value-field": "id",
+                        "text-field": "name",
+                        buttons: "",
+                        name: "radios-btn-default",
+                        "button-variant": "success"
+                      },
+                      model: {
+                        value: item.item.progress_level.id,
+                        callback: function($$v) {
+                          _vm.$set(item.item.progress_level, "id", $$v)
+                        },
+                        expression: "item.item.progress_level.id"
+                      }
+                    })
+                  ],
+                  1
+                )
               ]
             }
           }
@@ -57064,7 +57080,11 @@ var AuthenticationStore = {
   state: {
     status: '',
     errors: {},
-    user: ''
+    // user: '',
+    user: {
+      id: 1,
+      name: 'Jeroen Postema'
+    }
   },
   mutations: {
     // authentication state
@@ -57296,7 +57316,7 @@ var LearningGoalsStore = {
           rootState = _ref.rootState,
           rootGetters = _ref.rootGetters;
       return new Promise(function (resolve, reject) {
-        var url = '/api/learning_goals';
+        var url = "/api/users/".concat(rootState.AuthenticationStore.user.id, "/learning_goals");
         var data = {
           user_id: 1
         };

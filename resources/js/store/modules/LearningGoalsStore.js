@@ -28,7 +28,7 @@ export const LearningGoalsStore = {
         fetchLearningGoals({commit, state, rootState, rootGetters}) 
         {
             return new Promise((resolve, reject) => {
-                let url = '/api/learning_goals';
+                let url = `/api/users/${rootState.AuthenticationStore.user.id}/learning_goals`;
                 let data = { user_id: 1 };
 
                 axios({

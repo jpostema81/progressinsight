@@ -1,20 +1,19 @@
-#myApp {
-    font-family: 'Avenir', Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    // text-align: center;
-    color: #2c3e50;
-  }
+// Fonts
+@import url('https://fonts.googleapis.com/css?family=Nunito');
 
-#nav {
-    padding: 30px;
+//@import "node_modules/font-awesome/scss/font-awesome.scss";
 
-    a {
-        font-weight: bold;
-        color: #2c3e50;
+@import '~@fortawesome/fontawesome-free/scss/brands';
+@import '~@fortawesome/fontawesome-free/scss/regular';
+@import '~@fortawesome/fontawesome-free/scss/solid';
+@import '~@fortawesome/fontawesome-free/scss/fontawesome';
 
-        &.router-link-exact-active {
-        color: #42b983;
-        }
-    }
-}
+
+// Variables
+@import 'variables';
+
+// Bootstrap
+@import '~bootstrap/scss/bootstrap';
+
+// import custom css
+@import 'progress_insight';

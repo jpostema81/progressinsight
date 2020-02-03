@@ -26,10 +26,14 @@ Route::post('/get_user_by_token', 'Auth\Api\AuthController@getUserByToken')->nam
 // Route::group(['middleware' => ['auth']], function() 
 // {
     Route::resource('/learning_goals', 'LearningGoalsController', [
-        'as' => 'admin'
+      // 'as' => 'admin'
+    ]);
+
+    Route::resource('/users/{user}/learning_goals', 'UserLearningGoalsController', [
+      // 'as' => 'admin'
     ]);
 
     Route::resource('/progress_levels', 'ProgressLevelsController', [
-      'as' => 'admin'
+      // 'as' => 'admin'
   ]);
 //}

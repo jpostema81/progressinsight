@@ -3,7 +3,8 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-// use App\Http\Resources\TopicResource;
+use App\Http\Resources\TopicResource;
+use App\ProgressLevel;
 
 class LearningGoalResource extends JsonResource
 {
@@ -15,14 +16,12 @@ class LearningGoalResource extends JsonResource
      */
     public function toArray($request)
     {
-        dd($this->pivot->progress_level_id);
-
         return [
           'id' => $this->id,
           'description' => $this->description,
           'criterion' => $this->criterion,
           'topic' => new TopicResource($this->topic),
-          'progress_level' => new ProgressLevelResource($this->pivot->progress_level_id),
+          'progress_level' => new ProgressLevelResource(ProgressLevel::find($this->pivot->progress_level_id)),
       ];
     }
 }

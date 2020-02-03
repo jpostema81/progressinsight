@@ -20,8 +20,8 @@ class LearningGoal extends Model
     {
         return $this->belongsToMany('App\User', 'users_learning_goals')
             ->withPivot('progress_level_id')
-            ->select('progress_levels.id AS progress_level_id', 'progress_levels.name AS progress_level_name')
-            ->select('progress_levels.id', 'progress_levels.name');
+            ->join('progress_levels', 'progress_level_id', 'progress_levels.id')
+            ->select('learning_goals.*', 'progress_levels.id AS pivot_progress_level_id', 'progress_levels.name AS pivot_progress_level_name');
     }
 
     public function topic() {

@@ -7,7 +7,8 @@ export const AuthenticationStore =
   state: {
     status: '',
     errors: {},
-    user: '',
+    // user: '',
+    user: { id: 1, name: 'Jeroen Postema' },
   },
   mutations: {
     // authentication state

@@ -54,7 +54,7 @@ class User extends Authenticatable implements JWTSubject
         return $this->belongsToMany('App\LearningGoal', 'users_learning_goals')
             ->withPivot('progress_level_id')
             ->join('progress_levels', 'progress_level_id', 'progress_levels.id')
-            ->select('progress_levels.id AS progress_level_id', 'progress_levels.name AS progress_level_name')
+            ->select('learning_goals.*', 'progress_levels.id AS pivot_progress_level_id', 'progress_levels.name AS pivot_progress_level_name')
     	      ->withTimestamps();
     }
 
