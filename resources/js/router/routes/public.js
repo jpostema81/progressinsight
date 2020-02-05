@@ -1,12 +1,6 @@
 import Vue from 'vue';
 
 const routes = [
-    {
-      path: '/learning_goals',
-      alias: '/',
-      name: 'learning_goals',
-      component: Vue.component('LearningGoals', require( '../../pages/LearningGoals.vue').default)
-    },
     // {
     //     path: '/blogposts/:blogPostId',
     //     name: 'blogpostsOverview',
@@ -17,11 +11,11 @@ const routes = [
         name: 'login',
         component: Vue.component('Login', require( '../../pages/Login.vue').default)
     },
-    // {
-    //     path: '/register',
-    //     name: 'register',
-    //     component: Vue.component('Register', require( '../../pages/Register.vue').default)
-    // },
+    {
+        path: '/register',
+        name: 'register',
+        component: Vue.component('Register', require( '../../pages/Register.vue').default)
+    },
 ];
 
 export default routes.map(route => 

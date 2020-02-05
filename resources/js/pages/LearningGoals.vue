@@ -2,7 +2,7 @@
     <div>
         <h2 class="mb-5">LearningGoals</h2>
       
-        <b-table hover :items="learningGoals" :fields="fields">
+        <b-table v-if="this.learningGoals" hover :items="learningGoals" :fields="fields">
             <template v-slot:cell(progressLevel)="item">
                 <b-form-group>
                     <b-form-radio-group
@@ -29,24 +29,26 @@
     {
         data() {
             return {
+              learningGoals: [],
               fields: ['description', 'criterion', 'progressLevel'],
               progressColor: { 'background-color': 'green' },
             }
         },
         mounted() {
-            this.$store.dispatch('LearningGoalsStore/fetchLearningGoals');
             this.$store.dispatch('LearningGoalsStore/fetchProgressLevels');
+
+            this.$store.dispatch('LearningGoalsStore/fetchLearningGoals').then(() => {
+                this.learningGoals = this.$store.state.LearningGoalsStore.learningGoals;
+            });
         },
         methods: {   
             updateLearningGoals() {
-                this.$store.dispatch('LearningGoalsStore/updateLearningGoals');
+                this.$store.dispatch('LearningGoalsStore/updateLearningGoals', this.learningGoals);
             },
         },
         computed: {
             ...mapGetters({
-                learningGoals: 'LearningGoalsStore/learningGoals',
                 progressLevels: 'LearningGoalsStore/progressLevels',
-                meta: 'LearningGoalsStore/meta'
             }),
         },
     }

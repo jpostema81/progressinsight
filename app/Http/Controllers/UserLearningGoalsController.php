@@ -41,7 +41,16 @@ class UserLearningGoalsController extends Controller
      */
     public function store(Request $request, User $user)
     {
-        //
+        // TODO: add validation
+        
+        $learningGoals = $request->get('learningGoals');
+        $learningGoalsFiltered = [];
+
+        foreach($learningGoals as $learningGoal) {
+            $learningGoalsFiltered[$learningGoal["id"]] = ['progress_level_id' => $learningGoal["progress_level"]["id"]];
+        }
+
+        $user->learningGoals()->sync($learningGoalsFiltered);
     }
 
     /**

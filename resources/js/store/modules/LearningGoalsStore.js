@@ -1,12 +1,12 @@
+import MessageBus from './../../messageBus';
+
 export const LearningGoalsStore = {
     namespaced: true,
     state: 
     {
         learningGoals: [],
         progressLevels: [],
-        meta: [],
-        // status: '',
-        // errors: {},
+        errors: {},
     },
     mutations: 
     {
@@ -18,9 +18,8 @@ export const LearningGoalsStore = {
         {
             state.progressLevels = progressLevels;
         },
-        setMeta(state, meta) 
-        {
-            state.meta = meta;
+        setErrors: (state, errors) => {
+          state.errors = errors;
         },
     },
     actions: 
@@ -37,10 +36,14 @@ export const LearningGoalsStore = {
                     params: data,
                 }).then(response => {
                     commit('setLearningGoals', response.data.data);
-                    commit('setMeta', response.data.meta);
                     resolve();
-                }).catch(function (error) {
-                    reject(error);
+                }).catch(function (errors) {
+                    Object.values(errors.response.data.errors).forEach(error => {
+                        MessageBus.$emit('message', {message: error, variant: 'danger'}); 
+                    });
+
+                    commit('setErrors', errors.response.data.errors);
+                    reject(errors);
                 });
             });   
         },
@@ -54,27 +57,36 @@ export const LearningGoalsStore = {
                     url: url,
                 }).then(response => {
                     commit('setProgressLevels', response.data.data);
-                    commit('setMeta', response.data.meta);
                     resolve();
-                }).catch(function (error) {
-                    reject(error);
+                }).catch(function (errors) {
+                    Object.values(errors.response.data.errors).forEach(error => {
+                        MessageBus.$emit('message', {message: error, variant: 'danger'}); 
+                    });
+
+                    commit('setErrors', errors.response.data.errors);
+                    reject(errors);
                 });
             });   
         },
-        updateLearningGoals({commit, state, rootState, rootGetters}) 
+        updateLearningGoals({commit, state, rootState, rootGetters}, learningGoals) 
         {
             return new Promise((resolve, reject) => {
-                let url = '/api/progress_levels';
+                let url = `/api/users/${rootState.AuthenticationStore.user.id}/learning_goals`;
 
                 axios({
-                    method: 'get',
+                    method: 'post',
                     url: url,
+                    data: { learningGoals },
                 }).then(response => {
-                    commit('setProgressLevels', response.data.data);
-                    commit('setMeta', response.data.meta);
+                    MessageBus.$emit('message', { message: 'Your settings have been saved', variant: 'success' }); 
                     resolve();
-                }).catch(function (error) {
-                    reject(error);
+                }).catch(function (errors) {
+                    Object.values(errors.response.data.errors).forEach(error => {
+                        MessageBus.$emit('message', {message: error, variant: 'danger'}); 
+                    });
+
+                    commit('setErrors', errors.response.data.errors);
+                    reject(errors);
                 });
             });   
         },
@@ -87,8 +99,5 @@ export const LearningGoalsStore = {
         progressLevels: (state, commit, rootState) => {
           return state.progressLevels;
         },
-        meta: (state, commit, rootState) => {
-            return state.meta;
-        }
     }
 }

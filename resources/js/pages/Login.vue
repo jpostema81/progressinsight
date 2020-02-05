@@ -54,7 +54,7 @@
 
                 this.$store.dispatch('AuthenticationStore/login', { email, password }).then(() => 
                 {
-                    this.$router.push('/home');
+                    this.$router.push('/learning_goals');
                 });
             },
         }

@@ -47,7 +47,7 @@ class AuthController extends Controller
         }
         catch(\Exception $e)
         {
-            return response()->json(['message' => 'Error while sending mail'], 500);
+            return response()->json(['message' => 'Error while sending mail: ' . $e->getMessage()], 500);
         }
 
         return $this->respondWithToken($token, $user);
@@ -63,7 +63,7 @@ class AuthController extends Controller
             return $this->respondWithToken($token, new UserResource($user));
         }
 
-        return response()->json(['error' => 'Invalid Login Credentials'], 401);
+        return response()->json(['errors' => ['Invalid Login Credentials']], 401);
     }
 
     public function logout()

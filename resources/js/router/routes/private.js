@@ -1,6 +1,12 @@
 import Vue from 'vue';
 
 const routes = [
+    {
+        path: '/learning_goals',
+        alias: '/',
+        name: 'learning_goals',
+        component: Vue.component('LearningGoals', require( '../../pages/LearningGoals.vue').default)
+    },
     // {
     //     path: '/dashboard/profile',
     //     name: 'profile',

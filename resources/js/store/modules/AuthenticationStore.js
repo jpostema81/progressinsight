@@ -5,70 +5,68 @@ export const AuthenticationStore =
 {
   namespaced: true,
   state: {
-    status: '',
-    errors: {},
-    // user: '',
-    user: { id: 1, name: 'Jeroen Postema' },
+      status: '',
+      errors: {},
+      user: '',
   },
   mutations: {
     // authentication state
     authRequest: (state) => {
-      state.status = 'loading';
-      state.errors = {};
+        state.status = 'loading';
+        state.errors = {};
     },
     authSuccess: (state, user) => {
-      state.status = 'success';
-      state.errors = {};
-      state.user = user;
+        state.status = 'success';
+        state.errors = {};
+        state.user = user;
     },
     authError: (state, errors) => {
-      state.status = 'error';
-      state.errors = errors;
+        state.status = 'error';
+        state.errors = errors;
     },
 
     logout: (state) => {
-      // no server side logout to keep tokens stateless.
-      // Just remove tokens from client
-      localStorage.removeItem('user-token');
-      MessageBus.$emit('message',
-          {message: 'You are logged out now!', variant: 'success'});
+        // no server side logout to keep tokens stateless.
+        // Just remove tokens from client
+        localStorage.removeItem('user-token');
+        MessageBus.$emit('message', { message: 'You are logged out now!', variant: 'success' });
 
-      state.status = '';
-      state.user = '';
+        state.status = '';
+        state.user = '';
 
-      router.push('/');
+        router.push('/login');
     },
     setUser: (state, user) => {
-      state.user = user;
+        state.user = user;
     },
 
     // registration state
     registerRequest: (state) => {
-      state.status = 'registering';
-      state.errors = {};
+        state.status = 'registering';
+        state.errors = {};
     },
     registerSuccess: (state) => {
-      state.status = 'success';
-      state.errors = {};
+        state.status = 'success';
+        state.errors = {};
     },
     registerError: (state, errors) => {
-      state.status = 'error';
-      state.errors = errors;
+        state.status = 'error';
+        state.errors = errors;
     },
 
     // user update state
     userUpdateRequest: (state) => {
-      state.status = 'updating';
-      state.errors = {};
+        state.status = 'updating';
+        state.errors = {};
     },
     userUpdateSuccess: (state, user) => {
-      state.status = 'success';
-      state.errors = {};
-      state.user = user;
+        state.status = 'success';
+        state.errors = {};
+        state.user = user;
     },
     userUpdateError: (state, errors) => {
-      state.status = 'error';
-      state.errors = errors;
+        state.status = 'error';
+        state.errors = errors;
     },
   },
   actions:
@@ -115,13 +113,16 @@ export const AuthenticationStore =
                 MessageBus.$emit('message', {message: 'Welcome back ' + user.full_name + ', you are logged in now' , variant: 'success'});
                 resolve(resp);
             })
-            .catch(error => {
-              MessageBus.$emit('message', {message: error.response.data.error, variant: 'danger'});
-              commit('authError', error.response.data.errors);
+            .catch(errors => {
+              Object.values(errors.response.data.errors).forEach(error => {
+                  MessageBus.$emit('message', {message: error, variant: 'danger'}); 
+              });
+              
+              commit('authError', errors.response.data.errors);
               
               // if the request fails, remove any possible user token if possible
               localStorage.removeItem('user-token');
-              reject(error);
+              reject(errors);
             });
         });
     },
@@ -142,11 +143,15 @@ export const AuthenticationStore =
 
                 resolve(resp);
             })
-            .catch(error => 
+            .catch(errors => 
             {
-                MessageBus.$emit('message', {message: 'Something went wrong', variant: 'danger'});
+                Object.values(errors.response.data.errors).forEach(error => {
+                    MessageBus.$emit('message', {message: error, variant: 'danger'}); 
+                });
+                
+                // MessageBus.$emit('message', {message: 'Something went wrong', variant: 'danger'});
                 commit('registerError', error.response.data.errors);
-                reject(error);
+                reject(errors);
             });
         });
     },
@@ -167,11 +172,12 @@ export const AuthenticationStore =
           resolve(resp);
         })
             .catch((error) => {
-              MessageBus.$emit('message',
+                MessageBus.$emit('message',
                   {
                     message: 'Something went wrong while updating your profile data',
                     variant: 'danger',
                   });
+
               commit('userUpdateError', error.response.data.errors);
               reject(error);
         });
