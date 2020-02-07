@@ -12,6 +12,8 @@ use App\Http\Resources\UserResource;
 use App\Http\Requests\Admin\Auth\RegisterUser;
 use App\Http\Requests\Admin\Auth\Login;
 use App\User;
+use App\LearningGoal;
+use App\ProgressLevel;
 use Mail;
 
 // https://jwt-auth.readthedocs.io/en/docs/quick-start/
@@ -38,6 +40,17 @@ class AuthController extends Controller
     {
         $validatedInput = $request->validated();
         $user = User::create($validatedInput);
+
+        // add LearningGoals to new user
+        $learningGoals = LearningGoal::all();
+        $defaultLearningGoals = [];
+        $defaultProgressLevel = ProgressLevel::where('default', '=', true)->first();
+
+        foreach($learningGoals as $learningGoal) {
+            $defaultLearningGoals[$learningGoal["id"]] = ['progress_level_id' => $defaultProgressLevel->id];
+        }
+
+        $user->learningGoals()->sync($defaultLearningGoals);
         $token = auth()->tokenById($user->id);
 
         try 

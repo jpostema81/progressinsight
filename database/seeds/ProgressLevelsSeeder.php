@@ -13,16 +13,10 @@ class ProgressLevelsSeeder extends Seeder
     {
         DB::table('progress_levels')->delete();
 
-        // DB::table('users')->insert([
-        //     'name' => Str::random(10),
-        //     'email' => Str::random(10).'@gmail.com',
-        //     'password' => Hash::make('password'),
-        // ]);
-
         $data = array(
-            array('name' => 'matig'),
-            array('name' => 'redelijk'),
-            array('name' => 'goed'),
+            array('name' => 'matig', 'percentage' => 0, 'default' => false),
+            array('name' => 'redelijk', 'percentage' => 50,'default' => true),
+            array('name' => 'goed', 'percentage' => 100, 'default' => false),
         );
 
         DB::table('progress_levels')->insert($data);

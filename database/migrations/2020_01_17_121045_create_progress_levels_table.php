@@ -16,6 +16,8 @@ class CreateProgressLevelsTable extends Migration
         Schema::create('progress_levels', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name');
+            $table->integer('percentage');
+            $table->boolean('default');
         });
     }
 

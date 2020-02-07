@@ -5,6 +5,7 @@
             <router-link v-if="isAuthenticated" to="/learning_goals">Learning Goals</router-link>
             <router-link v-if="!isAuthenticated" to="/login">Login</router-link>
             <b-link v-if="isAuthenticated" @click="logout">| Logout</b-link>
+            <span v-if="isAuthenticated && 0" class="float-right mt-5">Logged in as {{ user.full_name }}</span>
         </div>
         <router-view/>
     </div>
@@ -22,6 +23,7 @@
         computed: {
             ...mapGetters({
                 isAuthenticated: 'AuthenticationStore/isAuthenticated',
+                user: 'AuthenticationStore/user',
             }),
         },
   }

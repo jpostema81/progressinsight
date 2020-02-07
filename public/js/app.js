@@ -1951,13 +1951,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   methods: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapMutations"])('AuthenticationStore', {
     logout: 'logout'
   })),
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])({
-    isAuthenticated: 'AuthenticationStore/isAuthenticated'
+    isAuthenticated: 'AuthenticationStore/isAuthenticated',
+    user: 'AuthenticationStore/user'
   }))
 });
 
@@ -1979,6 +1981,17 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -2029,7 +2042,27 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])({
     progressLevels: 'LearningGoalsStore/progressLevels'
-  }))
+  }), {
+    progressIndicatorValue: function progressIndicatorValue() {
+      // get ProgressLevelId where percentage equals 100%
+      var hundredPercentProgressLevel = this.progressLevels.find(function (progressLevel) {
+        return progressLevel.percentage == 100;
+      });
+
+      if (hundredPercentProgressLevel !== null) {
+        // count users LearningGoals which have a ProgressLevel of 100%
+        var hundredPercentProgressLevelLearningGoals = this.learningGoals.filter(function (learningGoal) {
+          return learningGoal.progress_level.id === hundredPercentProgressLevel.id;
+        });
+        return hundredPercentProgressLevelLearningGoals.length / this.learningGoals.length * 100;
+      } else {
+        return 0;
+      }
+    },
+    progressIndicatorMax: function progressIndicatorMax() {
+      return 100;
+    }
+  })
 });
 
 /***/ }),
@@ -40239,6 +40272,12 @@ var render = function() {
           _vm._v(" "),
           _vm.isAuthenticated
             ? _c("b-link", { on: { click: _vm.logout } }, [_vm._v("| Logout")])
+            : _vm._e(),
+          _vm._v(" "),
+          _vm.isAuthenticated && 0
+            ? _c("span", { staticClass: "float-right mt-5" }, [
+                _vm._v("Logged in as " + _vm._s(_vm.user.full_name))
+              ])
             : _vm._e()
         ],
         1
@@ -40274,10 +40313,105 @@ var render = function() {
   return _c(
     "div",
     [
-      _c("h2", { staticClass: "mb-5" }, [_vm._v("LearningGoals")]),
+      _c("h2", { staticClass: "mb-4" }, [_vm._v("LearningGoals")]),
+      _vm._v(" "),
+      this.learningGoals
+        ? _c(
+            "b-progress",
+            { attrs: { max: _vm.progressIndicatorMax, "show-progress": "" } },
+            [
+              _c(
+                "b-progress-bar",
+                { attrs: { value: _vm.progressIndicatorValue } },
+                [
+                  _vm._v(
+                    "\n            Total progress: " +
+                      _vm._s(_vm.progressIndicatorValue.toFixed(0)) +
+                      "%\n        "
+                  )
+                ]
+              )
+            ],
+            1
+          )
+        : _vm._e(),
+      _vm._v(" "),
+      this.learningGoals
+        ? _c(
+            "b-progress",
+            {
+              staticClass: "mt-2",
+              attrs: {
+                height: "2rem",
+                max: _vm.progressIndicatorMax,
+                "show-value": ""
+              }
+            },
+            [
+              _c(
+                "b-progress-bar",
+                {
+                  attrs: {
+                    value: _vm.progressIndicatorValue * (6 / 10),
+                    variant: "success"
+                  }
+                },
+                [
+                  _vm._v(
+                    "HTML: " +
+                      _vm._s(
+                        (_vm.progressIndicatorValue * (6 / 10)).toFixed(0)
+                      ) +
+                      "%"
+                  )
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "b-progress-bar",
+                {
+                  attrs: {
+                    value: _vm.progressIndicatorValue * (2.5 / 10),
+                    variant: "warning"
+                  }
+                },
+                [
+                  _vm._v(
+                    "CSS: " +
+                      _vm._s(
+                        (_vm.progressIndicatorValue * (2.5 / 10)).toFixed(0)
+                      ) +
+                      "%"
+                  )
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "b-progress-bar",
+                {
+                  attrs: {
+                    value: _vm.progressIndicatorValue * (1.5 / 10),
+                    variant: "danger"
+                  }
+                },
+                [
+                  _vm._v(
+                    "JavaScript: " +
+                      _vm._s(
+                        (_vm.progressIndicatorValue * (1.5 / 10)).toFixed(0)
+                      ) +
+                      "%"
+                  )
+                ]
+              )
+            ],
+            1
+          )
+        : _vm._e(),
       _vm._v(" "),
       this.learningGoals
         ? _c("b-table", {
+            staticClass: "mt-5",
             attrs: { hover: "", items: _vm.learningGoals, fields: _vm.fields },
             scopedSlots: _vm._u(
               [
@@ -40294,7 +40428,6 @@ var render = function() {
                               "value-field": "id",
                               "text-field": "name",
                               buttons: "",
-                              name: "radios-btn-default",
                               "button-variant": "success"
                             },
                             model: {
@@ -40314,7 +40447,7 @@ var render = function() {
               ],
               null,
               false,
-              227649878
+              2288703862
             )
           })
         : _vm._e(),
@@ -57132,14 +57265,15 @@ MessageBus.$on('message', messageHandler);
 /*!**********************************************!*\
   !*** ./resources/js/pages/LearningGoals.vue ***!
   \**********************************************/
-/*! exports provided: default */
+/*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _LearningGoals_vue_vue_type_template_id_72fd08ee___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./LearningGoals.vue?vue&type=template&id=72fd08ee& */ "./resources/js/pages/LearningGoals.vue?vue&type=template&id=72fd08ee&");
 /* harmony import */ var _LearningGoals_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./LearningGoals.vue?vue&type=script&lang=js& */ "./resources/js/pages/LearningGoals.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _LearningGoals_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _LearningGoals_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
 
@@ -57169,7 +57303,7 @@ component.options.__file = "resources/js/pages/LearningGoals.vue"
 /*!***********************************************************************!*\
   !*** ./resources/js/pages/LearningGoals.vue?vue&type=script&lang=js& ***!
   \***********************************************************************/
-/*! exports provided: default */
+/*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
