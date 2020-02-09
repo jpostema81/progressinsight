@@ -35,5 +35,9 @@ Route::post('/get_user_by_token', 'Auth\Api\AuthController@getUserByToken')->nam
 
     Route::resource('/progress_levels', 'ProgressLevelsController', [
       // 'as' => 'admin'
-  ]);
+    ]);
+
+    Route::resource('/topics', 'TopicsController', [
+        // 'as' => 'admin'
+    ]);
 //}

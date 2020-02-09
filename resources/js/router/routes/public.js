@@ -1,11 +1,6 @@
 import Vue from 'vue';
 
 const routes = [
-    // {
-    //     path: '/blogposts/:blogPostId',
-    //     name: 'blogpostsOverview',
-    //     component: Vue.component('BlogPost', require( '../../pages/BlogPost.vue').default)
-    // },
     {
         path: '/login',
         name: 'login',

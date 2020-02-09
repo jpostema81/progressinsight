@@ -6,6 +6,7 @@ export const LearningGoalsStore = {
     {
         learningGoals: [],
         progressLevels: [],
+        topics: [],
         errors: {},
     },
     mutations: 
@@ -18,8 +19,12 @@ export const LearningGoalsStore = {
         {
             state.progressLevels = progressLevels;
         },
+        setTopics(state, topics) 
+        {
+            state.topics = topics;
+        },
         setErrors: (state, errors) => {
-          state.errors = errors;
+            state.errors = errors;
         },
     },
     actions: 
@@ -36,6 +41,27 @@ export const LearningGoalsStore = {
                     params: data,
                 }).then(response => {
                     commit('setLearningGoals', response.data.data);
+                    resolve();
+                }).catch(function (errors) {
+                    Object.values(errors.response.data.errors).forEach(error => {
+                        MessageBus.$emit('message', {message: error, variant: 'danger'}); 
+                    });
+
+                    commit('setErrors', errors.response.data.errors);
+                    reject(errors);
+                });
+            });   
+        },
+        fetchTopics({commit, state, rootState, rootGetters}) 
+        {
+            return new Promise((resolve, reject) => {
+                let url = '/api/topics/';
+
+                axios({
+                    method: 'get',
+                    url: url,
+                }).then(response => {
+                    commit('setTopics', response.data.data);
                     resolve();
                 }).catch(function (errors) {
                     Object.values(errors.response.data.errors).forEach(error => {
@@ -96,8 +122,15 @@ export const LearningGoalsStore = {
         learningGoals: (state, commit, rootState) => {
             return state.learningGoals;
         },
-        progressLevels: (state, commit, rootState) => {
-          return state.progressLevels;
+        progressLevels: (state) => {
+            return state.progressLevels;
+        },
+        topics: (state) => {
+            return state.topics;
+        },
+        // return function from this getter which can be used to passed data in
+        getLearningGoalsByTopic: (state) => {
+            return (topic) => state.learningGoals.filter((learningGoal) => { return learningGoal.topic.id === topic.id });
         },
     }
 }

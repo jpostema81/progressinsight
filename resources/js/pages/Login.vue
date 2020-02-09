@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h2>Login</h2>
+        <h3>Login</h3>
 
         <form @submit.prevent="handleSubmit">
             <div class="form-group">
