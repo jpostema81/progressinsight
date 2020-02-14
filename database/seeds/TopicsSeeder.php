@@ -23,12 +23,14 @@ class TopicsSeeder extends Seeder
             array('name' => 'JavaScript verdieping'),
             array('name' => 'PHP'),
             array('name' => 'PHP verdieping'),
-            array('name' => 'Theorien'),
+            array('name' => 'Theorieën'),
             array('name' => 'Laravel'),
             array('name' => 'Laravel verdieping'),
             array('name' => 'Vue.js'),
+            //array('name' => 'Vue.js verdieping'),
+            array('name' => 'VueX'),
             array('name' => 'Deployment'),
-            array('name' => 'SCRUM'),
+            //array('name' => 'Scrum'),
         );
 
         DB::table('topics')->insert($data);

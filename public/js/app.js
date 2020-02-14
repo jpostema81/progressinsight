@@ -2104,7 +2104,16 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   data: function data() {
     return {
       learningGoals: [],
-      fields: ['description', 'criterion', 'progressLevel'],
+      fields: [{
+        key: 'description',
+        label: 'Omschrijving'
+      }, {
+        key: 'criterion',
+        label: 'Criterium'
+      }, {
+        key: 'progressLevel',
+        label: 'Beheersing'
+      }],
       progressColor: {
         'background-color': 'green'
       }
@@ -2130,19 +2139,21 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     getLearningGoalsByTopic: 'LearningGoalsStore/getLearningGoalsByTopic'
   }), {
     progressIndicatorValue: function progressIndicatorValue() {
-      // get ProgressLevelId where percentage equals 100%
-      var hundredPercentProgressLevel = this.progressLevels.find(function (progressLevel) {
-        return progressLevel.percentage == 100;
-      });
-
-      if (hundredPercentProgressLevel !== null) {
-        // count users LearningGoals which have a ProgressLevel of 100%
-        var hundredPercentProgressLevelLearningGoals = this.learningGoals.filter(function (learningGoal) {
-          return learningGoal.progress_level.id === hundredPercentProgressLevel.id;
+      if (this.progressLevels && this.learningGoals) {
+        // get ProgressLevelId where percentage equals 100%
+        var hundredPercentProgressLevel = this.progressLevels.find(function (progressLevel) {
+          return progressLevel.percentage == 100;
         });
-        return hundredPercentProgressLevelLearningGoals.length / this.learningGoals.length * 100;
-      } else {
-        return 0;
+
+        if (hundredPercentProgressLevel !== null) {
+          // count users LearningGoals which have a ProgressLevel of 100%
+          var hundredPercentProgressLevelLearningGoals = this.learningGoals.filter(function (learningGoal) {
+            return learningGoal.progress_level.id === hundredPercentProgressLevel.id;
+          });
+          return hundredPercentProgressLevelLearningGoals.length / this.learningGoals.length * 100;
+        } else {
+          return 0;
+        }
       }
     },
     progressIndicatorMax: function progressIndicatorMax() {
@@ -40596,7 +40607,9 @@ var render = function() {
     ? _c(
         "div",
         [
-          _c("h3", { staticClass: "mb-4" }, [_vm._v("Learning Goals")]),
+          _c("h3", { staticClass: "mb-4" }, [
+            _vm._v("Leerdoelen en persoonlijke voortgang")
+          ]),
           _vm._v(" "),
           _c(
             "b-progress",

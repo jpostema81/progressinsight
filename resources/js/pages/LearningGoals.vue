@@ -1,6 +1,6 @@
 <template>
     <div v-if="this.learningGoals && this.topics">
-        <h3 class="mb-4">Learning Goals</h3>
+        <h3 class="mb-4">Leerdoelen en persoonlijke voortgang</h3>
 
         <b-progress :max="progressIndicatorMax" show-progress>
             <b-progress-bar :value="progressIndicatorValue">
@@ -24,7 +24,7 @@
                         <b-card-text v-if="topic.info">{{ topic.info }}</b-card-text>
 
                         <b-table class="mt-5" hover :items="getLearningGoalsByTopic(topic)" :fields="fields">
-                            <template v-slot:cell(progressLevel)="item">
+                            <template v-slot:cell(progressLevel)="item" class="align-right">
                                 <b-form-group>
                                     <b-form-radio-group
                                         v-model="item.item.progress_level.id"
@@ -55,7 +55,20 @@
         data() {
             return {
                 learningGoals: [],
-                fields: ['description', 'criterion', 'progressLevel'],
+                fields: [
+                    { 
+                        key: 'description',
+                        label: 'Omschrijving',
+                    },
+                    { 
+                        key: 'criterion',
+                        label: 'Criterium',
+                    },
+                    { 
+                        key: 'progressLevel',
+                        label: 'Beheersing',
+                    },
+                ],
                 progressColor: { 'background-color': 'green' },
             }
         },
@@ -78,15 +91,18 @@
                 getLearningGoalsByTopic: 'LearningGoalsStore/getLearningGoalsByTopic',
             }),
             progressIndicatorValue() {
-                // get ProgressLevelId where percentage equals 100%
-                let hundredPercentProgressLevel = this.progressLevels.find((progressLevel) => { return progressLevel.percentage == 100; })
+                if(this.progressLevels && this.learningGoals) 
+                {
+                    // get ProgressLevelId where percentage equals 100%
+                    let hundredPercentProgressLevel = this.progressLevels.find((progressLevel) => { return progressLevel.percentage == 100; })
 
-                if(hundredPercentProgressLevel !== null) {
-                    // count users LearningGoals which have a ProgressLevel of 100%
-                    const hundredPercentProgressLevelLearningGoals = this.learningGoals.filter((learningGoal) => learningGoal.progress_level.id === hundredPercentProgressLevel.id);
-                    return ((hundredPercentProgressLevelLearningGoals.length / this.learningGoals.length) * 100);
-                } else {
-                    return 0;
+                    if(hundredPercentProgressLevel !== null) {
+                        // count users LearningGoals which have a ProgressLevel of 100%
+                        const hundredPercentProgressLevelLearningGoals = this.learningGoals.filter((learningGoal) => learningGoal.progress_level.id === hundredPercentProgressLevel.id);
+                        return ((hundredPercentProgressLevelLearningGoals.length / this.learningGoals.length) * 100);
+                    } else {
+                        return 0;
+                    }
                 }
             },
             progressIndicatorMax() {
