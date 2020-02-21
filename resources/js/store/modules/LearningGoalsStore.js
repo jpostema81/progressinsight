@@ -33,12 +33,10 @@ export const LearningGoalsStore = {
         {
             return new Promise((resolve, reject) => {
                 let url = `/api/users/${rootState.AuthenticationStore.user.id}/learning_goals`;
-                let data = { user_id: 1 };
 
                 axios({
                     method: 'get',
                     url: url,
-                    params: data,
                 }).then(response => {
                     commit('setLearningGoals', response.data.data);
                     resolve();
@@ -132,5 +130,23 @@ export const LearningGoalsStore = {
         getLearningGoalsByTopic: (state) => {
             return (topic) => state.learningGoals.filter((learningGoal) => { return learningGoal.topic.id === topic.id });
         },
+        getCompletedLearningGoals: (state, getters) => {
+            // count users LearningGoals which have a ProgressLevel of 100%
+            if(state.learningGoals) {
+                return state.learningGoals.filter((learningGoal) => learningGoal.progress_level.id === getters.hundredPercentProgressLevel.id);
+            }
+            
+        },
+        getCompletedLearningGoalsByTopic: (state, getters) => {
+            // count users LearningGoals by topic which have a ProgressLevel of 100%
+            if(state.learningGoals) {
+                return (topic) => {
+                    return getters.getLearningGoalsByTopic(topic).filter((learningGoal) => learningGoal.progress_level.id === getters.hundredPercentProgressLevel.id);
+                }; 
+            }              
+        },
+        hundredPercentProgressLevel: (state) => {
+            return state.progressLevels.find((progressLevel) => { return progressLevel.percentage == 100; })
+        }
     }
 }

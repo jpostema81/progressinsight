@@ -17293,16 +17293,24 @@ a.text-dark:focus {
   color: #2c3e50;
 }
 
-#nav {
-  padding: 30px;
+.loader {
+  position: fixed;
+  z-index: 99;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  width: 250px;
+  height: 100px;
 }
 
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
+body {
+  margin-top: 100px;
 }
 
-#nav a.router-link-exact-active {
-  color: #42b983;
+.tooltip .tooltip-inner {
+  max-width: 600px !important;
+  width: 600px !important;
 }
 

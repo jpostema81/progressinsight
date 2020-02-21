@@ -23,21 +23,15 @@ Route::post('/login', 'Auth\Api\AuthController@login')->name('api.login');
 Route::post('/logout', 'Auth\Api\AuthController@logout')->name('api.logout');
 Route::post('/get_user_by_token', 'Auth\Api\AuthController@getUserByToken')->name('api.get_user_by_token');
 
-// Route::group(['middleware' => ['auth']], function() 
-// {
+Route::group(['middleware' => ['auth:api']], function() 
+{
     Route::resource('/learning_goals', 'LearningGoalsController', [
-      // 'as' => 'admin'
+      'as' => 'admin'
     ]);
 
-    Route::resource('/users/{user}/learning_goals', 'UserLearningGoalsController', [
-      // 'as' => 'admin'
-    ]);
+    Route::resource('/users/{user}/learning_goals', 'UserLearningGoalsController');
 
-    Route::resource('/progress_levels', 'ProgressLevelsController', [
-      // 'as' => 'admin'
-    ]);
+    Route::resource('/progress_levels', 'ProgressLevelsController');
 
-    Route::resource('/topics', 'TopicsController', [
-        // 'as' => 'admin'
-    ]);
-//}
+    Route::resource('/topics', 'TopicsController');
+});

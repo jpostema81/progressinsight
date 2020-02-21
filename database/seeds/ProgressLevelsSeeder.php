@@ -14,8 +14,8 @@ class ProgressLevelsSeeder extends Seeder
         DB::table('progress_levels')->delete();
 
         $data = array(
-            array('name' => 'matig', 'percentage' => 0, 'default' => false),
-            array('name' => 'redelijk', 'percentage' => 50,'default' => true),
+            array('name' => 'niet', 'percentage' => 0, 'default' => true),
+            array('name' => 'redelijk', 'percentage' => 50,'default' => false),
             array('name' => 'goed', 'percentage' => 100, 'default' => false),
         );
 

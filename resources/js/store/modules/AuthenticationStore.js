@@ -26,10 +26,10 @@ export const AuthenticationStore =
     },
 
     logout: (state) => {
-        // no server side logout to keep tokens stateless.
+        // no serverside logout to keep tokens stateless.
         // Just remove tokens from client
         localStorage.removeItem('user-token');
-        MessageBus.$emit('message', { message: 'You are logged out now!', variant: 'success' });
+        MessageBus.$emit('message', { message: 'U bent nu ingelogd', variant: 'success' });
 
         state.status = '';
         state.user = '';
@@ -74,8 +74,6 @@ export const AuthenticationStore =
     // authenticate by JWT token (token from login or local storage)
     authenticateByToken: ({commit, state, dispatch}) => 
     {
-        console.log('AuthenticationStore/authenticateByToken');
-        
         commit('authRequest');
 
         return new Promise((resolve, reject) => 
@@ -110,7 +108,7 @@ export const AuthenticationStore =
                 localStorage.setItem('user-token', token);
                 // token received, set user
                 commit('authSuccess', user);
-                MessageBus.$emit('message', {message: 'Welcome back ' + user.full_name + ', you are logged in now' , variant: 'success'});
+                MessageBus.$emit('message', {message: 'U bent ingelogd ' + user.full_name, variant: 'success'});
                 resolve(resp);
             })
             .catch(errors => {
@@ -138,7 +136,7 @@ export const AuthenticationStore =
 
                 setTimeout(() => {
                     // display success message after route change completes
-                    MessageBus.$emit('message', {message: 'Registration successful', variant: 'success'});
+                    MessageBus.$emit('message', {message: 'Registratie succesvol', variant: 'success'});
                 })
 
                 resolve(resp);
@@ -166,7 +164,7 @@ export const AuthenticationStore =
           setTimeout(() => {
             // display success message after route change completes
             MessageBus.$emit('message',
-                {message: 'Profile update successful', variant: 'success'});
+                {message: 'Profiel succesvol aangemaakt', variant: 'success'});
           });
 
           resolve(resp);
@@ -174,7 +172,7 @@ export const AuthenticationStore =
             .catch((error) => {
                 MessageBus.$emit('message',
                   {
-                    message: 'Something went wrong while updating your profile data',
+                    message: 'Er ging iets fout tijdens het bijwerken van uw profielgegevens',
                     variant: 'danger',
                   });
 

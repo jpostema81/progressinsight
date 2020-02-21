@@ -2099,6 +2099,26 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -2114,18 +2134,23 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         key: 'progressLevel',
         label: 'Beheersing'
       }],
+      isBusy: true,
       progressColor: {
         'background-color': 'green'
-      }
+      },
+      progressColors: ['success', 'info', 'warning', 'danger', 'primary', 'secondary', 'dark']
     };
   },
   mounted: function mounted() {
     var _this = this;
 
-    this.$store.dispatch('LearningGoalsStore/fetchProgressLevels');
-    this.$store.dispatch('LearningGoalsStore/fetchTopics');
-    this.$store.dispatch('LearningGoalsStore/fetchLearningGoals').then(function () {
-      _this.learningGoals = _this.$store.state.LearningGoalsStore.learningGoals;
+    this.$store.dispatch('LearningGoalsStore/fetchProgressLevels').then(function () {
+      _this.$store.dispatch('LearningGoalsStore/fetchTopics').then(function () {
+        _this.$store.dispatch('LearningGoalsStore/fetchLearningGoals').then(function () {
+          _this.isBusy = false;
+          _this.learningGoals = _this.$store.state.LearningGoalsStore.learningGoals;
+        });
+      });
     });
   },
   methods: {
@@ -2136,30 +2161,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])({
     progressLevels: 'LearningGoalsStore/progressLevels',
     topics: 'LearningGoalsStore/topics',
-    getLearningGoalsByTopic: 'LearningGoalsStore/getLearningGoalsByTopic'
-  }), {
-    progressIndicatorValue: function progressIndicatorValue() {
-      if (this.progressLevels && this.learningGoals) {
-        // get ProgressLevelId where percentage equals 100%
-        var hundredPercentProgressLevel = this.progressLevels.find(function (progressLevel) {
-          return progressLevel.percentage == 100;
-        });
-
-        if (hundredPercentProgressLevel !== null) {
-          // count users LearningGoals which have a ProgressLevel of 100%
-          var hundredPercentProgressLevelLearningGoals = this.learningGoals.filter(function (learningGoal) {
-            return learningGoal.progress_level.id === hundredPercentProgressLevel.id;
-          });
-          return hundredPercentProgressLevelLearningGoals.length / this.learningGoals.length * 100;
-        } else {
-          return 0;
-        }
-      }
-    },
-    progressIndicatorMax: function progressIndicatorMax() {
-      return 100;
-    }
-  })
+    getLearningGoalsByTopic: 'LearningGoalsStore/getLearningGoalsByTopic',
+    getCompletedLearningGoals: 'LearningGoalsStore/getCompletedLearningGoals',
+    getCompletedLearningGoalsByTopic: 'LearningGoalsStore/getCompletedLearningGoalsByTopic'
+  }))
 });
 
 /***/ }),
@@ -40455,7 +40460,7 @@ var render = function() {
     "div",
     { staticClass: "container", attrs: { id: "myApp" } },
     [
-      _c("navigation-bar", { staticClass: "mb-4" }, [
+      _c("navigation-bar", { staticClass: "mb-4", attrs: { fixed: "top" } }, [
         _vm._v("ProgressInsight")
       ]),
       _vm._v(" "),
@@ -40493,6 +40498,7 @@ var render = function() {
         "b-navbar",
         {
           attrs: {
+            fixed: "top",
             toggleable: "lg",
             type: "dark",
             variant: "primary",
@@ -40519,13 +40525,15 @@ var render = function() {
                 [
                   !_vm.isAuthenticated
                     ? _c("b-nav-item", { attrs: { to: "/login" } }, [
-                        _vm._v("\n                    Login\n                ")
+                        _vm._v(
+                          "\n                    Inloggen\n                "
+                        )
                       ])
                     : _vm._e(),
                   _vm._v(" "),
                   !_vm.isAuthenticated
                     ? _c("b-nav-item", { attrs: { to: "/register" } }, [
-                        _vm._v("Register")
+                        _vm._v("Registreren")
                       ])
                     : _vm._e(),
                   _vm._v(" "),
@@ -40558,11 +40566,11 @@ var render = function() {
                           _c(
                             "b-dropdown-item",
                             { attrs: { to: "/dashboard/profile" } },
-                            [_vm._v("Profile")]
+                            [_vm._v("Profiel")]
                           ),
                           _vm._v(" "),
                           _c("b-dropdown-item", { on: { click: _vm.logout } }, [
-                            _vm._v("Log Out")
+                            _vm._v("Uitloggen")
                           ])
                         ],
                         1
@@ -40603,236 +40611,289 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return this.learningGoals && this.topics
-    ? _c(
-        "div",
-        [
-          _c("h3", { staticClass: "mb-4" }, [
-            _vm._v("Leerdoelen en persoonlijke voortgang")
-          ]),
-          _vm._v(" "),
-          _c(
-            "b-progress",
-            { attrs: { max: _vm.progressIndicatorMax, "show-progress": "" } },
-            [
-              _c(
-                "b-progress-bar",
-                { attrs: { value: _vm.progressIndicatorValue } },
-                [
-                  _vm._v(
-                    "\n            Total progress: " +
-                      _vm._s(_vm.progressIndicatorValue.toFixed(0)) +
-                      "%\n        "
-                  )
-                ]
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c(
-            "b-progress",
-            {
-              staticClass: "mt-2",
-              attrs: {
-                height: "2rem",
-                max: _vm.progressIndicatorMax,
-                "show-value": ""
-              }
-            },
-            [
-              _c(
-                "b-progress-bar",
-                {
-                  attrs: {
-                    value: _vm.progressIndicatorValue * (6 / 10),
-                    variant: "success"
-                  }
-                },
-                [
-                  _vm._v(
-                    "HTML: " +
-                      _vm._s(
-                        (_vm.progressIndicatorValue * (6 / 10)).toFixed(0)
-                      ) +
-                      "%"
-                  )
-                ]
-              ),
-              _vm._v(" "),
-              _c(
-                "b-progress-bar",
-                {
-                  attrs: {
-                    value: _vm.progressIndicatorValue * (2.5 / 10),
-                    variant: "warning"
-                  }
-                },
-                [
-                  _vm._v(
-                    "CSS: " +
-                      _vm._s(
-                        (_vm.progressIndicatorValue * (2.5 / 10)).toFixed(0)
-                      ) +
-                      "%"
-                  )
-                ]
-              ),
-              _vm._v(" "),
-              _c(
-                "b-progress-bar",
-                {
-                  attrs: {
-                    value: _vm.progressIndicatorValue * (1.5 / 10),
-                    variant: "danger"
-                  }
-                },
-                [
-                  _vm._v(
-                    "JavaScript: " +
-                      _vm._s(
-                        (_vm.progressIndicatorValue * (1.5 / 10)).toFixed(0)
-                      ) +
-                      "%"
-                  )
-                ]
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c(
-            "div",
-            { attrs: { role: "tablist" } },
-            _vm._l(_vm.topics, function(topic) {
-              return _c(
-                "b-card",
-                {
-                  key: topic.id,
-                  staticClass: "my-2",
-                  attrs: { "no-body": "" }
-                },
-                [
-                  _c(
-                    "b-card-header",
-                    {
-                      staticClass: "p-1",
-                      attrs: { "header-tag": "header", role: "tab" }
-                    },
-                    [
-                      _c(
-                        "b-button",
-                        {
-                          directives: [
-                            {
-                              name: "b-toggle",
-                              rawName: "v-b-toggle.accordion-1",
-                              modifiers: { "accordion-1": true }
-                            }
-                          ],
-                          attrs: { block: "", href: "#", variant: "info" }
-                        },
-                        [_vm._v(_vm._s(topic.name))]
-                      )
-                    ],
-                    1
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "b-collapse",
-                    {
-                      attrs: {
-                        id: "accordion-1",
-                        visible: "",
-                        accordion: "my-accordion",
-                        role: "tabpanel"
-                      }
-                    },
-                    [
-                      _c(
-                        "b-card-body",
-                        [
-                          topic.info
-                            ? _c("b-card-text", [_vm._v(_vm._s(topic.info))])
-                            : _vm._e(),
-                          _vm._v(" "),
-                          _c("b-table", {
-                            staticClass: "mt-5",
-                            attrs: {
-                              hover: "",
-                              items: _vm.getLearningGoalsByTopic(topic),
-                              fields: _vm.fields
-                            },
-                            scopedSlots: _vm._u(
-                              [
-                                {
-                                  key: "cell(progressLevel)",
-                                  fn: function(item) {
-                                    return [
-                                      _c(
-                                        "b-form-group",
-                                        [
-                                          _c("b-form-radio-group", {
-                                            attrs: {
-                                              options: _vm.progressLevels,
-                                              "value-field": "id",
-                                              "text-field": "name",
-                                              buttons: "",
-                                              "button-variant": "success"
-                                            },
-                                            model: {
-                                              value:
-                                                item.item.progress_level.id,
-                                              callback: function($$v) {
-                                                _vm.$set(
-                                                  item.item.progress_level,
-                                                  "id",
-                                                  $$v
-                                                )
+  return _c("div", [
+    _vm.isBusy
+      ? _c(
+          "div",
+          { staticClass: "loader" },
+          [
+            _c("strong", [_vm._v("Uw leerdoelen worden geladen...")]),
+            _vm._v(" "),
+            _c("b-spinner", {
+              attrs: { variant: "success", label: "Spinning" }
+            })
+          ],
+          1
+        )
+      : _vm._e(),
+    _vm._v(" "),
+    !_vm.isBusy
+      ? _c(
+          "div",
+          [
+            _c("h3", { staticClass: "mb-4" }, [
+              _vm._v("Leerdoelen en persoonlijke voortgang")
+            ]),
+            _vm._v(" "),
+            _c(
+              "div",
+              { attrs: { role: "tablist" } },
+              _vm._l(_vm.topics, function(topic) {
+                return _c(
+                  "b-card",
+                  {
+                    key: topic.id,
+                    staticClass: "my-2",
+                    attrs: { "no-body": "" }
+                  },
+                  [
+                    _c(
+                      "b-card-header",
+                      {
+                        staticClass: "p-1",
+                        attrs: { "header-tag": "header", role: "tab" }
+                      },
+                      [
+                        _c(
+                          "b-button",
+                          {
+                            directives: [
+                              {
+                                name: "b-toggle",
+                                rawName: "v-b-toggle.accordion-1",
+                                modifiers: { "accordion-1": true }
+                              }
+                            ],
+                            attrs: { block: "", href: "#", variant: "info" }
+                          },
+                          [_vm._v(_vm._s(topic.name))]
+                        )
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "b-collapse",
+                      {
+                        attrs: {
+                          id: "accordion-1",
+                          visible: "",
+                          accordion: "my-accordion",
+                          role: "tabpanel"
+                        }
+                      },
+                      [
+                        _c(
+                          "b-card-body",
+                          [
+                            topic.info
+                              ? _c("b-card-text", [_vm._v(_vm._s(topic.info))])
+                              : _vm._e(),
+                            _vm._v(" "),
+                            _c("b-table", {
+                              staticClass: "mt-5",
+                              attrs: {
+                                hover: "",
+                                items: _vm.getLearningGoalsByTopic(topic),
+                                fields: _vm.fields,
+                                busy: _vm.isBusy
+                              },
+                              scopedSlots: _vm._u(
+                                [
+                                  {
+                                    key: "table-busy",
+                                    fn: function() {
+                                      return [
+                                        _c(
+                                          "div",
+                                          {
+                                            staticClass:
+                                              "text-center text-danger my-2"
+                                          },
+                                          [
+                                            _c("b-spinner", {
+                                              staticClass: "align-middle"
+                                            }),
+                                            _vm._v(" "),
+                                            _c("strong", [_vm._v("Laden...")])
+                                          ],
+                                          1
+                                        )
+                                      ]
+                                    },
+                                    proxy: true
+                                  },
+                                  {
+                                    key: "cell(progressLevel)",
+                                    fn: function(item) {
+                                      return [
+                                        _c(
+                                          "b-form-group",
+                                          [
+                                            _c("b-form-radio-group", {
+                                              attrs: {
+                                                options: _vm.progressLevels,
+                                                "value-field": "id",
+                                                "text-field": "name",
+                                                buttons: "",
+                                                "button-variant": "success"
                                               },
-                                              expression:
-                                                "item.item.progress_level.id"
-                                            }
-                                          })
-                                        ],
-                                        1
-                                      )
-                                    ]
+                                              model: {
+                                                value:
+                                                  item.item.progress_level.id,
+                                                callback: function($$v) {
+                                                  _vm.$set(
+                                                    item.item.progress_level,
+                                                    "id",
+                                                    $$v
+                                                  )
+                                                },
+                                                expression:
+                                                  "item.item.progress_level.id"
+                                              }
+                                            })
+                                          ],
+                                          1
+                                        )
+                                      ]
+                                    }
+                                  }
+                                ],
+                                null,
+                                true
+                              )
+                            }),
+                            _vm._v(" "),
+                            _c(
+                              "b-button",
+                              {
+                                on: {
+                                  click: function($event) {
+                                    return _vm.updateLearningGoals()
                                   }
                                 }
-                              ],
-                              null,
-                              true
+                              },
+                              [_vm._v("Update")]
                             )
-                          }),
-                          _vm._v(" "),
-                          _c(
-                            "b-button",
-                            {
-                              on: {
-                                click: function($event) {
-                                  return _vm.updateLearningGoals()
-                                }
-                              }
-                            },
-                            [_vm._v("Update")]
-                          )
-                        ],
-                        1
-                      )
-                    ],
-                    1
+                          ],
+                          1
+                        )
+                      ],
+                      1
+                    )
+                  ],
+                  1
+                )
+              }),
+              1
+            ),
+            _vm._v(" "),
+            _c(
+              "b-tooltip",
+              { attrs: { target: "progressBars", triggers: "hover" } },
+              [
+                _c("p", { staticClass: "mt-2" }, [
+                  _vm._v(
+                    "Onderstaande balken geven jouw persoonlijke voortgang weer:"
                   )
-                ],
-                1
-              )
-            }),
-            1
-          )
-        ],
-        1
-      )
-    : _vm._e()
+                ]),
+                _vm._v(" "),
+                _c("ol", [
+                  _c("li", [
+                    _vm._v(
+                      "bovenste balk: je totale voortang (van alle leerdoelen bij elkaar)"
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c("li", [
+                    _vm._v(
+                      "onderste blak: voortgang per onderdeel (HTML, CSS, JavaScript, etc.)"
+                    )
+                  ])
+                ])
+              ]
+            ),
+            _vm._v(" "),
+            _c(
+              "div",
+              { staticClass: "fixed-bottom", attrs: { id: "progressBars" } },
+              [
+                _c(
+                  "b-progress",
+                  {
+                    attrs: {
+                      max: _vm.learningGoals.length,
+                      "show-progress": ""
+                    }
+                  },
+                  [
+                    _vm.getCompletedLearningGoals.length > 0
+                      ? _c(
+                          "b-progress-bar",
+                          {
+                            attrs: {
+                              value: _vm.getCompletedLearningGoals.length
+                            }
+                          },
+                          [
+                            _vm._v(
+                              "\n                    Totale voortgang: " +
+                                _vm._s(_vm.getCompletedLearningGoals.length) +
+                                "%\n                "
+                            )
+                          ]
+                        )
+                      : _vm._e()
+                  ],
+                  1
+                ),
+                _vm._v(" "),
+                _c(
+                  "b-progress",
+                  {
+                    staticClass: "mt-2",
+                    attrs: {
+                      height: "2rem",
+                      max: _vm.learningGoals.length,
+                      "show-value": ""
+                    }
+                  },
+                  _vm._l(_vm.topics, function(topic, index) {
+                    return _c(
+                      "b-progress-bar",
+                      {
+                        key: topic.id,
+                        attrs: {
+                          value: _vm.getCompletedLearningGoalsByTopic(topic)
+                            .length,
+                          variant:
+                            _vm.progressColors[
+                              index % _vm.progressColors.length
+                            ]
+                        }
+                      },
+                      [
+                        _vm._v(
+                          _vm._s(topic.name) +
+                            ": " +
+                            _vm._s(
+                              _vm.getCompletedLearningGoalsByTopic(topic).length
+                            ) +
+                            "%"
+                        )
+                      ]
+                    )
+                  }),
+                  1
+                )
+              ],
+              1
+            )
+          ],
+          1
+        )
+      : _vm._e()
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -40871,9 +40932,7 @@ var render = function() {
       },
       [
         _c("div", { staticClass: "form-group" }, [
-          _c("label", { attrs: { for: "username" } }, [
-            _vm._v("Email address")
-          ]),
+          _c("label", { attrs: { for: "username" } }, [_vm._v("Emailadres")]),
           _vm._v(" "),
           _c("input", {
             directives: [
@@ -40908,7 +40967,9 @@ var render = function() {
         ]),
         _vm._v(" "),
         _c("div", { staticClass: "form-group" }, [
-          _c("label", { attrs: { htmlFor: "password" } }, [_vm._v("Password")]),
+          _c("label", { attrs: { htmlFor: "password" } }, [
+            _vm._v("Wachtwoord")
+          ]),
           _vm._v(" "),
           _c("input", {
             directives: [
@@ -40974,7 +41035,7 @@ var render = function() {
             _c(
               "router-link",
               { staticClass: "btn btn-link", attrs: { to: "/register" } },
-              [_vm._v("Register")]
+              [_vm._v("Registreren")]
             )
           ],
           1
@@ -41006,9 +41067,9 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
-    _c("h3", [_vm._v("Profile")]),
+    _c("h3", [_vm._v("Profiel")]),
     _vm._v(" "),
-    _c("h5", [_vm._v("Contact Information")]),
+    _c("h5", [_vm._v("Contact Informatie")]),
     _vm._v(" "),
     _c(
       "form",
@@ -41022,7 +41083,7 @@ var render = function() {
       },
       [
         _c("div", { staticClass: "form-group" }, [
-          _c("label", { attrs: { for: "first_name" } }, [_vm._v("First Name")]),
+          _c("label", { attrs: { for: "first_name" } }, [_vm._v("Voornaam")]),
           _vm._v(" "),
           _c("input", {
             staticClass: "form-control",
@@ -41043,7 +41104,7 @@ var render = function() {
         ]),
         _vm._v(" "),
         _c("div", { staticClass: "form-group" }, [
-          _c("label", { attrs: { for: "last_name" } }, [_vm._v("Last Name")]),
+          _c("label", { attrs: { for: "last_name" } }, [_vm._v("Achternaam")]),
           _vm._v(" "),
           _c("input", {
             staticClass: "form-control",
@@ -41064,7 +41125,7 @@ var render = function() {
         ]),
         _vm._v(" "),
         _c("div", { staticClass: "form-group" }, [
-          _c("label", { attrs: { for: "username" } }, [_vm._v("Emailaddress")]),
+          _c("label", { attrs: { for: "username" } }, [_vm._v("Emailadres")]),
           _vm._v(" "),
           _c("input", {
             staticClass: "form-control",
@@ -41099,14 +41160,14 @@ var render = function() {
                 }
               }
             },
-            [_vm._v("Reset your password")]
+            [_vm._v("Wachtwoord opnieuw instellen")]
           ),
           _vm._v(" "),
           _vm.displayPasswordFields
             ? _c("span", [
                 _c("div", { staticClass: "form-group mt-3" }, [
                   _c("label", { attrs: { for: "password" } }, [
-                    _vm._v("New password")
+                    _vm._v("Nieuw wachtwoord")
                   ]),
                   _vm._v(" "),
                   _c("input", {
@@ -41128,7 +41189,7 @@ var render = function() {
                       autocomplete: "new-password",
                       id: "password",
                       required: "",
-                      title: "Please use at least 6 characters",
+                      title: "Gebruik ten minste 6 karakters",
                       name: "password"
                     },
                     domProps: { value: _vm.user.password },
@@ -41149,7 +41210,7 @@ var render = function() {
                     : _vm._e(),
                   _vm._v(" "),
                   _c("label", { attrs: { for: "password_confirmation" } }, [
-                    _vm._v("New password confirmation")
+                    _vm._v("Nieuw wachtwoord bevestiging")
                   ]),
                   _vm._v(" "),
                   _c("input", {
@@ -41171,7 +41232,7 @@ var render = function() {
                       autocomplete: "new-password",
                       id: "password_confirmation",
                       required: "",
-                      title: "Please use at least 6 characters",
+                      title: "Gebruik ten minste 6 karakters",
                       name: "password_confirmation"
                     },
                     domProps: { value: _vm.user.password_confirmation },
@@ -41209,7 +41270,7 @@ var render = function() {
                 staticClass: "btn btn-primary",
                 attrs: { type: "submit", disabled: _vm.status.updating }
               },
-              [_vm._v("Update")]
+              [_vm._v("Bijwerken")]
             ),
             _vm._v(" "),
             _c("img", {
@@ -41230,7 +41291,7 @@ var render = function() {
             _c(
               "router-link",
               { staticClass: "btn btn-link", attrs: { to: "/learning_goals" } },
-              [_vm._v("Back")]
+              [_vm._v("Terug")]
             )
           ],
           1
@@ -41276,7 +41337,7 @@ var render = function() {
       },
       [
         _c("div", { staticClass: "form-group" }, [
-          _c("label", { attrs: { for: "first_name" } }, [_vm._v("First Name")]),
+          _c("label", { attrs: { for: "first_name" } }, [_vm._v("Voornaam")]),
           _vm._v(" "),
           _c("input", {
             directives: [
@@ -41312,7 +41373,7 @@ var render = function() {
         ]),
         _vm._v(" "),
         _c("div", { staticClass: "form-group" }, [
-          _c("label", { attrs: { for: "last_name" } }, [_vm._v("Last Name")]),
+          _c("label", { attrs: { for: "last_name" } }, [_vm._v("Achternaam")]),
           _vm._v(" "),
           _c("input", {
             directives: [
@@ -41348,7 +41409,7 @@ var render = function() {
         ]),
         _vm._v(" "),
         _c("div", { staticClass: "form-group" }, [
-          _c("label", { attrs: { for: "username" } }, [_vm._v("Emailaddress")]),
+          _c("label", { attrs: { for: "username" } }, [_vm._v("Emailadres")]),
           _vm._v(" "),
           _c("input", {
             directives: [
@@ -41383,7 +41444,9 @@ var render = function() {
         ]),
         _vm._v(" "),
         _c("div", { staticClass: "form-group" }, [
-          _c("label", { attrs: { htmlFor: "password" } }, [_vm._v("Password")]),
+          _c("label", { attrs: { htmlFor: "password" } }, [
+            _vm._v("Wachtwoord")
+          ]),
           _vm._v(" "),
           _c("input", {
             directives: [
@@ -41425,7 +41488,7 @@ var render = function() {
         _vm._v(" "),
         _c("div", { staticClass: "form-group" }, [
           _c("label", { attrs: { htmlFor: "password" } }, [
-            _vm._v("Password confirmation")
+            _vm._v("Wachtwoord bevestiging")
           ]),
           _vm._v(" "),
           _c("input", {
@@ -41476,7 +41539,7 @@ var render = function() {
                 staticClass: "btn btn-primary",
                 attrs: { type: "submit", disabled: _vm.status.registering }
               },
-              [_vm._v("Register")]
+              [_vm._v("Registreer")]
             ),
             _vm._v(" "),
             _c("img", {
@@ -41497,7 +41560,7 @@ var render = function() {
             _c(
               "router-link",
               { staticClass: "btn btn-link", attrs: { to: "/login" } },
-              [_vm._v("Cancel")]
+              [_vm._v("Annuleer")]
             )
           ],
           1
@@ -57939,7 +58002,7 @@ var messageHandler = function messageHandler(_ref) {
   var message = _ref.message,
       variant = _ref.variant;
   this.$app.$bvToast.toast(message, {
-    title: 'Message',
+    title: 'Notificatie',
     toaster: 'b-toaster-top-right',
     solid: true,
     autoHideDelay: 5000,
@@ -58404,11 +58467,11 @@ var AuthenticationStore = {
       state.errors = errors;
     },
     logout: function logout(state) {
-      // no server side logout to keep tokens stateless.
+      // no serverside logout to keep tokens stateless.
       // Just remove tokens from client
       localStorage.removeItem('user-token');
       _messageBus__WEBPACK_IMPORTED_MODULE_1__["default"].$emit('message', {
-        message: 'You are logged out now!',
+        message: 'U bent nu ingelogd',
         variant: 'success'
       });
       state.status = '';
@@ -58452,7 +58515,6 @@ var AuthenticationStore = {
       var commit = _ref.commit,
           state = _ref.state,
           dispatch = _ref.dispatch;
-      console.log('AuthenticationStore/authenticateByToken');
       commit('authRequest');
       return new Promise(function (resolve, reject) {
         axios({
@@ -58487,7 +58549,7 @@ var AuthenticationStore = {
 
           commit('authSuccess', user);
           _messageBus__WEBPACK_IMPORTED_MODULE_1__["default"].$emit('message', {
-            message: 'Welcome back ' + user.full_name + ', you are logged in now',
+            message: 'U bent ingelogd ' + user.full_name,
             variant: 'success'
           });
           resolve(resp);
@@ -58522,7 +58584,7 @@ var AuthenticationStore = {
           setTimeout(function () {
             // display success message after route change completes
             _messageBus__WEBPACK_IMPORTED_MODULE_1__["default"].$emit('message', {
-              message: 'Registration successful',
+              message: 'Registratie succesvol',
               variant: 'success'
             });
           });
@@ -58555,14 +58617,14 @@ var AuthenticationStore = {
           setTimeout(function () {
             // display success message after route change completes
             _messageBus__WEBPACK_IMPORTED_MODULE_1__["default"].$emit('message', {
-              message: 'Profile update successful',
+              message: 'Profiel succesvol aangemaakt',
               variant: 'success'
             });
           });
           resolve(resp);
         })["catch"](function (error) {
           _messageBus__WEBPACK_IMPORTED_MODULE_1__["default"].$emit('message', {
-            message: 'Something went wrong while updating your profile data',
+            message: 'Er ging iets fout tijdens het bijwerken van uw profielgegevens',
             variant: 'danger'
           });
           commit('userUpdateError', error.response.data.errors);
@@ -58628,13 +58690,9 @@ var LearningGoalsStore = {
           rootGetters = _ref.rootGetters;
       return new Promise(function (resolve, reject) {
         var url = "/api/users/".concat(rootState.AuthenticationStore.user.id, "/learning_goals");
-        var data = {
-          user_id: 1
-        };
         axios({
           method: 'get',
-          url: url,
-          params: data
+          url: url
         }).then(function (response) {
           commit('setLearningGoals', response.data.data);
           resolve();
@@ -58749,6 +58807,29 @@ var LearningGoalsStore = {
           return learningGoal.topic.id === topic.id;
         });
       };
+    },
+    getCompletedLearningGoals: function getCompletedLearningGoals(state, getters) {
+      // count users LearningGoals which have a ProgressLevel of 100%
+      if (state.learningGoals) {
+        return state.learningGoals.filter(function (learningGoal) {
+          return learningGoal.progress_level.id === getters.hundredPercentProgressLevel.id;
+        });
+      }
+    },
+    getCompletedLearningGoalsByTopic: function getCompletedLearningGoalsByTopic(state, getters) {
+      // count users LearningGoals by topic which have a ProgressLevel of 100%
+      if (state.learningGoals) {
+        return function (topic) {
+          return getters.getLearningGoalsByTopic(topic).filter(function (learningGoal) {
+            return learningGoal.progress_level.id === getters.hundredPercentProgressLevel.id;
+          });
+        };
+      }
+    },
+    hundredPercentProgressLevel: function hundredPercentProgressLevel(state) {
+      return state.progressLevels.find(function (progressLevel) {
+        return progressLevel.percentage == 100;
+      });
     }
   }
 };

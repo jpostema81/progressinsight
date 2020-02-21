@@ -1,6 +1,6 @@
 <template>
     <div>
-        <b-navbar toggleable="lg" type="dark" variant="primary" id="navigationBar">
+        <b-navbar fixed="top" toggleable="lg" type="dark" variant="primary" id="navigationBar">
             <b-navbar-brand href="#">
                 <slot></slot>
             </b-navbar-brand>
@@ -14,9 +14,9 @@
 
                 <b-navbar-nav class="ml-auto">
                     <b-nav-item v-if="!isAuthenticated" to="/login">
-                        Login
+                        Inloggen
                     </b-nav-item>
-                    <b-nav-item v-if="!isAuthenticated" to="/register">Register</b-nav-item>
+                    <b-nav-item v-if="!isAuthenticated" to="/register">Registreren</b-nav-item>
 
                     <b-nav-item-dropdown v-if="isAuthenticated" right>
                         <template v-slot:button-content>
@@ -24,8 +24,8 @@
                         </template>
                         
                         <!-- <b-dropdown-item to="/dashboard">Dashboard</b-dropdown-item> -->
-                        <b-dropdown-item to="/dashboard/profile">Profile</b-dropdown-item>
-                        <b-dropdown-item @click="logout">Log Out</b-dropdown-item>
+                        <b-dropdown-item to="/dashboard/profile">Profiel</b-dropdown-item>
+                        <b-dropdown-item @click="logout">Uitloggen</b-dropdown-item>
                     </b-nav-item-dropdown>
                 </b-navbar-nav>
             </b-collapse>

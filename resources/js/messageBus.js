@@ -8,7 +8,7 @@ const messageHandler = function({ message, variant })
 {    
     this.$app.$bvToast.toast(message, 
     {
-        title: 'Message',
+        title: 'Notificatie',
         toaster: 'b-toaster-top-right',
         solid: true,
         autoHideDelay: 5000,
