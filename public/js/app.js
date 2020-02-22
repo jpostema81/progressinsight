@@ -2119,6 +2119,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -2156,6 +2157,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   methods: {
     updateLearningGoals: function updateLearningGoals() {
       this.$store.dispatch('LearningGoalsStore/updateLearningGoals', this.learningGoals);
+    },
+    getTopicCardTitle: function getTopicCardTitle(topic) {
+      var percentage = (this.getCompletedLearningGoalsByTopic(topic).length / this.getLearningGoalsByTopic(topic).length * 100).toFixed();
+      return "".concat(topic.name, " (").concat(percentage, "%)");
+    },
+    getTopicCardVariant: function getTopicCardVariant(topic) {
+      return 'info';
     }
   },
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])({
@@ -2163,7 +2171,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     topics: 'LearningGoalsStore/topics',
     getLearningGoalsByTopic: 'LearningGoalsStore/getLearningGoalsByTopic',
     getCompletedLearningGoals: 'LearningGoalsStore/getCompletedLearningGoals',
-    getCompletedLearningGoalsByTopic: 'LearningGoalsStore/getCompletedLearningGoalsByTopic'
+    getCompletedLearningGoalsByTopic: 'LearningGoalsStore/getCompletedLearningGoalsByTopic' //hundredPercentProgressLevel: 'LearningGoalsStore/hundredPercentProgressLevel',
+
   }))
 });
 
@@ -40654,20 +40663,23 @@ var render = function() {
                         attrs: { "header-tag": "header", role: "tab" }
                       },
                       [
-                        _c(
-                          "b-button",
-                          {
-                            directives: [
-                              {
-                                name: "b-toggle",
-                                rawName: "v-b-toggle.accordion-1",
-                                modifiers: { "accordion-1": true }
-                              }
-                            ],
-                            attrs: { block: "", href: "#", variant: "info" }
+                        _c("b-button", {
+                          directives: [
+                            {
+                              name: "b-toggle",
+                              rawName: "v-b-toggle.accordion-1",
+                              modifiers: { "accordion-1": true }
+                            }
+                          ],
+                          attrs: {
+                            block: "",
+                            href: "#",
+                            variant: _vm.getTopicCardVariant(topic)
                           },
-                          [_vm._v(_vm._s(topic.name))]
-                        )
+                          domProps: {
+                            innerHTML: _vm._s(_vm.getTopicCardTitle(topic))
+                          }
+                        })
                       ],
                       1
                     ),
@@ -40877,7 +40889,12 @@ var render = function() {
                           _vm._s(topic.name) +
                             ": " +
                             _vm._s(
-                              _vm.getCompletedLearningGoalsByTopic(topic).length
+                              (
+                                (_vm.getCompletedLearningGoalsByTopic(topic)
+                                  .length /
+                                  _vm.getLearningGoalsByTopic(topic).length) *
+                                100
+                              ).toFixed()
                             ) +
                             "%"
                         )
@@ -58773,7 +58790,7 @@ var LearningGoalsStore = {
           }
         }).then(function (response) {
           _messageBus__WEBPACK_IMPORTED_MODULE_0__["default"].$emit('message', {
-            message: 'Your settings have been saved',
+            message: 'Uw voortgang is opgeslagen',
             variant: 'success'
           });
           resolve();

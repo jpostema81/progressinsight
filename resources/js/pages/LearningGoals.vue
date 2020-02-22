@@ -11,7 +11,7 @@
             <div role="tablist">
                 <b-card no-body class="my-2" v-for="topic in topics" :key="topic.id">
                     <b-card-header header-tag="header" class="p-1" role="tab">
-                        <b-button block href="#" v-b-toggle.accordion-1 variant="info">{{ topic.name }}</b-button>
+                        <b-button block href="#" v-b-toggle.accordion-1 :variant="getTopicCardVariant(topic)" v-html="getTopicCardTitle(topic)"></b-button>
                     </b-card-header>
                     <b-collapse id="accordion-1" visible accordion="my-accordion" role="tabpanel">
                         <b-card-body>
@@ -60,7 +60,8 @@
                 </b-progress>
 
                 <b-progress class="mt-2" height="2rem" :max="learningGoals.length" show-value>
-                    <b-progress-bar v-for="(topic, index) in topics" :key="topic.id" :value="getCompletedLearningGoalsByTopic(topic).length" :variant="progressColors[index % progressColors.length]">{{ topic.name }}: {{ (getCompletedLearningGoalsByTopic(topic).length) }}%</b-progress-bar>
+                    <!-- onderstaande via methods opvragen en via v-html setten -->
+                    <b-progress-bar v-for="(topic, index) in topics" :key="topic.id" :value="getCompletedLearningGoalsByTopic(topic).length" :variant="progressColors[index % progressColors.length]">{{ topic.name }}: {{ (getCompletedLearningGoalsByTopic(topic).length / getLearningGoalsByTopic(topic).length * 100).toFixed() }}%</b-progress-bar>
                 </b-progress>
             </div>
         </div>
@@ -98,7 +99,7 @@
                     'danger',
                     'primary',
                     'secondary',
-                    'dark'
+                    'dark',
                 ]
             }
         },
@@ -116,6 +117,13 @@
             updateLearningGoals() {
                 this.$store.dispatch('LearningGoalsStore/updateLearningGoals', this.learningGoals);
             },
+            getTopicCardTitle(topic) {
+                let percentage = (this.getCompletedLearningGoalsByTopic(topic).length / this.getLearningGoalsByTopic(topic).length * 100).toFixed();
+                return `${topic.name} (${percentage}%)`;
+            },
+            getTopicCardVariant(topic) {
+                return 'info';
+            },
         },
         computed: {
             ...mapGetters({
@@ -124,19 +132,8 @@
                 getLearningGoalsByTopic: 'LearningGoalsStore/getLearningGoalsByTopic',
                 getCompletedLearningGoals: 'LearningGoalsStore/getCompletedLearningGoals',
                 getCompletedLearningGoalsByTopic: 'LearningGoalsStore/getCompletedLearningGoalsByTopic',
+                //hundredPercentProgressLevel: 'LearningGoalsStore/hundredPercentProgressLevel',
             }),
-            // progressIndicatorValue() {
-            //     // get ProgressLevelId where percentage equals 100%
-            //     let hundredPercentProgressLevel = this.progressLevels.find((progressLevel) => { return progressLevel.percentage == 100; })
-
-            //     if(hundredPercentProgressLevel !== null) {
-            //         // count users LearningGoals which have a ProgressLevel of 100%
-            //         const hundredPercentProgressLevelLearningGoals = this.learningGoals.filter((learningGoal) => learningGoal.progress_level.id === hundredPercentProgressLevel.id);
-            //         return ((hundredPercentProgressLevelLearningGoals.length / this.learningGoals.length) * 100);
-            //     } else {
-            //         return 0;
-            //     }
-            // },
         },
     }
 </script>

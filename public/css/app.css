@@ -17291,6 +17291,8 @@ a.text-dark:focus {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
+  margin-top: 100px;
+  margin-bottom: 100px;
 }
 
 .loader {
@@ -17303,10 +17305,6 @@ a.text-dark:focus {
   margin: auto;
   width: 250px;
   height: 100px;
-}
-
-body {
-  margin-top: 100px;
 }
 
 .tooltip .tooltip-inner {
