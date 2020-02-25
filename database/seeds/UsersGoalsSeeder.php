@@ -16,9 +16,12 @@ class UsersGoalsSeeder extends Seeder
     {
         DB::table('users_learning_goals')->delete();
         
-        $user = User::first();
+        $users = User::all();
         $learningGoals = LearningGoal::all();
-        $progress_level_id = ProgressLevel::first()->id;
-        $user->learningGoals()->attach($learningGoals, ['progress_level_id' => $progress_level_id]);
+        $progress_level_id = ProgressLevel::orderBy('percentage', 'asc')->first()->id;
+
+        foreach($users as $user) {
+            $user->learningGoals()->attach($learningGoals, ['progress_level_id' => $progress_level_id]);
+        }
     }
 }
