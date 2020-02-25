@@ -15,8 +15,8 @@ class CreateLearningGoalsTable extends Migration
     {
         Schema::create('learning_goals', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('description');
-            $table->string('criterion');
+            $table->text('description');
+            $table->text('criterion');
             $table->bigInteger('topic_id')->nullable()->unsigned();
             $table->foreign('topic_id')->references('id')->on('topics')->onDelete('cascade');
         });
