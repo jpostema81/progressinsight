@@ -11,7 +11,7 @@
             <div role="tablist">
                 <b-card no-body class="my-2" v-for="topic in topics" :key="topic.id">
                     <b-card-header header-tag="header" class="p-1" role="tab">
-                        <b-button block href="#" v-b-toggle.accordion-1 :variant="getTopicCardVariant(topic)" v-html="getTopicCardTitle(topic)"></b-button>
+                        <b-button block href="#" v-b-toggle.accordion-1 :variant="getTopicCardVariant(topic)" v-html="getProgressPercentageByTopic(topic, true)"></b-button>
                     </b-card-header>
                     <b-collapse id="accordion-1" visible accordion="my-accordion" role="tabpanel">
                         <b-card-body>
@@ -48,7 +48,14 @@
                 <p class="mt-2">Onderstaande balken geven jouw persoonlijke voortgang weer:</p>
                 <ol>
                     <li>bovenste balk: je totale voortang (van alle leerdoelen bij elkaar)</li>
-                    <li>onderste blak: voortgang per onderdeel (HTML, CSS, JavaScript, etc.)</li>
+                    <li>onderste blak: voortgang per onderdeel (HTML, CSS, JavaScript, etc.)
+                        <ol>
+                            <li v-for="(topic, index) in topics" :key="topic.id">
+                                <div class="swatch"></div>
+                                {{ topic.name }}
+                            </li>
+                        </ol>
+                    </li>
                 </ol>
             </b-tooltip>
 
@@ -60,8 +67,7 @@
                 </b-progress>
 
                 <b-progress class="mt-2" height="2rem" :max="learningGoals.length" show-value>
-                    <!-- onderstaande via methods opvragen en via v-html setten -->
-                    <b-progress-bar v-for="(topic, index) in topics" :key="topic.id" :value="getCompletedLearningGoalsByTopic(topic).length" :variant="progressColors[index % progressColors.length]">{{ topic.name }}: {{ (getCompletedLearningGoalsByTopic(topic).length / getLearningGoalsByTopic(topic).length * 100).toFixed() }}%</b-progress-bar>
+                    <b-progress-bar v-for="(topic, index) in topics" :key="topic.id" :value="getCompletedLearningGoalsByTopic(topic).length" :variant="progressColors[index % progressColors.length]" v-html="getProgressPercentageByTopic(topic, true)"></b-progress-bar>
                 </b-progress>
             </div>
         </div>
@@ -117,9 +123,9 @@
             updateLearningGoals() {
                 this.$store.dispatch('LearningGoalsStore/updateLearningGoals', this.learningGoals);
             },
-            getTopicCardTitle(topic) {
+            getProgressPercentageByTopic(topic, includeTopicName = false) {
                 let percentage = (this.getCompletedLearningGoalsByTopic(topic).length / this.getLearningGoalsByTopic(topic).length * 100).toFixed();
-                return `${topic.name} (${percentage}%)`;
+                return (includeTopicName) ? `${topic.name} (${percentage}%)` : `(${percentage}%)`;
             },
             getTopicCardVariant(topic) {
                 return 'info';

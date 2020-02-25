@@ -2120,6 +2120,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -2158,9 +2164,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     updateLearningGoals: function updateLearningGoals() {
       this.$store.dispatch('LearningGoalsStore/updateLearningGoals', this.learningGoals);
     },
-    getTopicCardTitle: function getTopicCardTitle(topic) {
+    getProgressPercentageByTopic: function getProgressPercentageByTopic(topic) {
+      var includeTopicName = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
       var percentage = (this.getCompletedLearningGoalsByTopic(topic).length / this.getLearningGoalsByTopic(topic).length * 100).toFixed();
-      return "".concat(topic.name, " (").concat(percentage, "%)");
+      return includeTopicName ? "".concat(topic.name, " (").concat(percentage, "%)") : "(".concat(percentage, "%)");
     },
     getTopicCardVariant: function getTopicCardVariant(topic) {
       return 'info';
@@ -40677,7 +40684,9 @@ var render = function() {
                             variant: _vm.getTopicCardVariant(topic)
                           },
                           domProps: {
-                            innerHTML: _vm._s(_vm.getTopicCardTitle(topic))
+                            innerHTML: _vm._s(
+                              _vm.getProgressPercentageByTopic(topic, true)
+                            )
                           }
                         })
                       ],
@@ -40819,7 +40828,21 @@ var render = function() {
                   _vm._v(" "),
                   _c("li", [
                     _vm._v(
-                      "onderste blak: voortgang per onderdeel (HTML, CSS, JavaScript, etc.)"
+                      "onderste blak: voortgang per onderdeel (HTML, CSS, JavaScript, etc.)\n                    "
+                    ),
+                    _c(
+                      "ol",
+                      _vm._l(_vm.topics, function(topic, index) {
+                        return _c("li", { key: topic.id }, [
+                          _c("div", { staticClass: "swatch" }),
+                          _vm._v(
+                            "\n                            " +
+                              _vm._s(topic.name) +
+                              "\n                        "
+                          )
+                        ])
+                      }),
+                      0
                     )
                   ])
                 ])
@@ -40871,35 +40894,20 @@ var render = function() {
                     }
                   },
                   _vm._l(_vm.topics, function(topic, index) {
-                    return _c(
-                      "b-progress-bar",
-                      {
-                        key: topic.id,
-                        attrs: {
-                          value: _vm.getCompletedLearningGoalsByTopic(topic)
-                            .length,
-                          variant:
-                            _vm.progressColors[
-                              index % _vm.progressColors.length
-                            ]
-                        }
+                    return _c("b-progress-bar", {
+                      key: topic.id,
+                      attrs: {
+                        value: _vm.getCompletedLearningGoalsByTopic(topic)
+                          .length,
+                        variant:
+                          _vm.progressColors[index % _vm.progressColors.length]
                       },
-                      [
-                        _vm._v(
-                          _vm._s(topic.name) +
-                            ": " +
-                            _vm._s(
-                              (
-                                (_vm.getCompletedLearningGoalsByTopic(topic)
-                                  .length /
-                                  _vm.getLearningGoalsByTopic(topic).length) *
-                                100
-                              ).toFixed()
-                            ) +
-                            "%"
+                      domProps: {
+                        innerHTML: _vm._s(
+                          _vm.getProgressPercentageByTopic(topic, true)
                         )
-                      ]
-                    )
+                      }
+                    })
                   }),
                   1
                 )

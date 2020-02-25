@@ -17312,3 +17312,10 @@ a.text-dark:focus {
   width: 600px !important;
 }
 
+.swatch {
+  width: 70px;
+  height: 70px;
+  border-radius: 5px;
+  border: 2px solid #666;
+}
+
