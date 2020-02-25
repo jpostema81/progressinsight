@@ -58731,7 +58731,7 @@ var LearningGoalsStore = {
           rootState = _ref2.rootState,
           rootGetters = _ref2.rootGetters;
       return new Promise(function (resolve, reject) {
-        var url = '/api/topics/';
+        var url = '/api/topics';
         axios({
           method: 'get',
           url: url

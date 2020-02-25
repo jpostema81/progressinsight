@@ -53,7 +53,7 @@ export const LearningGoalsStore = {
         fetchTopics({commit, state, rootState, rootGetters}) 
         {
             return new Promise((resolve, reject) => {
-                let url = '/api/topics/';
+                let url = '/api/topics';
 
                 axios({
                     method: 'get',
