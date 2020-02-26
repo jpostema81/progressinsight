@@ -29,6 +29,10 @@ Route::group(['middleware' => ['auth:api']], function()
       'as' => 'admin'
     ]);
 
+    Route::resource('/users', 'UserController', [
+        'as' => 'admin'
+    ]);
+
     Route::resource('/users/{user}/learning_goals', 'UserLearningGoalsController');
 
     Route::resource('/progress_levels', 'ProgressLevelsController');

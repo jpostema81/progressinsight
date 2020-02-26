@@ -2368,7 +2368,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       this.submitted = true;
       this.$store.dispatch('AuthenticationStore/updateUser', this.user).then(function () {
-        _this.$router.push('/home');
+        _this.$router.push('/learning_goals');
       });
     }
   }
@@ -62886,7 +62886,7 @@ var AuthenticationStore = {
       commit('userUpdateRequest');
       return new Promise(function (resolve, reject) {
         axios({
-          url: '/api/admin/users/' + user.id,
+          url: '/api/users/' + user.id,
           data: user,
           method: 'PATCH'
         }).then(function (resp) {
@@ -62894,7 +62894,7 @@ var AuthenticationStore = {
           setTimeout(function () {
             // display success message after route change completes
             _messageBus__WEBPACK_IMPORTED_MODULE_1__["default"].$emit('message', {
-              message: 'Profiel succesvol aangemaakt',
+              message: 'Profiel succesvol bijgewerkt',
               variant: 'success'
             });
           });

@@ -157,14 +157,14 @@ export const AuthenticationStore =
       commit('userUpdateRequest');
 
       return new Promise((resolve, reject) => {
-        axios({url: '/api/admin/users/' + user.id, data: user,
+        axios({url: '/api/users/' + user.id, data: user,
           method: 'PATCH'}).then((resp) => {
           commit('userUpdateSuccess', user);
 
           setTimeout(() => {
             // display success message after route change completes
             MessageBus.$emit('message',
-                {message: 'Profiel succesvol aangemaakt', variant: 'success'});
+                {message: 'Profiel succesvol bijgewerkt', variant: 'success'});
           });
 
           resolve(resp);

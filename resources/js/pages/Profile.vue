@@ -90,7 +90,7 @@
 
                 this.$store.dispatch('AuthenticationStore/updateUser', this.user).then(() => 
                 {
-                    this.$router.push('/home');
+                    this.$router.push('/learning_goals');
                 });
             },
         }
