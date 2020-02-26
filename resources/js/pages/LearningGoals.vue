@@ -46,17 +46,13 @@
 
             <b-tooltip target="progressBars" triggers="hover">
                 <p class="mt-2">Onderstaande balken geven jouw persoonlijke voortgang weer:</p>
-                <ol>
+
+                <ul>
                     <li>bovenste balk: je totale voortang (van alle leerdoelen bij elkaar)</li>
-                    <li>onderste blak: voortgang per onderdeel (HTML, CSS, JavaScript, etc.)
-                        <ol>
-                            <li v-for="(topic, index) in topics" :key="topic.id">
-                                <div class="swatch"></div>
-                                {{ topic.name }}
-                            </li>
-                        </ol>
-                    </li>
-                </ol>
+                    <li>onderste blak: voortgang per onderdeel (HTML, CSS, JavaScript, etc.)</li>
+                </ul>
+
+                <router-link to="/progress_stats">Klik hier voor een gedetailleerd overzicht</router-link>
             </b-tooltip>
 
             <div id="progressBars" class="fixed-bottom">
@@ -110,6 +106,7 @@
             }
         },
         mounted() {
+            // repeterend (ook in ProgressStats.vue: refactoren)
             this.$store.dispatch('LearningGoalsStore/fetchProgressLevels').then(() => {
                 this.$store.dispatch('LearningGoalsStore/fetchTopics').then(() => {
                     this.$store.dispatch('LearningGoalsStore/fetchLearningGoals').then(() => {
@@ -138,7 +135,6 @@
                 getLearningGoalsByTopic: 'LearningGoalsStore/getLearningGoalsByTopic',
                 getCompletedLearningGoals: 'LearningGoalsStore/getCompletedLearningGoals',
                 getCompletedLearningGoalsByTopic: 'LearningGoalsStore/getCompletedLearningGoalsByTopic',
-                //hundredPercentProgressLevel: 'LearningGoalsStore/hundredPercentProgressLevel',
             }),
         },
     }

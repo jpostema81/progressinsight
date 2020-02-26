@@ -10,6 +10,7 @@ import MessageBus from './messageBus';
 import App from './App.vue';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
 
+
 // wait until DOM is loaded before loading vue root element
 window.onload = function() {
   Vue.use(BootstrapVue);

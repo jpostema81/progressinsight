@@ -8,9 +8,10 @@
             <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
             <b-collapse id="nav-collapse" is-nav>
-                <!-- <b-navbar-nav v-if="isAuthenticated">
-                    <b-nav-item to="/learning_goals">Learning Goals</b-nav-item>
-                </b-navbar-nav> -->
+                <b-navbar-nav v-if="isAuthenticated">
+                    <b-nav-item to="/learning_goals">Leerdoelen</b-nav-item>
+                    <b-nav-item to="/progress_stats">Statistieken</b-nav-item>
+                </b-navbar-nav>
 
                 <b-navbar-nav class="ml-auto">
                     <b-nav-item v-if="!isAuthenticated" to="/login">
@@ -25,6 +26,8 @@
                         
                         <!-- <b-dropdown-item to="/dashboard">Dashboard</b-dropdown-item> -->
                         <b-dropdown-item to="/dashboard/profile">Profiel</b-dropdown-item>
+                        <b-dropdown-item to="/learning_goals">Leerdoelen</b-dropdown-item>
+                        <b-dropdown-item to="/progress_stats">Statistieken</b-dropdown-item>
                         <b-dropdown-item @click="logout">Uitloggen</b-dropdown-item>
                     </b-nav-item-dropdown>
                 </b-navbar-nav>

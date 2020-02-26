@@ -17308,14 +17308,7 @@ a.text-dark:focus {
 }
 
 .tooltip .tooltip-inner {
-  max-width: 600px !important;
-  width: 600px !important;
-}
-
-.swatch {
-  width: 70px;
-  height: 70px;
-  border-radius: 5px;
-  border: 2px solid #666;
+  max-width: 500px !important;
+  width: 500px !important;
 }
 

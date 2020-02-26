@@ -12,6 +12,11 @@ const routes = [
         name: 'profile',
         component: Vue.component('Profile', require( '../../pages/Profile.vue').default)
     },
+    {
+        path: '/progress_stats',
+        name: 'progress_stats',
+        component: Vue.component('ProgressStats', require( '../../pages/ProgressStats.vue').default)
+    },
 ];
 
 export default routes.map(route => 
