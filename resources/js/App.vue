@@ -11,20 +11,20 @@
     import NavigationBar from './components/NavigationBar';
 
     export default {
-            components: {
-                NavigationBar,
-            },
-            methods: {        
-                ...mapMutations('AuthenticationStore', {
-                    logout: 'logout' 
-                }),
-            },
-            computed: {
-                ...mapGetters({
-                    isAuthenticated: 'AuthenticationStore/isAuthenticated',
-                    user: 'AuthenticationStore/user',
-                }),
-            },
+        components: {
+            NavigationBar,
+        },
+        methods: {        
+            ...mapMutations('AuthenticationStore', {
+                logout: 'logout' 
+            }),
+        },
+        computed: {
+            ...mapGetters({
+                isAuthenticated: 'AuthenticationStore/isAuthenticated',
+                user: 'AuthenticationStore/user',
+            }),
+        },
     }
 </script>
 

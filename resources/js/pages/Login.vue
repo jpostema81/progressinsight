@@ -54,7 +54,14 @@
 
                 this.$store.dispatch('AuthenticationStore/login', { email, password }).then(() => 
                 {
-                    this.$router.push('/learning_goals');
+                    // prefetch all required data that is shared on different pages (LearningGoals page and ProgressStats page)
+                    this.$store.dispatch('LearningGoalsStore/fetchProgressLevels').then(() => {
+                        this.$store.dispatch('LearningGoalsStore/fetchTopics').then(() => {
+                            this.$store.dispatch('LearningGoalsStore/fetchLearningGoals').then(() => {
+                                this.$router.push('/learning_goals');
+                            });
+                        });
+                    });
                 });
             },
         }

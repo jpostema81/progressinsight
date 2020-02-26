@@ -147,6 +147,10 @@ export const LearningGoalsStore = {
         },
         hundredPercentProgressLevel: (state) => {
             return state.progressLevels.find((progressLevel) => { return progressLevel.percentage == 100; })
+        },
+        // tells whether all required data is loaded into the store state
+        isBusy: (state) => {
+            return learningGoals.length && progressLevels.length && topics.length;
         }
     }
 }

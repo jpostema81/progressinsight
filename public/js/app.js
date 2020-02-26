@@ -2120,11 +2120,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -2140,7 +2135,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         key: 'progressLevel',
         label: 'Beheersing'
       }],
-      isBusy: true,
       progressColor: {
         'background-color': 'green'
       },
@@ -2148,17 +2142,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     };
   },
   mounted: function mounted() {
-    var _this = this;
-
-    // repeterend (ook in ProgressStats.vue: refactoren)
-    this.$store.dispatch('LearningGoalsStore/fetchProgressLevels').then(function () {
-      _this.$store.dispatch('LearningGoalsStore/fetchTopics').then(function () {
-        _this.$store.dispatch('LearningGoalsStore/fetchLearningGoals').then(function () {
-          _this.isBusy = false;
-          _this.learningGoals = _this.$store.state.LearningGoalsStore.learningGoals;
-        });
-      });
-    });
+    this.learningGoals = this.$store.state.LearningGoalsStore.learningGoals;
   },
   methods: {
     updateLearningGoals: function updateLearningGoals() {
@@ -2256,7 +2240,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         email: email,
         password: password
       }).then(function () {
-        _this.$router.push('/learning_goals');
+        // prefetch all required data that is shared on different pages (LearningGoals page and ProgressStats page)
+        _this.$store.dispatch('LearningGoalsStore/fetchProgressLevels').then(function () {
+          _this.$store.dispatch('LearningGoalsStore/fetchTopics').then(function () {
+            _this.$store.dispatch('LearningGoalsStore/fetchLearningGoals').then(function () {
+              _this.$router.push('/learning_goals');
+            });
+          });
+        });
       });
     }
   })
@@ -2403,6 +2394,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -2418,42 +2414,32 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   mounted: function mounted() {
     var _this = this;
 
-    // repeterend (ook in LearningGoals.vue: refactoren)
-    this.$store.dispatch('LearningGoalsStore/fetchProgressLevels').then(function () {
-      _this.$store.dispatch('LearningGoalsStore/fetchTopics').then(function () {
-        _this.$store.dispatch('LearningGoalsStore/fetchLearningGoals').then(function () {
-          _this.isBusy = false;
-          _this.learningGoals = _this.$store.state.LearningGoalsStore.learningGoals;
-          _this.chartPercentages = _this.topics.map(function (topic) {
-            return (_this.getCompletedLearningGoalsByTopic(topic).length / _this.getLearningGoalsByTopic(topic).length * 100).toFixed();
-          });
-          _this.chartData = {
-            labels: _this.topics.map(function (topic) {
-              return topic.name;
-            }),
-            datasets: [{
-              values: _this.chartPercentages
-            }]
-          };
-          _this.chart = new frappe_charts_dist_frappe_charts_esm_js__WEBPACK_IMPORTED_MODULE_0__["Chart"]("#chart", {
-            title: _this.chartTitle,
-            data: _this.chartData,
-            type: 'bar',
-            // or 'bar', 'line', 'scatter', 'pie', 'percentage'
-            height: 400,
-            colors: _this.chartColors,
-            tooltipOptions: {
-              formatTooltipY: function formatTooltipY(d) {
-                return d + '%';
-              }
-            }
-          });
-        });
-      });
+    this.chartPercentages = this.topics.map(function (topic) {
+      return (_this.getCompletedLearningGoalsByTopic(topic).length / _this.getLearningGoalsByTopic(topic).length * 100).toFixed();
+    });
+    this.chartData = {
+      labels: this.topics.map(function (topic) {
+        return topic.name;
+      }),
+      datasets: [{
+        values: this.chartPercentages
+      }]
+    };
+    this.chart = new frappe_charts_dist_frappe_charts_esm_js__WEBPACK_IMPORTED_MODULE_0__["Chart"]("#chart", {
+      title: this.chartTitle,
+      data: this.chartData,
+      type: 'bar',
+      // or 'bar', 'line', 'scatter', 'pie', 'percentage'
+      height: 400,
+      colors: this.chartColors,
+      tooltipOptions: {
+        formatTooltipY: function formatTooltipY(d) {
+          return d + '%';
+        }
+      }
     });
   },
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapGetters"])({
-    progressLevels: 'LearningGoalsStore/progressLevels',
     topics: 'LearningGoalsStore/topics',
     getLearningGoalsByTopic: 'LearningGoalsStore/getLearningGoalsByTopic',
     getCompletedLearningGoals: 'LearningGoalsStore/getCompletedLearningGoals',
@@ -44766,22 +44752,7 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
-    _vm.isBusy
-      ? _c(
-          "div",
-          { staticClass: "loader" },
-          [
-            _c("strong", [_vm._v("Uw leerdoelen worden geladen...")]),
-            _vm._v(" "),
-            _c("b-spinner", {
-              attrs: { variant: "success", label: "Spinning" }
-            })
-          ],
-          1
-        )
-      : _vm._e(),
-    _vm._v(" "),
-    !_vm.isBusy
+    this.learningGoals.length
       ? _c(
           "div",
           [
@@ -44854,8 +44825,7 @@ var render = function() {
                               attrs: {
                                 hover: "",
                                 items: _vm.getLearningGoalsByTopic(topic),
-                                fields: _vm.fields,
-                                busy: _vm.isBusy
+                                fields: _vm.fields
                               },
                               scopedSlots: _vm._u(
                                 [
@@ -63107,6 +63077,10 @@ var LearningGoalsStore = {
       return state.progressLevels.find(function (progressLevel) {
         return progressLevel.percentage == 100;
       });
+    },
+    // tells whether all required data is loaded into the store state
+    isBusy: function isBusy(state) {
+      return learningGoals.length && progressLevels.length && topics.length;
     }
   }
 };

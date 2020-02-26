@@ -1,11 +1,6 @@
 <template>
     <div>
-        <div v-if="isBusy" class="loader">
-            <strong>Uw leerdoelen worden geladen...</strong>
-            <b-spinner variant="success" label="Spinning"></b-spinner>
-        </div>
-
-        <div v-if="!isBusy">
+        <div v-if="this.learningGoals.length">
             <h3 class="mb-4">Leerdoelen en persoonlijke voortgang</h3>
 
             <div role="tablist">
@@ -17,7 +12,7 @@
                         <b-card-body>
                             <b-card-text v-if="topic.info">{{ topic.info }}</b-card-text>
 
-                            <b-table class="mt-5" hover :items="getLearningGoalsByTopic(topic)" :fields="fields" :busy="isBusy">
+                            <b-table class="mt-5" hover :items="getLearningGoalsByTopic(topic)" :fields="fields">
                                 <template v-slot:table-busy>
                                     <div class="text-center text-danger my-2">
                                     <b-spinner class="align-middle"></b-spinner>
@@ -92,7 +87,6 @@
                         label: 'Beheersing',
                     },
                 ],
-                isBusy: true,
                 progressColor: { 'background-color': 'green' },
                 progressColors: [
                     'success',
@@ -106,15 +100,7 @@
             }
         },
         mounted() {
-            // repeterend (ook in ProgressStats.vue: refactoren)
-            this.$store.dispatch('LearningGoalsStore/fetchProgressLevels').then(() => {
-                this.$store.dispatch('LearningGoalsStore/fetchTopics').then(() => {
-                    this.$store.dispatch('LearningGoalsStore/fetchLearningGoals').then(() => {
-                        this.isBusy = false;
-                        this.learningGoals = this.$store.state.LearningGoalsStore.learningGoals;
-                    });
-                });
-            });
+            this.learningGoals = this.$store.state.LearningGoalsStore.learningGoals;
         },
         methods: {   
             updateLearningGoals() {

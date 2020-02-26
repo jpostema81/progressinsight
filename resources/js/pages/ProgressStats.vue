@@ -1,5 +1,10 @@
 <template>
     <div>
+        <!-- <div v-if="isBusy" class="loader">
+            <strong>Uw leerdoelen worden geladen...</strong>
+            <b-spinner variant="success" label="Spinning"></b-spinner>
+        </div> -->
+
         <h3 class="mb-4">Statistieken</h3>
 
         <div id="chart"></div>
@@ -23,45 +28,34 @@
             }
         },
         mounted() {
-            // repeterend (ook in LearningGoals.vue: refactoren)
-            this.$store.dispatch('LearningGoalsStore/fetchProgressLevels').then(() => {
-                this.$store.dispatch('LearningGoalsStore/fetchTopics').then(() => {
-                    this.$store.dispatch('LearningGoalsStore/fetchLearningGoals').then(() => {
-                        this.isBusy = false;
-                        this.learningGoals = this.$store.state.LearningGoalsStore.learningGoals;
+            this.chartPercentages = this.topics.map(
+                topic => (this.getCompletedLearningGoalsByTopic(topic).length / this.getLearningGoalsByTopic(topic).length * 100).toFixed()
+            );
 
-                        this.chartPercentages = this.topics.map(
-                            topic => (this.getCompletedLearningGoalsByTopic(topic).length / this.getLearningGoalsByTopic(topic).length * 100).toFixed()
-                        );
+            this.chartData = {
+                labels: this.topics.map(topic => topic.name),
+                datasets: 
+                [
+                    { 
+                        values: this.chartPercentages,
+                    }
+                ]
+            };
 
-                        this.chartData = {
-                            labels: this.topics.map(topic => topic.name),
-                            datasets: 
-                            [
-                                { 
-                                    values: this.chartPercentages,
-                                }
-                            ]
-                        };
-
-                        this.chart = new Chart("#chart", 
-                        {
-                            title: this.chartTitle,
-                            data: this.chartData,
-                            type: 'bar', // or 'bar', 'line', 'scatter', 'pie', 'percentage'
-                            height: 400,
-                            colors: this.chartColors,
-                            tooltipOptions: {
-                                formatTooltipY: d => d + '%',
-                            },
-                        });
-                    });
-                });
+            this.chart = new Chart("#chart", 
+            {
+                title: this.chartTitle,
+                data: this.chartData,
+                type: 'bar', // or 'bar', 'line', 'scatter', 'pie', 'percentage'
+                height: 400,
+                colors: this.chartColors,
+                tooltipOptions: {
+                    formatTooltipY: d => d + '%',
+                },
             });
         },
         computed: {
             ...mapGetters({
-                progressLevels: 'LearningGoalsStore/progressLevels',
                 topics: 'LearningGoalsStore/topics',
                 getLearningGoalsByTopic: 'LearningGoalsStore/getLearningGoalsByTopic',
                 getCompletedLearningGoals: 'LearningGoalsStore/getCompletedLearningGoals',
