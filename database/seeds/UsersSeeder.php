@@ -24,11 +24,11 @@ class UsersSeeder extends Seeder
                 'remember_token' => Str::random(10),
             ],
             [
-                'first_name' => 'Marcel',
-                'last_name' => 'Bierwolf',
-                'email' => 'marcel@script.nl',
+                'first_name' => 'Bas',
+                'last_name' => 'Wollinga',
+                'email' => 'bwollinga@gmail.com',
                 'email_verified_at' => now(),
-                'password' => Hash::make('bierwolf'),
+                'password' => Hash::make('wollinga2020'),
                 'remember_token' => Str::random(10),
             ]
         );
