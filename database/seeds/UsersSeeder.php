@@ -30,6 +30,14 @@ class UsersSeeder extends Seeder
                 'email_verified_at' => now(),
                 'password' => Hash::make('wollinga2020'),
                 'remember_token' => Str::random(10),
+            ],
+            [
+                'first_name' => 'Mathijs',
+                'last_name' => 'Lohr',
+                'email' => 'mathijslohr@ziggo.nl',
+                'email_verified_at' => now(),
+                'password' => Hash::make('lohr2020'),
+                'remember_token' => Str::random(10),
             ]
         );
 

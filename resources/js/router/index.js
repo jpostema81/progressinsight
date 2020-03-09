@@ -6,9 +6,23 @@ Vue.use(VueRouter);
 
 const publicRoutes = require('../router/routes/public').default;
 const privateRoutes = require('../router/routes/private').default;
+const dashboardRoutes = require('../router/routes/dasboardroutes').default;
+
 
 const router = new VueRouter({
-	routes: publicRoutes.concat(privateRoutes),
+	routes: [
+        {   
+            path: '/',
+            redirect: { name: 'learning_goals' },
+            component: Vue.component('Layout', require( '../layouts/Layout.vue').default),
+            children: publicRoutes.concat(privateRoutes),
+        },
+        {   
+            path: '/dashboard/',
+            component: Vue.component('Dashboard', require( '../layouts/DashboardLayout.vue').default),
+            children: dashboardRoutes,
+        },
+    ],
     scrollBehavior: function(to, from, savedPosition) 
     {    
         if(to.hash) 

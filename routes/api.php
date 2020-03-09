@@ -25,6 +25,8 @@ Route::post('/get_user_by_token', 'Auth\Api\AuthController@getUserByToken')->nam
 
 Route::group(['middleware' => ['auth:api']], function() 
 {
+    // exclude routes that present HTML templates such as create and edit
+    // Route::apiResource('photos', 'PhotoController');
     Route::resource('/learning_goals', 'LearningGoalsController', [
       'as' => 'admin'
     ]);

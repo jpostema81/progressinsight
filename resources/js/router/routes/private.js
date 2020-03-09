@@ -8,7 +8,7 @@ const routes = [
         component: Vue.component('LearningGoals', require( '../../pages/LearningGoals.vue').default)
     },
     {
-        path: '/dashboard/profile',
+        path: '/profile',
         name: 'profile',
         component: Vue.component('Profile', require( '../../pages/Profile.vue').default)
     },
