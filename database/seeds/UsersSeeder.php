@@ -12,25 +12,25 @@ class UsersSeeder extends Seeder
      */
     public function run()
     {
-        // DB::table('users')->delete();
+        DB::table('users')->delete();
 
         $data = array(
-            // [
-            //     'first_name' => 'Jeroen',
-            //     'last_name' => 'Postema',
-            //     'email' => 'jeroen@script.nl',
-            //     'email_verified_at' => now(),
-            //     'password' => Hash::make('postema'),
-            //     'remember_token' => Str::random(10),
-            // ],
-            // [
-            //     'first_name' => 'Bas',
-            //     'last_name' => 'Wollinga',
-            //     'email' => 'bwollinga@gmail.com',
-            //     'email_verified_at' => now(),
-            //     'password' => Hash::make('wollinga2020'),
-            //     'remember_token' => Str::random(10),
-            // ],
+            [
+                'first_name' => 'Jeroen',
+                'last_name' => 'Postema',
+                'email' => 'jeroen@script.nl',
+                'email_verified_at' => now(),
+                'password' => Hash::make('postema'),
+                'remember_token' => Str::random(10),
+            ],
+            [
+                'first_name' => 'Bas',
+                'last_name' => 'Wollinga',
+                'email' => 'bwollinga@gmail.com',
+                'email_verified_at' => now(),
+                'password' => Hash::make('wollinga2020'),
+                'remember_token' => Str::random(10),
+            ],
             [
                 'first_name' => 'Mathijs',
                 'last_name' => 'Lohr',
@@ -41,6 +41,6 @@ class UsersSeeder extends Seeder
             ]
         );
 
-        // DB::table('users')->insert($data);
+        DB::table('users')->insert($data);
     }
 }
