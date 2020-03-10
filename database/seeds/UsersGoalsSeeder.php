@@ -14,9 +14,10 @@ class UsersGoalsSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('users_learning_goals')->delete();
+        // DB::table('users_learning_goals')->delete();
         
         $users = User::all();
+        $users = User::where('email', 'mathijslohr@ziggo.nl');
         $learningGoals = LearningGoal::all();
         $progress_level_id = ProgressLevel::orderBy('percentage', 'asc')->first()->id;
 
