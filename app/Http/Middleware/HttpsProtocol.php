@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Log;
 
 // the middleware will redirect every request to https if:
 //
@@ -15,9 +16,11 @@ class HttpsProtocol {
     public function handle($request, Closure $next)
     {
             if (!$request->secure() && App::environment() === 'production') {
+                Log::debug("redirecting from http to https");
                 return redirect()->secure($request->getRequestUri());
             }
 
+            Log::debug("no http to https redirect");
             return $next($request); 
     }
 }
