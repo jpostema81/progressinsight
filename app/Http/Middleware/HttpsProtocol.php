@@ -15,7 +15,8 @@ class HttpsProtocol {
 
     public function handle($request, Closure $next)
     {
-        Log::debug('$request->secure(): ' . $request->secure() ? 'true' : 'false');
+        $request->secure() ? $secure = "true" : $secure = "false";
+        Log::debug("\$request->secure(): $secure");
 
         if (!$request->secure() && App::environment() === 'production') {
             Log::debug("redirecting from http to https");
