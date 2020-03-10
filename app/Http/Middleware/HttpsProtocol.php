@@ -15,12 +15,15 @@ class HttpsProtocol {
 
     public function handle($request, Closure $next)
     {
-            if (!$request->secure() && App::environment() === 'production') {
-                Log::debug("redirecting from http to https");
-                return redirect()->secure($request->getRequestUri());
-            }
+        Log::debug('$request->secure(): ' . $request->secure() ? 'true' : 'false');
+        
+        if (!$request->secure() && App::environment() === 'production') {
+            Log::debug("redirecting from http to https");
+            Log::debug('$request->secure(): ' . $request->secure());
+            return redirect()->secure($request->getRequestUri());
+        }
 
-            Log::debug("no http to https redirect");
-            return $next($request); 
+        Log::debug("no http to https redirect");
+        return $next($request); 
     }
 }
