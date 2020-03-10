@@ -18,7 +18,6 @@ class UsersGoalsSeeder extends Seeder
         
         $users = User::all();
         $users = User::where('email', 'mathijslohr@ziggo.nl')->get();
-        dd($users);
         $learningGoals = LearningGoal::all();
         $progress_level_id = ProgressLevel::orderBy('percentage', 'asc')->first()->id;
 
