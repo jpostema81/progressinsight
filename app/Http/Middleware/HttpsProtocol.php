@@ -15,7 +15,7 @@ class HttpsProtocol {
 
     public function handle($request, Closure $next)
     {
-        $request->setTrustedProxies( [ $request->getClientIp() ] ); 
+        $request->setTrustedProxies([$request->getClientIp()], Request::HEADER_X_FORWARDED_ALL); 
         $request->secure() ? $secure = "true" : $secure = "false";
         Log::debug("\$request->secure(): $secure");
 
