@@ -28,12 +28,11 @@
                                             text-field="name"
                                             buttons
                                             button-variant="success"
+                                            @change="updateLearningGoals()"
                                         ></b-form-radio-group>
                                     </b-form-group>
                                 </template>
                             </b-table>
-
-                            <b-button @click="updateLearningGoals()">Update</b-button>
                         </b-card-body>
                     </b-collapse>
                 </b-card>
@@ -74,6 +73,10 @@
             return {
                 learningGoals: [],
                 fields: [
+                    { 
+                        key: 'id',
+                        label: 'Nr',
+                    },
                     { 
                         key: 'description',
                         label: 'Omschrijving',

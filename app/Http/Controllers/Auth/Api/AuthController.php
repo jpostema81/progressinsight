@@ -33,7 +33,7 @@ class AuthController extends Controller
      */
     public function getUserByToken()
     {
-        // return response()->json(new UserResource($this->guard()->user()), 200);
+        return response()->json(new UserResource($this->guard()->user()), 200);
     }
 
     public function register(RegisterUser $request)

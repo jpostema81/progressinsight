@@ -102,7 +102,6 @@ export const LearningGoalsStore = {
                     url: url,
                     data: { learningGoals },
                 }).then(response => {
-                    MessageBus.$emit('message', { message: 'Uw voortgang is opgeslagen', variant: 'success' }); 
                     resolve();
                 }).catch(function (errors) {
                     Object.values(errors.response.data.errors).forEach(error => {

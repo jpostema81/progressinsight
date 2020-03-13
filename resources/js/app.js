@@ -23,13 +23,21 @@ window.onload = function() {
       // check if there is a token in localStorage
       if (localStorage.getItem('user-token')) {
         // token found, try to get user by token
-      //   this.$store.dispatch('AuthenticationStore/authenticateByToken')
-      //       .then((data) => {}).catch((error) => {
-      //         // token is invalid, delete token from localStorage so it doesn't
-      //         // get attached to the request headers by
-      //         // the axios interceptor
-      //         localStorage.removeItem('user-token');
-      //       });
+        this.$store.dispatch('AuthenticationStore/authenticateByToken')
+            .then((data) => {
+                this.$store.dispatch('LearningGoalsStore/fetchProgressLevels').then(() => {
+                    this.$store.dispatch('LearningGoalsStore/fetchTopics').then(() => {
+                        this.$store.dispatch('LearningGoalsStore/fetchLearningGoals').then(() => {
+                            this.$router.push('/learning_goals');
+                        });
+                    });
+                });
+            }).catch((error) => {
+                // token is invalid, delete token from localStorage so it doesn't
+                // get attached to the request headers by
+                // the axios interceptor
+                localStorage.removeItem('user-token');
+            });
       }
     },
     render: (h) => h(App),

@@ -1,10 +1,5 @@
 <template>
     <div>
-        <!-- <div v-if="isBusy" class="loader">
-            <strong>Uw leerdoelen worden geladen...</strong>
-            <b-spinner variant="success" label="Spinning"></b-spinner>
-        </div> -->
-
         <h3 class="mb-4">Statistieken</h3>
 
         <div id="chart"></div>

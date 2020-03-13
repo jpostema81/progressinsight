@@ -2235,13 +2235,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       learningGoals: [],
       fields: [{
+        key: 'id',
+        label: 'Nr'
+      }, {
         key: 'description',
         label: 'Omschrijving'
       }, {
@@ -2500,11 +2502,6 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-//
-//
-//
-//
-//
 //
 //
 //
@@ -45111,6 +45108,11 @@ var render = function() {
                                                 buttons: "",
                                                 "button-variant": "success"
                                               },
+                                              on: {
+                                                change: function($event) {
+                                                  return _vm.updateLearningGoals()
+                                                }
+                                              },
                                               model: {
                                                 value:
                                                   item.item.progress_level.id,
@@ -45135,19 +45137,7 @@ var render = function() {
                                 null,
                                 true
                               )
-                            }),
-                            _vm._v(" "),
-                            _c(
-                              "b-button",
-                              {
-                                on: {
-                                  click: function($event) {
-                                    return _vm.updateLearningGoals()
-                                  }
-                                }
-                              },
-                              [_vm._v("Update")]
-                            )
+                            })
                           ],
                           1
                         )
@@ -62266,15 +62256,25 @@ window.onload = function () {
     store: _store_store__WEBPACK_IMPORTED_MODULE_2__["default"],
     router: _router_index__WEBPACK_IMPORTED_MODULE_3__["default"],
     created: function created() {
+      var _this = this;
+
       // check if there is a token in localStorage
-      if (localStorage.getItem('user-token')) {// token found, try to get user by token
-        //   this.$store.dispatch('AuthenticationStore/authenticateByToken')
-        //       .then((data) => {}).catch((error) => {
-        //         // token is invalid, delete token from localStorage so it doesn't
-        //         // get attached to the request headers by
-        //         // the axios interceptor
-        //         localStorage.removeItem('user-token');
-        //       });
+      if (localStorage.getItem('user-token')) {
+        // token found, try to get user by token
+        this.$store.dispatch('AuthenticationStore/authenticateByToken').then(function (data) {
+          _this.$store.dispatch('LearningGoalsStore/fetchProgressLevels').then(function () {
+            _this.$store.dispatch('LearningGoalsStore/fetchTopics').then(function () {
+              _this.$store.dispatch('LearningGoalsStore/fetchLearningGoals').then(function () {
+                _this.$router.push('/learning_goals');
+              });
+            });
+          });
+        })["catch"](function (error) {
+          // token is invalid, delete token from localStorage so it doesn't
+          // get attached to the request headers by
+          // the axios interceptor
+          localStorage.removeItem('user-token');
+        });
       }
     },
     render: function render(h) {
@@ -63587,10 +63587,6 @@ var LearningGoalsStore = {
             learningGoals: learningGoals
           }
         }).then(function (response) {
-          _messageBus__WEBPACK_IMPORTED_MODULE_0__["default"].$emit('message', {
-            message: 'Uw voortgang is opgeslagen',
-            variant: 'success'
-          });
           resolve();
         })["catch"](function (errors) {
           Object.values(errors.response.data.errors).forEach(function (error) {
