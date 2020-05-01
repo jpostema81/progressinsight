@@ -1933,26 +1933,12 @@ module.exports = {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 //
 //
 //
 //
 
-/* harmony default export */ __webpack_exports__["default"] = ({
-  methods: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapMutations"])('AuthenticationStore', {
-    logout: 'logout'
-  })),
-  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])({
-    isAuthenticated: 'AuthenticationStore/isAuthenticated',
-    user: 'AuthenticationStore/user'
-  }))
-});
+/* harmony default export */ __webpack_exports__["default"] = ({});
 
 /***/ }),
 
@@ -2253,18 +2239,20 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         key: 'progressLevel',
         label: 'Beheersing'
       }],
-      progressColor: {
-        'background-color': 'green'
-      },
       progressColors: ['success', 'info', 'warning', 'danger', 'primary', 'secondary', 'dark']
     };
   },
-  mounted: function mounted() {
-    this.learningGoals = this.$store.state.LearningGoalsStore.learningGoals;
+  created: function created() {
+    // fetch learningGoals from store and clone it as otherwise it will change state in VueX outside mutation handlers.
+    // Use created instead mounted as mounted is called after DOM is ready and DOM is dependent on learningGoals data being loaded before DOM is loaded
+    this.learningGoals = JSON.parse(JSON.stringify(this.$store.state.LearningGoalsStore.learningGoals));
   },
   methods: {
-    updateLearningGoals: function updateLearningGoals() {
-      this.$store.dispatch('LearningGoalsStore/updateLearningGoals', this.learningGoals);
+    updateLearningGoals: function updateLearningGoals(progressLevelId, learningGoalId) {
+      this.$store.dispatch('LearningGoalsStore/updateUserLearningGoal', {
+        progressLevelId: progressLevelId,
+        learningGoalId: learningGoalId
+      });
     },
     getProgressPercentageByTopic: function getProgressPercentageByTopic(topic) {
       var includeTopicName = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
@@ -2273,14 +2261,33 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     },
     getTopicCardVariant: function getTopicCardVariant(topic) {
       return 'info';
+    },
+    getLearningGoalsByTopic: function getLearningGoalsByTopic(topic) {
+      return this.learningGoals.filter(function (learningGoal) {
+        return learningGoal.topic.id === topic.id;
+      });
+    },
+    // count users LearningGoals which have a ProgressLevel of 100%
+    getCompletedLearningGoals: function getCompletedLearningGoals() {
+      var _this = this;
+
+      return this.learningGoals.filter(function (learningGoal) {
+        return learningGoal.progress_level.id === _this.hundredPercentProgressLevel.id;
+      });
+    },
+    // count users LearningGoals by topic which have a ProgressLevel of 100%
+    getCompletedLearningGoalsByTopic: function getCompletedLearningGoalsByTopic(topic) {
+      var _this2 = this;
+
+      return this.getLearningGoalsByTopic(topic).filter(function (learningGoal) {
+        return learningGoal.progress_level.id === _this2.hundredPercentProgressLevel.id;
+      });
     }
   },
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])({
     progressLevels: 'LearningGoalsStore/progressLevels',
     topics: 'LearningGoalsStore/topics',
-    getLearningGoalsByTopic: 'LearningGoalsStore/getLearningGoalsByTopic',
-    getCompletedLearningGoals: 'LearningGoalsStore/getCompletedLearningGoals',
-    getCompletedLearningGoalsByTopic: 'LearningGoalsStore/getCompletedLearningGoalsByTopic'
+    hundredPercentProgressLevel: 'LearningGoalsStore/hundredPercentProgressLevel'
   }))
 });
 
@@ -44861,6 +44868,12 @@ var render = function() {
                         },
                         [
                           _vm._v(" "),
+                          _c(
+                            "b-dropdown-item",
+                            { attrs: { to: "/dashboard" } },
+                            [_vm._v("Dashboard")]
+                          ),
+                          _vm._v(" "),
                           _c("b-dropdown-item", { attrs: { to: "/profile" } }, [
                             _vm._v("Profiel")
                           ]),
@@ -44993,247 +45006,40 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
-    this.learningGoals.length
-      ? _c(
+    _c(
+      "div",
+      [
+        _c("h3", { staticClass: "mb-4" }, [
+          _vm._v("Leerdoelen en persoonlijke voortgang")
+        ]),
+        _vm._v(" "),
+        _c(
           "div",
-          [
-            _c("h3", { staticClass: "mb-4" }, [
-              _vm._v("Leerdoelen en persoonlijke voortgang")
-            ]),
-            _vm._v(" "),
-            _c(
-              "div",
-              { attrs: { role: "tablist" } },
-              _vm._l(_vm.topics, function(topic) {
-                return _c(
-                  "b-card",
+          { attrs: { role: "tablist" } },
+          _vm._l(_vm.topics, function(topic) {
+            return _c(
+              "b-card",
+              { key: topic.id, staticClass: "my-2", attrs: { "no-body": "" } },
+              [
+                _c(
+                  "b-card-header",
                   {
-                    key: topic.id,
-                    staticClass: "my-2",
-                    attrs: { "no-body": "" }
+                    staticClass: "p-1",
+                    attrs: { "header-tag": "header", role: "tab" }
                   },
                   [
-                    _c(
-                      "b-card-header",
-                      {
-                        staticClass: "p-1",
-                        attrs: { "header-tag": "header", role: "tab" }
-                      },
-                      [
-                        _c("b-button", {
-                          directives: [
-                            {
-                              name: "b-toggle",
-                              rawName: "v-b-toggle.accordion-1",
-                              modifiers: { "accordion-1": true }
-                            }
-                          ],
-                          attrs: {
-                            block: "",
-                            href: "#",
-                            variant: _vm.getTopicCardVariant(topic)
-                          },
-                          domProps: {
-                            innerHTML: _vm._s(
-                              _vm.getProgressPercentageByTopic(topic, true)
-                            )
-                          }
-                        })
-                      ],
-                      1
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "b-collapse",
-                      {
-                        attrs: {
-                          id: "accordion-1",
-                          visible: "",
-                          accordion: "my-accordion",
-                          role: "tabpanel"
+                    _c("b-button", {
+                      directives: [
+                        {
+                          name: "b-toggle",
+                          rawName: "v-b-toggle.accordion-1",
+                          modifiers: { "accordion-1": true }
                         }
-                      },
-                      [
-                        _c(
-                          "b-card-body",
-                          [
-                            topic.info
-                              ? _c("b-card-text", [_vm._v(_vm._s(topic.info))])
-                              : _vm._e(),
-                            _vm._v(" "),
-                            _c("b-table", {
-                              staticClass: "mt-5",
-                              attrs: {
-                                hover: "",
-                                items: _vm.getLearningGoalsByTopic(topic),
-                                fields: _vm.fields
-                              },
-                              scopedSlots: _vm._u(
-                                [
-                                  {
-                                    key: "table-busy",
-                                    fn: function() {
-                                      return [
-                                        _c(
-                                          "div",
-                                          {
-                                            staticClass:
-                                              "text-center text-danger my-2"
-                                          },
-                                          [
-                                            _c("b-spinner", {
-                                              staticClass: "align-middle"
-                                            }),
-                                            _vm._v(" "),
-                                            _c("strong", [_vm._v("Laden...")])
-                                          ],
-                                          1
-                                        )
-                                      ]
-                                    },
-                                    proxy: true
-                                  },
-                                  {
-                                    key: "cell(progressLevel)",
-                                    fn: function(item) {
-                                      return [
-                                        _c(
-                                          "b-form-group",
-                                          [
-                                            _c("b-form-radio-group", {
-                                              attrs: {
-                                                options: _vm.progressLevels,
-                                                "value-field": "id",
-                                                "text-field": "name",
-                                                buttons: "",
-                                                "button-variant": "success"
-                                              },
-                                              on: {
-                                                change: function($event) {
-                                                  return _vm.updateLearningGoals()
-                                                }
-                                              },
-                                              model: {
-                                                value:
-                                                  item.item.progress_level.id,
-                                                callback: function($$v) {
-                                                  _vm.$set(
-                                                    item.item.progress_level,
-                                                    "id",
-                                                    $$v
-                                                  )
-                                                },
-                                                expression:
-                                                  "item.item.progress_level.id"
-                                              }
-                                            })
-                                          ],
-                                          1
-                                        )
-                                      ]
-                                    }
-                                  }
-                                ],
-                                null,
-                                true
-                              )
-                            })
-                          ],
-                          1
-                        )
                       ],
-                      1
-                    )
-                  ],
-                  1
-                )
-              }),
-              1
-            ),
-            _vm._v(" "),
-            _c(
-              "b-tooltip",
-              { attrs: { target: "progressBars", triggers: "hover" } },
-              [
-                _c("p", { staticClass: "mt-2" }, [
-                  _vm._v(
-                    "Onderstaande balken geven jouw persoonlijke voortgang weer:"
-                  )
-                ]),
-                _vm._v(" "),
-                _c("ul", [
-                  _c("li", [
-                    _vm._v(
-                      "bovenste balk: je totale voortang (van alle leerdoelen bij elkaar)"
-                    )
-                  ]),
-                  _vm._v(" "),
-                  _c("li", [
-                    _vm._v(
-                      "onderste blak: voortgang per onderdeel (HTML, CSS, JavaScript, etc.)"
-                    )
-                  ])
-                ]),
-                _vm._v(" "),
-                _c("router-link", { attrs: { to: "/progress_stats" } }, [
-                  _vm._v("Klik hier voor een gedetailleerd overzicht")
-                ])
-              ],
-              1
-            ),
-            _vm._v(" "),
-            _c(
-              "div",
-              { staticClass: "fixed-bottom", attrs: { id: "progressBars" } },
-              [
-                _c(
-                  "b-progress",
-                  {
-                    attrs: {
-                      max: _vm.learningGoals.length,
-                      "show-progress": ""
-                    }
-                  },
-                  [
-                    _vm.getCompletedLearningGoals.length > 0
-                      ? _c(
-                          "b-progress-bar",
-                          {
-                            attrs: {
-                              value: _vm.getCompletedLearningGoals.length
-                            }
-                          },
-                          [
-                            _vm._v(
-                              "\n                    Totale voortgang: " +
-                                _vm._s(_vm.getCompletedLearningGoals.length) +
-                                "%\n                "
-                            )
-                          ]
-                        )
-                      : _vm._e()
-                  ],
-                  1
-                ),
-                _vm._v(" "),
-                _c(
-                  "b-progress",
-                  {
-                    staticClass: "mt-2",
-                    attrs: {
-                      height: "2rem",
-                      max: _vm.learningGoals.length,
-                      "show-value": ""
-                    }
-                  },
-                  _vm._l(_vm.topics, function(topic, index) {
-                    return _c("b-progress-bar", {
-                      key: topic.id,
                       attrs: {
-                        value: _vm.getCompletedLearningGoalsByTopic(topic)
-                          .length,
-                        variant:
-                          _vm.progressColors[index % _vm.progressColors.length]
+                        block: "",
+                        href: "#",
+                        variant: _vm.getTopicCardVariant(topic)
                       },
                       domProps: {
                         innerHTML: _vm._s(
@@ -45241,16 +45047,220 @@ var render = function() {
                         )
                       }
                     })
-                  }),
+                  ],
+                  1
+                ),
+                _vm._v(" "),
+                _c(
+                  "b-collapse",
+                  {
+                    attrs: {
+                      id: "accordion-1",
+                      visible: "",
+                      accordion: "my-accordion",
+                      role: "tabpanel"
+                    }
+                  },
+                  [
+                    _c(
+                      "b-card-body",
+                      [
+                        topic.info
+                          ? _c("b-card-text", [_vm._v(_vm._s(topic.info))])
+                          : _vm._e(),
+                        _vm._v(" "),
+                        _c("b-table", {
+                          staticClass: "mt-5",
+                          attrs: {
+                            hover: "",
+                            items: _vm.getLearningGoalsByTopic(topic),
+                            fields: _vm.fields
+                          },
+                          scopedSlots: _vm._u(
+                            [
+                              {
+                                key: "table-busy",
+                                fn: function() {
+                                  return [
+                                    _c(
+                                      "div",
+                                      {
+                                        staticClass:
+                                          "text-center text-danger my-2"
+                                      },
+                                      [
+                                        _c("b-spinner", {
+                                          staticClass: "align-middle"
+                                        }),
+                                        _vm._v(" "),
+                                        _c("strong", [_vm._v("Laden...")])
+                                      ],
+                                      1
+                                    )
+                                  ]
+                                },
+                                proxy: true
+                              },
+                              {
+                                key: "cell(progressLevel)",
+                                fn: function(item) {
+                                  return [
+                                    _c(
+                                      "b-form-group",
+                                      {
+                                        on: {
+                                          "progress-level-change": function(
+                                            $event
+                                          ) {
+                                            return _vm.console.log("test")
+                                          }
+                                        }
+                                      },
+                                      [
+                                        _c("b-form-radio-group", {
+                                          attrs: {
+                                            options: _vm.progressLevels,
+                                            "value-field": "id",
+                                            "text-field": "name",
+                                            buttons: "",
+                                            "button-variant": "success"
+                                          },
+                                          on: {
+                                            change: function($event) {
+                                              return _vm.updateLearningGoals(
+                                                $event,
+                                                item.item.id
+                                              )
+                                            }
+                                          },
+                                          model: {
+                                            value: item.item.progress_level.id,
+                                            callback: function($$v) {
+                                              _vm.$set(
+                                                item.item.progress_level,
+                                                "id",
+                                                $$v
+                                              )
+                                            },
+                                            expression:
+                                              "item.item.progress_level.id"
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    )
+                                  ]
+                                }
+                              }
+                            ],
+                            null,
+                            true
+                          )
+                        })
+                      ],
+                      1
+                    )
+                  ],
                   1
                 )
               ],
               1
             )
+          }),
+          1
+        ),
+        _vm._v(" "),
+        _c(
+          "b-tooltip",
+          { attrs: { target: "progressBars", triggers: "hover" } },
+          [
+            _c("p", { staticClass: "mt-2" }, [
+              _vm._v(
+                "Onderstaande balken geven jouw persoonlijke voortgang weer:"
+              )
+            ]),
+            _vm._v(" "),
+            _c("ul", [
+              _c("li", [
+                _vm._v(
+                  "bovenste balk: je totale voortang (van alle leerdoelen bij elkaar)"
+                )
+              ]),
+              _vm._v(" "),
+              _c("li", [
+                _vm._v(
+                  "onderste blak: voortgang per onderdeel (HTML, CSS, JavaScript, etc.)"
+                )
+              ])
+            ]),
+            _vm._v(" "),
+            _c("router-link", { attrs: { to: "/progress_stats" } }, [
+              _vm._v("Klik hier voor een gedetailleerd overzicht")
+            ])
+          ],
+          1
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          { staticClass: "fixed-bottom", attrs: { id: "progressBars" } },
+          [
+            _c(
+              "b-progress",
+              { attrs: { max: _vm.learningGoals.length, "show-progress": "" } },
+              [
+                _vm.getCompletedLearningGoals().length > 0
+                  ? _c(
+                      "b-progress-bar",
+                      {
+                        attrs: { value: _vm.getCompletedLearningGoals().length }
+                      },
+                      [
+                        _vm._v(
+                          "\n                    Totale voortgang: " +
+                            _vm._s(_vm.getCompletedLearningGoals().length) +
+                            "%\n                "
+                        )
+                      ]
+                    )
+                  : _vm._e()
+              ],
+              1
+            ),
+            _vm._v(" "),
+            _c(
+              "b-progress",
+              {
+                staticClass: "mt-2",
+                attrs: {
+                  height: "2rem",
+                  max: _vm.learningGoals.length,
+                  "show-value": ""
+                }
+              },
+              _vm._l(_vm.topics, function(topic, index) {
+                return _c("b-progress-bar", {
+                  key: topic.id,
+                  attrs: {
+                    value: _vm.getCompletedLearningGoalsByTopic(topic).length,
+                    variant:
+                      _vm.progressColors[index % _vm.progressColors.length]
+                  },
+                  domProps: {
+                    innerHTML: _vm._s(
+                      _vm.getProgressPercentageByTopic(topic, true)
+                    )
+                  }
+                })
+              }),
+              1
+            )
           ],
           1
         )
-      : _vm._e()
+      ],
+      1
+    )
   ])
 }
 var staticRenderFns = []
@@ -63293,9 +63303,6 @@ var AuthenticationStore = {
       state.user = '';
       _router_index__WEBPACK_IMPORTED_MODULE_0__["default"].push('/login');
     },
-    setUser: function setUser(state, user) {
-      state.user = user;
-    },
     // registration state
     registerRequest: function registerRequest(state) {
       state.status = 'registering';
@@ -63495,6 +63502,12 @@ var LearningGoalsStore = {
     },
     setErrors: function setErrors(state, errors) {
       state.errors = errors;
+    },
+    updateUserLearningGoal: function updateUserLearningGoal(state, userLearningGoal) {
+      var learningGoal = state.learningGoals.find(function (element) {
+        return element.id === userLearningGoal.id;
+      });
+      learningGoal.progress_level = userLearningGoal.progress_level;
     }
   },
   actions: {
@@ -63512,13 +63525,11 @@ var LearningGoalsStore = {
           commit('setLearningGoals', response.data.data);
           resolve();
         })["catch"](function (errors) {
-          Object.values(errors.response.data.errors).forEach(function (error) {
-            _messageBus__WEBPACK_IMPORTED_MODULE_0__["default"].$emit('message', {
-              message: error,
-              variant: 'danger'
-            });
+          _messageBus__WEBPACK_IMPORTED_MODULE_0__["default"].$emit('message', {
+            message: 'There was an error while fetching learninggoals',
+            variant: 'danger'
           });
-          commit('setErrors', errors.response.data.errors);
+          commit('setErrors', errors);
           reject(errors);
         });
       });
@@ -63537,13 +63548,11 @@ var LearningGoalsStore = {
           commit('setTopics', response.data.data);
           resolve();
         })["catch"](function (errors) {
-          Object.values(errors.response.data.errors).forEach(function (error) {
-            _messageBus__WEBPACK_IMPORTED_MODULE_0__["default"].$emit('message', {
-              message: error,
-              variant: 'danger'
-            });
+          _messageBus__WEBPACK_IMPORTED_MODULE_0__["default"].$emit('message', {
+            message: 'There was an error while fetching topics',
+            variant: 'danger'
           });
-          commit('setErrors', errors.response.data.errors);
+          commit('setErrors', errors);
           reject(errors);
         });
       });
@@ -63562,40 +63571,39 @@ var LearningGoalsStore = {
           commit('setProgressLevels', response.data.data);
           resolve();
         })["catch"](function (errors) {
-          Object.values(errors.response.data.errors).forEach(function (error) {
-            _messageBus__WEBPACK_IMPORTED_MODULE_0__["default"].$emit('message', {
-              message: error,
-              variant: 'danger'
-            });
+          _messageBus__WEBPACK_IMPORTED_MODULE_0__["default"].$emit('message', {
+            message: 'There was an error while fetching progresslevels',
+            variant: 'danger'
           });
-          commit('setErrors', errors.response.data.errors);
+          commit('setErrors', errors);
           reject(errors);
         });
       });
     },
-    updateLearningGoals: function updateLearningGoals(_ref4, learningGoals) {
+    updateUserLearningGoal: function updateUserLearningGoal(_ref4, _ref5) {
       var commit = _ref4.commit,
           state = _ref4.state,
           rootState = _ref4.rootState,
           rootGetters = _ref4.rootGetters;
+      var progressLevelId = _ref5.progressLevelId,
+          learningGoalId = _ref5.learningGoalId;
       return new Promise(function (resolve, reject) {
-        var url = "/api/users/".concat(rootState.AuthenticationStore.user.id, "/learning_goals");
+        var url = "/api/users/".concat(rootState.AuthenticationStore.user.id, "/learning_goals/").concat(learningGoalId);
         axios({
-          method: 'post',
+          method: 'put',
           url: url,
-          data: {
-            learningGoals: learningGoals
+          params: {
+            progressLevelId: progressLevelId
           }
         }).then(function (response) {
+          commit('updateUserLearningGoal', response.data.learningGoal);
           resolve();
         })["catch"](function (errors) {
-          Object.values(errors.response.data.errors).forEach(function (error) {
-            _messageBus__WEBPACK_IMPORTED_MODULE_0__["default"].$emit('message', {
-              message: error,
-              variant: 'danger'
-            });
+          _messageBus__WEBPACK_IMPORTED_MODULE_0__["default"].$emit('message', {
+            message: 'There was an error while updating user learninggoal',
+            variant: 'danger'
           });
-          commit('setErrors', errors.response.data.errors);
+          commit('setErrors', errors);
           reject(errors);
         });
       });
@@ -63610,32 +63618,6 @@ var LearningGoalsStore = {
     },
     topics: function topics(state) {
       return state.topics;
-    },
-    // return function from this getter which can be used to passed data in
-    getLearningGoalsByTopic: function getLearningGoalsByTopic(state) {
-      return function (topic) {
-        return state.learningGoals.filter(function (learningGoal) {
-          return learningGoal.topic.id === topic.id;
-        });
-      };
-    },
-    getCompletedLearningGoals: function getCompletedLearningGoals(state, getters) {
-      // count users LearningGoals which have a ProgressLevel of 100%
-      if (state.learningGoals) {
-        return state.learningGoals.filter(function (learningGoal) {
-          return learningGoal.progress_level.id === getters.hundredPercentProgressLevel.id;
-        });
-      }
-    },
-    getCompletedLearningGoalsByTopic: function getCompletedLearningGoalsByTopic(state, getters) {
-      // count users LearningGoals by topic which have a ProgressLevel of 100%
-      if (state.learningGoals) {
-        return function (topic) {
-          return getters.getLearningGoalsByTopic(topic).filter(function (learningGoal) {
-            return learningGoal.progress_level.id === getters.hundredPercentProgressLevel.id;
-          });
-        };
-      }
     },
     hundredPercentProgressLevel: function hundredPercentProgressLevel(state) {
       return state.progressLevels.find(function (progressLevel) {
@@ -63672,6 +63654,7 @@ __webpack_require__.r(__webpack_exports__);
 
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__["default"]);
 /* harmony default export */ __webpack_exports__["default"] = (new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
+  strict: "development" !== 'production',
   modules: {
     LearningGoalsStore: _modules_LearningGoalsStore__WEBPACK_IMPORTED_MODULE_2__["LearningGoalsStore"],
     AuthenticationStore: _modules_AuthenticationStore__WEBPACK_IMPORTED_MODULE_3__["AuthenticationStore"]

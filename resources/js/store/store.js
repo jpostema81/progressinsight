@@ -7,9 +7,11 @@ import { AuthenticationStore } from './modules/AuthenticationStore';
 
 Vue.use(Vuex);
 
+
 export default new Vuex.Store({
-  modules: {
-    LearningGoalsStore,
-    AuthenticationStore,
-  },
+    strict: process.env.NODE_ENV !== 'production',
+    modules: {
+        LearningGoalsStore,
+        AuthenticationStore,
+    },
 });

@@ -24,7 +24,7 @@
                             <em>{{ user.full_name }}</em>
                         </template>
                         
-                        <!-- <b-dropdown-item to="/dashboard">Dashboard</b-dropdown-item> -->
+                        <b-dropdown-item to="/dashboard">Dashboard</b-dropdown-item>
                         <b-dropdown-item to="/profile">Profiel</b-dropdown-item>
                         <b-dropdown-item to="/learning_goals">Leerdoelen</b-dropdown-item>
                         <b-dropdown-item to="/progress_stats">Statistieken</b-dropdown-item>

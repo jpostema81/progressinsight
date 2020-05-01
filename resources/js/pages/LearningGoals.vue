@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div v-if="this.learningGoals.length">
+        <div>
             <h3 class="mb-4">Leerdoelen en persoonlijke voortgang</h3>
 
             <div role="tablist">
@@ -20,7 +20,7 @@
                                     </div>
                                 </template>
                                 <template v-slot:cell(progressLevel)="item" class="align-right">
-                                    <b-form-group>
+                                    <b-form-group v-on:progress-level-change="console.log('test')">
                                         <b-form-radio-group
                                             v-model="item.item.progress_level.id"
                                             :options="progressLevels"
@@ -28,7 +28,7 @@
                                             text-field="name"
                                             buttons
                                             button-variant="success"
-                                            @change="updateLearningGoals()"
+                                            @change="updateLearningGoals($event, item.item.id)"     
                                         ></b-form-radio-group>
                                     </b-form-group>
                                 </template>
@@ -51,8 +51,8 @@
 
             <div id="progressBars" class="fixed-bottom">
                 <b-progress :max="learningGoals.length" show-progress>
-                    <b-progress-bar v-if="getCompletedLearningGoals.length > 0" :value="getCompletedLearningGoals.length">
-                        Totale voortgang: {{ getCompletedLearningGoals.length }}%
+                    <b-progress-bar v-if="getCompletedLearningGoals().length > 0" :value="getCompletedLearningGoals().length">
+                        Totale voortgang: {{ getCompletedLearningGoals().length }}%
                     </b-progress-bar>
                 </b-progress>
 
@@ -65,7 +65,7 @@
 </template>
 
 <script>
-    import { mapGetters } from "vuex";
+    import { mapGetters, mapState } from "vuex";
 
     export default 
     {
@@ -90,7 +90,6 @@
                         label: 'Beheersing',
                     },
                 ],
-                progressColor: { 'background-color': 'green' },
                 progressColors: [
                     'success',
                     'info',
@@ -102,12 +101,14 @@
                 ]
             }
         },
-        mounted() {
-            this.learningGoals = this.$store.state.LearningGoalsStore.learningGoals;
+        created() {
+            // fetch learningGoals from store and clone it as otherwise it will change state in VueX outside mutation handlers.
+            // Use created instead mounted as mounted is called after DOM is ready and DOM is dependent on learningGoals data being loaded before DOM is loaded
+            this.learningGoals = JSON.parse(JSON.stringify(this.$store.state.LearningGoalsStore.learningGoals));
         },
         methods: {   
-            updateLearningGoals() {
-                this.$store.dispatch('LearningGoalsStore/updateLearningGoals', this.learningGoals);
+            updateLearningGoals(progressLevelId, learningGoalId) {
+                this.$store.dispatch('LearningGoalsStore/updateUserLearningGoal', { progressLevelId, learningGoalId });
             },
             getProgressPercentageByTopic(topic, includeTopicName = false) {
                 let percentage = (this.getCompletedLearningGoalsByTopic(topic).length / this.getLearningGoalsByTopic(topic).length * 100).toFixed();
@@ -116,15 +117,25 @@
             getTopicCardVariant(topic) {
                 return 'info';
             },
+            getLearningGoalsByTopic(topic) {
+                return this.learningGoals.filter((learningGoal) => { return learningGoal.topic.id === topic.id });
+            },
+            // count users LearningGoals which have a ProgressLevel of 100%
+            getCompletedLearningGoals() {
+                return this.learningGoals.filter((learningGoal) => learningGoal.progress_level.id === this.hundredPercentProgressLevel.id);
+            },
+            // count users LearningGoals by topic which have a ProgressLevel of 100%
+            getCompletedLearningGoalsByTopic(topic) {
+                return this.getLearningGoalsByTopic(topic).filter((learningGoal) => learningGoal.progress_level.id === this.hundredPercentProgressLevel.id);
+            },
         },
         computed: {
             ...mapGetters({
                 progressLevels: 'LearningGoalsStore/progressLevels',
                 topics: 'LearningGoalsStore/topics',
-                getLearningGoalsByTopic: 'LearningGoalsStore/getLearningGoalsByTopic',
-                getCompletedLearningGoals: 'LearningGoalsStore/getCompletedLearningGoals',
-                getCompletedLearningGoalsByTopic: 'LearningGoalsStore/getCompletedLearningGoalsByTopic',
+                hundredPercentProgressLevel: 'LearningGoalsStore/hundredPercentProgressLevel',
             }),
+            
         },
     }
 </script>

@@ -36,9 +36,6 @@ export const AuthenticationStore =
 
         router.push('/login');
     },
-    setUser: (state, user) => {
-        state.user = user;
-    },
 
     // registration state
     registerRequest: (state) => {

@@ -12,7 +12,6 @@ class LearningGoalsSeeder extends Seeder
      */
     public function run()
     {
-        DB::statement('SET FOREIGN_KEY_CHECKS=0');
         DB::table('learning_goals')->delete();
 
         $topicHTML = Topic::where('name', '=', 'HTML');
