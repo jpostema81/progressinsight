@@ -62424,6 +62424,8 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _router_index__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./router/index */ "./resources/js/router/index.js");
+
 
 axios__WEBPACK_IMPORTED_MODULE_0___default.a.interceptors.request.use(function (config) {
   /**
@@ -62437,36 +62439,52 @@ axios__WEBPACK_IMPORTED_MODULE_0___default.a.interceptors.request.use(function (
   }
 
   return config;
-  /**
-   * Here is where we can refresh the token.
-   */
-  // next((response) => {
-  //     /**
-  //      * If we get a 401 response from the API means that we are Unauthorized to
-  //      * access the requested end point. 
-  //      * This means that probably our token has expired and we need to get a new one.
-  //      */
-  //     if (response.status === 401) {
-  //         return Vue.http.get('http://api.dev/refresh-token').then((result) => {
-  //             // Save the new token on local storage
-  //             window.localStorage.setItem('user-token', result.data.token)
-  //             // Resend the failed request whatever it was (GET, POST, PATCH) and return its resposne
-  //             return Vue.http(request).then((response) => {
-  //                 return response;
-  //             })
-  //         })
-  //         .catch(() => {
-  //             /**
-  //              * We weren't able to refresh the token so the best thing to do is 
-  //              * logout the user (removing any user information from storage)
-  //              * and redirecting to login page
-  //              */
-  //             return router.go({name: 'login'})
-  //         })
-  //     }
-  // })
 }, function (error) {
   return Promise.reject(error);
+});
+axios__WEBPACK_IMPORTED_MODULE_0___default.a.interceptors.response.use(function (response) {
+  // Any status code that lie within the range of 2xx cause this function to trigger
+  // do nothing, return response
+  return response;
+}, function (error) {
+  // Any status codes that falls outside the range of 2xx cause this function to trigger
+  // Do something with response error
+  switch (error.response.status) {
+    /**
+    * If we get a 401 response from the API means that we are Unauthorized to
+    * access the requested end point. 
+    * This means that probably our token has expired and we need to get a new one.
+    */
+    case 401:
+      return _router_index__WEBPACK_IMPORTED_MODULE_1__["default"].go({
+        name: 'login'
+      });
+    // return Vue.http.get('/refresh-token').then((result) => {
+    //     // Save the new token on local storage
+    //     window.localStorage.setItem('user-token', result.data.token)
+    //     // Resend the failed request whatever it was (GET, POST, PATCH) and return its resposne
+    //     return Vue.http(request).then((response) => {
+    //         return response;
+    //     })
+    // })
+    // .catch(() => {
+    //     /**
+    //      * We weren't able to refresh the token so the best thing to do is 
+    //      * logout the user (removing any user information from storage)
+    //      * and redirecting to login page
+    //      */
+    //     return router.go({name: 'login'})
+    // })
+    // user tried to access unauthorized resource
+
+    case 403:
+      return _router_index__WEBPACK_IMPORTED_MODULE_1__["default"].go({
+        name: 'login'
+      });
+
+    default:
+      return Promise.reject(error);
+  }
 });
 
 /***/ }),
