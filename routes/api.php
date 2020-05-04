@@ -25,19 +25,18 @@ Route::post('/get_user_by_token', 'Auth\Api\AuthController@getUserByToken')->nam
 
 Route::group(['middleware' => ['auth:api']], function() 
 {
-    // exclude routes that present HTML templates such as create and edit
-    // Route::apiResource('photos', 'PhotoController');
-    Route::resource('/learning_goals', 'LearningGoalsController', [
-      'as' => 'admin'
-    ]);
+    Route::resource('/learning_goals', 'LearningGoalsController');
 
-    Route::resource('/users', 'UserController', [
-        'as' => 'admin'
-    ]);
+    Route::resource('/users', 'UserController');
 
     Route::resource('/users/{user}/learning_goals', 'UserLearningGoalsController');
 
     Route::resource('/progress_levels', 'ProgressLevelsController');
 
     Route::resource('/topics', 'TopicsController');
+});
+
+Route::group(['middleware' => ['auth:api', 'role:admin']], function() 
+{
+    Route::resource('/admin/users', 'Admin\UserController');
 });

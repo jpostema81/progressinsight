@@ -4,6 +4,8 @@ import Vuex from 'vuex';
 // import VueX modules
 import { LearningGoalsStore } from './modules/LearningGoalsStore';
 import { AuthenticationStore } from './modules/AuthenticationStore';
+import { UsersStore } from './modules/UsersStore';
+
 
 Vue.use(Vuex);
 
@@ -13,5 +15,6 @@ export default new Vuex.Store({
     modules: {
         LearningGoalsStore,
         AuthenticationStore,
+        UsersStore,
     },
 });

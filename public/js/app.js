@@ -2675,13 +2675,39 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 //
 //
 //
 //
 //
 //
-/* harmony default export */ __webpack_exports__["default"] = ({});
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {};
+  },
+  created: function created() {
+    this.$store.dispatch('UsersStore/fetchUsers').then(function () {
+      console.log('Users have been fetched');
+    }); //this.users = JSON.parse(JSON.stringify(this.$store.state.LearningGoalsStore.learningGoals));
+  },
+  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])('UserStore', {
+    users: function users(state) {
+      return state.users;
+    } // status: state => state.status,
+    // errors: state => state.errors,
+
+  }))
+});
 
 /***/ }),
 
@@ -44870,8 +44896,8 @@ var render = function() {
                           _vm._v(" "),
                           _c(
                             "b-dropdown-item",
-                            { attrs: { to: "/dashboard" } },
-                            [_vm._v("Dashboard")]
+                            { attrs: { to: "/dashboard/users_overview" } },
+                            [_vm._v("Dashboard - Users Overview")]
                           ),
                           _vm._v(" "),
                           _c("b-dropdown-item", { attrs: { to: "/profile" } }, [
@@ -46016,7 +46042,10 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", [_c("h3", [_vm._v("Gebruikers overzicht")])])
+    return _c("div", [
+      _c("h3", [_vm._v("Gebruikers overzicht")]),
+      _vm._v("\n\n    test\n")
+    ])
   }
 ]
 render._withStripped = true
@@ -63633,6 +63662,93 @@ var LearningGoalsStore = {
 
 /***/ }),
 
+/***/ "./resources/js/store/modules/UsersStore.js":
+/*!**************************************************!*\
+  !*** ./resources/js/store/modules/UsersStore.js ***!
+  \**************************************************/
+/*! exports provided: UsersStore */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "UsersStore", function() { return UsersStore; });
+/* harmony import */ var _messageBus__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./../../messageBus */ "./resources/js/messageBus.js");
+
+var UsersStore = {
+  namespaced: true,
+  state: {
+    users: [],
+    errors: {}
+  },
+  mutations: {
+    setUsers: function setUsers(state, users) {
+      state.users = users;
+    },
+    setErrors: function setErrors(state, errors) {
+      state.errors = errors;
+    }
+  },
+  actions: {
+    fetchUsers: function fetchUsers(_ref) {
+      var commit = _ref.commit,
+          state = _ref.state,
+          rootState = _ref.rootState,
+          rootGetters = _ref.rootGetters;
+      return new Promise(function (resolve, reject) {
+        var url = "/api/admin/users";
+        axios({
+          method: 'get',
+          url: url
+        }).then(function (response) {
+          commit('setUsers', response.data.data);
+          resolve();
+        })["catch"](function (errors) {
+          // authorization error
+          // move to interceptor?
+          if (errors.response.status === 403) {
+            _messageBus__WEBPACK_IMPORTED_MODULE_0__["default"].$emit('message', {
+              message: 'There was an authorization error',
+              variant: 'danger'
+            });
+          } else {
+            _messageBus__WEBPACK_IMPORTED_MODULE_0__["default"].$emit('message', {
+              message: 'There was an error while fetching users',
+              variant: 'danger'
+            });
+          }
+
+          commit('setErrors', errors);
+          reject(errors);
+        });
+      });
+    } // updateUser({ commit, state, rootState, rootGetters }, { progressLevelId, learningGoalId }) 
+    // {
+    //     return new Promise((resolve, reject) => {
+    //         let url = `/api/users/${rootState.AuthenticationStore.user.id}/learning_goals/${learningGoalId}`;
+    //         axios({
+    //             method: 'put',
+    //             url: url,
+    //             params: { progressLevelId },
+    //         }).then(response => {
+    //             commit('updateUserLearningGoal', response.data.learningGoal);
+    //             resolve();
+    //         }).catch(function (errors) {
+    //             MessageBus.$emit('message', {message: 'There was an error while updating user learninggoal', variant: 'danger'}); 
+    //             commit('setErrors', errors);
+    //             reject(errors);
+    //         });
+    //     });   
+    // },
+
+  },
+  getters: {// users: (state, commit, rootState) => {
+    //     return state.users;
+    // },
+  }
+};
+
+/***/ }),
+
 /***/ "./resources/js/store/store.js":
 /*!*************************************!*\
   !*** ./resources/js/store/store.js ***!
@@ -63647,8 +63763,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
 /* harmony import */ var _modules_LearningGoalsStore__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./modules/LearningGoalsStore */ "./resources/js/store/modules/LearningGoalsStore.js");
 /* harmony import */ var _modules_AuthenticationStore__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./modules/AuthenticationStore */ "./resources/js/store/modules/AuthenticationStore.js");
+/* harmony import */ var _modules_UsersStore__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./modules/UsersStore */ "./resources/js/store/modules/UsersStore.js");
 
  // import VueX modules
+
 
 
 
@@ -63657,7 +63775,8 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
   strict: "development" !== 'production',
   modules: {
     LearningGoalsStore: _modules_LearningGoalsStore__WEBPACK_IMPORTED_MODULE_2__["LearningGoalsStore"],
-    AuthenticationStore: _modules_AuthenticationStore__WEBPACK_IMPORTED_MODULE_3__["AuthenticationStore"]
+    AuthenticationStore: _modules_AuthenticationStore__WEBPACK_IMPORTED_MODULE_3__["AuthenticationStore"],
+    UsersStore: _modules_UsersStore__WEBPACK_IMPORTED_MODULE_4__["UsersStore"]
   }
 }));
 
