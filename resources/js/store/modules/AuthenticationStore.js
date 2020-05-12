@@ -26,15 +26,8 @@ export const AuthenticationStore =
     },
 
     logout: (state) => {
-        // no serverside logout to keep tokens stateless.
-        // Just remove tokens from client
-        localStorage.removeItem('user-token');
-        MessageBus.$emit('message', { message: 'U bent nu ingelogd', variant: 'success' });
-
         state.status = '';
         state.user = '';
-
-        router.push('/login');
     },
 
     // registration state
@@ -108,18 +101,19 @@ export const AuthenticationStore =
                 MessageBus.$emit('message', {message: 'U bent ingelogd ' + user.full_name, variant: 'success'});
                 resolve(resp);
             })
-            .catch(errors => {
-              Object.values(errors.response.data.errors).forEach(error => {
-                  MessageBus.$emit('message', {message: error, variant: 'danger'}); 
-              });
-              
-              commit('authError', errors.response.data.errors);
-              
-              // if the request fails, remove any possible user token if possible
-              localStorage.removeItem('user-token');
-              reject(errors);
+            .catch(error => {   
+                console.log(error);            
+                reject(errors);
             });
         });
+    },
+    logout: function({commit, dispatch, context}) {
+        // no serverside logout to keep tokens stateless.
+        // Just remove tokens from client
+        localStorage.removeItem('user-token');
+        MessageBus.$emit('message', { message: 'U bent nu ingelogd', variant: 'success' });
+        commit('logout');
+        router.push('/login');
     },
     // register a new user
     register: function({commit, dispatch, context}, user) {
@@ -182,13 +176,16 @@ export const AuthenticationStore =
   getters:
   {
     isAuthenticated: (state) => {
-      return !!state.user;
+        return !!state.user;
+    },
+    isAdmin: (state) => {
+        return state.user.roles.includes('admin');
     },
     user: (state) => {
-      return state.user;
+        return state.user;
     },
     status: (state) => {
-      return state.status;
+        return state.status;
     },
   },
 };

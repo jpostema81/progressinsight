@@ -9,12 +9,18 @@ import Multiselect from 'vue-multiselect';
 import MessageBus from './messageBus';
 import App from './App.vue';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
+import VueSidebarMenu from 'vue-sidebar-menu'
+import 'vue-sidebar-menu/dist/vue-sidebar-menu.css'
+
+window.moment = require('moment');
 
 
 // wait until DOM is loaded before loading vue root element
 window.onload = function() {
   Vue.use(BootstrapVue);
+  Vue.use(moment);
   Vue.component('Multiselect', Multiselect);
+  Vue.use(VueSidebarMenu);
 
   const app = new Vue({
     store,

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <b-navbar fixed="top" toggleable="lg" type="dark" variant="primary" id="navigationBar">
+        <b-navbar toggleable="lg" type="dark" variant="primary" id="navigationBar">
             <b-navbar-brand href="#">
                 <slot></slot>
             </b-navbar-brand>
@@ -24,7 +24,7 @@
                             <em>{{ user.full_name }}</em>
                         </template>
                         
-                        <b-dropdown-item to="/dashboard/users_overview">Dashboard - Users Overview</b-dropdown-item>
+                        <b-dropdown-item v-if="isAdmin" to="/dashboard/users/overview">Dashboard</b-dropdown-item>
                         <b-dropdown-item to="/profile">Profiel</b-dropdown-item>
                         <b-dropdown-item to="/learning_goals">Leerdoelen</b-dropdown-item>
                         <b-dropdown-item to="/progress_stats">Statistieken</b-dropdown-item>
@@ -55,6 +55,7 @@
         computed: {
             ...mapGetters({
                 isAuthenticated: 'AuthenticationStore/isAuthenticated',
+                isAdmin: 'AuthenticationStore/isAdmin',
                 user: 'AuthenticationStore/user',
             }),
         }

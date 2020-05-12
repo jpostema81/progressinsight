@@ -5,17 +5,17 @@ const routes = [
         path: '/learning_goals',
         alias: '/',
         name: 'learning_goals',
-        component: Vue.component('LearningGoals', require( '../../pages/LearningGoals.vue').default)
+        component: Vue.component('LearningGoals', require( '../../pages/LearningGoals.vue').default),
     },
     {
         path: '/profile',
         name: 'profile',
-        component: Vue.component('Profile', require( '../../pages/Profile.vue').default)
+        component: Vue.component('Profile', require( '../../pages/Profile.vue').default),
     },
     {
         path: '/progress_stats',
         name: 'progress_stats',
-        component: Vue.component('ProgressStats', require( '../../pages/ProgressStats.vue').default)
+        component: Vue.component('ProgressStats', require( '../../pages/ProgressStats.vue').default),
     },
 ];
 
@@ -24,6 +24,7 @@ export default routes.map(route =>
     const meta = 
     {
         public: false,
+        authorize: [],
     }
 
     return { ...route, meta }

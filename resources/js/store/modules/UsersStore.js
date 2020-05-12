@@ -7,6 +7,7 @@ export const UsersStore = {
     {
         users: [],
         errors: {},
+        status: '',
     },
     mutations: 
     {
@@ -16,6 +17,12 @@ export const UsersStore = {
         },
         setErrors: (state, errors) => {
             state.errors = errors;
+        },
+
+        // removeUser mutations
+        removeUser: (state, userId)  =>
+        {
+            state.users = state.users.filter(item => item.id != userId)
         },
     },
     actions: 
@@ -32,21 +39,35 @@ export const UsersStore = {
                     commit('setUsers', response.data.data);
                     resolve();
                 }).catch(function (errors) {
-                    // authorization error
-                    // move to interceptor?
-                    if(errors.response.status === 403)
-                    {
-                        MessageBus.$emit('message', {message: 'There was an authorization error', variant: 'danger'}); 
-                    } else 
-                    {
-                        MessageBus.$emit('message', {message: 'There was an error while fetching users', variant: 'danger'}); 
-                    }
-                    
-
+                    MessageBus.$emit('message', {message: 'There was an error while fetching users', variant: 'danger'}); 
                     commit('setErrors', errors);
                     reject(errors);
                 });
             });   
+        },
+        deleteUser({commit, state, rootState, rootGetters}, userId) 
+        {
+            return new Promise((resolve, reject) => {
+                let url = `/api/admin/users/${userId}`;
+
+                axios({
+                    method: 'delete',
+                    url: url,
+                }).then(messages => {
+                    commit('removeUser', userId);
+                    MessageBus.$emit('message', {message: 'User deleted', variant: 'success'});
+                    resolve();
+                }).catch(function (error) {
+                    MessageBus.$emit('message', {message: 'Something went wrong', variant: 'danger'});
+                    commit('setErrors', error);
+                    reject(error);
+                });
+            });   
+        },
+        deleteUsers({ dispatch, commit, state, rootState, rootGetters }, userIds) {
+            userIds.forEach(userId => {
+                dispatch('deleteUser' , userId);
+            });
         },
         
         

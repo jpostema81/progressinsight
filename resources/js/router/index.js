@@ -47,18 +47,36 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => 
 {
-    // redirect to login page if not logged in and trying to access a restricted page. Zie voor meer info:
-    // https://router.vuejs.org/guide/advanced/meta.html
+    // redirect to login page if not logged in and trying to access a restricted page
+    const { authorize } = to.meta;
     const authRequired = !to.matched.some(record => record.meta.public);
     const loggedIn = store.getters['AuthenticationStore/isAuthenticated'];
-    //let authState = store.getters['AuthenticationStore/status'];
+    const user = store.getters['AuthenticationStore/user'];
   
-    if(authRequired && !loggedIn) 
+    if(authRequired) 
     {
-        return next('/login');
+        if(!loggedIn)
+        {
+            // not logged in so redirect to login page
+            console.log('Vue router: you are not authenticated to access this page!');
+            return next('/login');
+        }
+
+        // check if route is restricted by role
+        const intersection = authorize.filter(element => user.roles.includes(element));
+
+        if (authorize.length && !intersection.length) {
+            // role not authorised so redirect to home page
+            console.log('Vue router: you are not authorized to access this page!');
+            return next({ path: '/login' });
+        }
+
+        next();
+    } 
+    else 
+    {
+        next();
     }
-  
-    next();
 });
 
 
