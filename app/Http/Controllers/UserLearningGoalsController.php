@@ -19,9 +19,7 @@ class UserLearningGoalsController extends Controller
      */
     public function index(User $user)
     {
-        //return response()->json(['learningGoals' => LearningGoalResource::collection($user->learningGoals)]);
-
-        return LearningGoalResource::collection($user->learningGoals);
+        return LearningGoalResource::collection($user->learningGoals->sortBy('id'));
     }
 
     /**
