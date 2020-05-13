@@ -2003,7 +2003,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       sticky: true
     };
   },
-  methods: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapMutations"])('AuthenticationStore', {
+  methods: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])('AuthenticationStore', {
     logout: 'logout'
   })),
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])({
