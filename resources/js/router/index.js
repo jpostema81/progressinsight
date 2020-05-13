@@ -48,12 +48,12 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => 
 {
     // redirect to login page if not logged in and trying to access a restricted page
-    const { authorize } = to.meta;
-    const authRequired = !to.matched.some(record => record.meta.public);
+    const authorize = to.meta.authorize || [];
+    const authenticationRequired = !to.matched.some(record => record.meta.public);
     const loggedIn = store.getters['AuthenticationStore/isAuthenticated'];
     const user = store.getters['AuthenticationStore/user'];
   
-    if(authRequired) 
+    if(authenticationRequired) 
     {
         if(!loggedIn)
         {

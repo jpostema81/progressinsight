@@ -1,0 +1,1 @@
+// TODO: refactor alle errors die nu in de states van de diverse modules zitten naar deze centrale store module

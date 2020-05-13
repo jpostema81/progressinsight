@@ -3,6 +3,7 @@ import Vue from 'vue';
 const routes = [
     {
         path: '/login',
+        alias: '/',
         name: 'login',
         component: Vue.component('Login', require( '../../pages/Login.vue').default),
     },

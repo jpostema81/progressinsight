@@ -18,21 +18,12 @@ const routes = [
         name: 'users_create',
         component: Vue.component('UsersCreate', require( '../../pages/dashboard/Users/Create.vue').default)
     },
-    // {
-    //     path: '/dashboard/blogposts',
-    //     name: 'dashboardBlogpostsOverview',
-    //     component: Vue.component('BlogpostsOverview', require( '../../pages/dashboard/BlogpostsOverview.vue').default)
-    // },
-    // {
-    //     path: '/dashboard/blogposts/:blogPostId/edit',
-    //     name: 'blogpostEdit',
-    //     component: Vue.component('blogpostNewEdit', require( '../../pages/dashboard/blogpostNewEdit.vue').default)
-    // },
-    // {
-    //     path: '/dashboard/blogposts/create',
-    //     name: 'blogpostNew',
-    //     component: Vue.component('blogpostNewEdit', require( '../../pages/dashboard/blogpostNewEdit.vue').default)
-    // },
+    {
+        path: '/dashboard/users/:blogPostId/edit',
+        alias: '/users_edit',
+        name: 'users_edit',
+        component: Vue.component('UsersCreate', require( '../../pages/dashboard/Users/Edit.vue').default)
+    },
 ];
 
 export default routes.map(route => 

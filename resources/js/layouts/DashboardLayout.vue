@@ -58,8 +58,12 @@
                         icon: 'fa fa-file-alt',
                         child: [
                             {
-                                href: '/users/overview',
-                                title: 'Overview'
+                                href: '/dashboard/users/overview',
+                                title: 'Overzicht'
+                            },
+                            {
+                                href: '/dashboard/users/create',
+                                title: 'Nieuwe gebruiker'
                             }
                         ]
                     },

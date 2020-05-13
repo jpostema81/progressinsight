@@ -65,11 +65,21 @@ export const UsersStore = {
             });   
         },
         deleteUsers({ dispatch, commit, state, rootState, rootGetters }, userIds) {
-            userIds.forEach(userId => {
-                dispatch('deleteUser' , userId);
+            return new Promise((resolve, reject) => {
+                let promises = [];
+
+                userIds.forEach(userId => {
+                    promises.push(dispatch('deleteUser' , userId));
+                });
+
+                Promise.all(promises).then((values) => {
+                    resolve();
+                }).catch(function (error) {
+                    reject(error);
+                });
             });
         },
-        
+
         
         // updateUser({ commit, state, rootState, rootGetters }, { progressLevelId, learningGoalId }) 
         // {

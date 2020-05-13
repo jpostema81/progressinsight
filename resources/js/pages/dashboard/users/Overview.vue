@@ -20,7 +20,7 @@
 
             <b-form-select class="mx-1" v-model="bulkAction.selected" :options="bulkAction.options"></b-form-select>
             
-            <b-button class="mx-1" variant="outline-primary" type="button" @click="applyBulkAction">Apply</b-button>
+            <b-button class="mx-1" variant="outline-primary" type="button" @click="applyBulkAction">Toepassen</b-button>
         </b-form>
 
         <b-table class="mt-5" hover :items="users" :fields="fields">
@@ -43,11 +43,11 @@
             </template>
 
             <template v-slot:cell(actions)="row">
-                <b-button size="sm" @click="editUser(row.item, row.index, $event.target)" class="mr-1">
+                <b-button size="sm" @click="editUser(row.item)" class="mr-1">
                     Bewerk
                 </b-button>
 
-                <b-button size="sm" @click="deleteUser(row.item, row.index, $event.target)" class="mr-1">
+                <b-button size="sm" @click="deleteUser(row.item)" class="mr-1">
                     Verwijder
                 </b-button>
             </template>
@@ -139,7 +139,6 @@
                             // this.currentPage  = 1;
                             this.selectedItems = [];
                         });
-                        
                     }
                 }
             },
