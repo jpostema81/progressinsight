@@ -58,8 +58,8 @@ router.beforeEach((to, from, next) =>
         if(!loggedIn)
         {
             // not logged in so redirect to login page
-            console.log('Vue router: you are not authenticated to access this page!');
-            return next('/login');
+            console.log('Vue router: you are not authenticated to access this page! ' + to.fullPath);
+            return next({ path: '/login' });
         }
 
         // check if route is restricted by role
@@ -67,7 +67,7 @@ router.beforeEach((to, from, next) =>
 
         if (authorize.length && !intersection.length) {
             // role not authorised so redirect to home page
-            console.log('Vue router: you are not authorized to access this page!');
+            console.log('Vue router: you are not authorized to access this page! ' + to.fullPath);
             return next({ path: '/login' });
         }
 

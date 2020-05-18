@@ -20,7 +20,7 @@
                                     </div>
                                 </template>
                                 <template v-slot:cell(progressLevel)="item" class="align-right">
-                                    <b-form-group v-on:progress-level-change="console.log('test')">
+                                    <b-form-group>
                                         <b-form-radio-group
                                             v-model="item.item.progress_level.id"
                                             :options="progressLevels"

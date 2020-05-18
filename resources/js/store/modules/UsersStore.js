@@ -107,5 +107,8 @@ export const UsersStore = {
         // users: (state, commit, rootState) => {
         //     return state.users;
         // },
+        getUserById: (state) => (userId) => {
+            return state.users.filter(item => item.id != userId)
+        },
     }
 }

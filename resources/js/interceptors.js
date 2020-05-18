@@ -33,9 +33,12 @@ axios.interceptors.response.use(function (response) {
     // Do something with response error
 
     store.commit('AuthenticationStore/authError', error);
-                
-    // if the request fails, remove any possible user token if possible
-    localStorage.removeItem('user-token');
+
+    // refresh token reply should stay silent
+    if(error.request.responseURL.indexOf('get_user_by_token') > -1)
+    {
+        return Promise.reject(error);
+    }
     
     switch(error.response.status) 
     {
@@ -45,38 +48,20 @@ axios.interceptors.response.use(function (response) {
          * This means that probably our token has expired and we need to get a new one.
          */
         case 401:
-            MessageBus.$emit('message', {message: 'U bent niet bevoegd om deze pagina te bezoeken', variant: 'danger'});
-            
-            if(console.log(router.currentRoute.name !== 'login')) 
-            {
-                return router.go({name: 'login'});
-            }
+            MessageBus.$emit('message', {message: `U bent niet bevoegd om deze pagina te bezoeken (${router.currentRoute.name})`, variant: 'danger'});
 
-            Promise.reject(error);
-            break;
-            
-            // return Vue.http.get('/refresh-token').then((result) => {
-            //     // Save the new token on local storage
-            //     window.localStorage.setItem('user-token', result.data.token)
+            store.dispatch('AuthenticationStore/logout');
 
-            //     // Resend the failed request whatever it was (GET, POST, PATCH) and return its resposne
-            //     return Vue.http(request).then((response) => {
-            //         return response;
-            //     })
-            // })
-            // .catch(() => {
-            //     /**
-            //      * We weren't able to refresh the token so the best thing to do is 
-            //      * logout the user (removing any user information from storage)
-            //      * and redirecting to login page
-            //      */
-            //     return router.go({name: 'login'})
-            // })
+            // break promise and return error
+            return Promise.reject(error);
         // user tried to access unauthorized resource
         case 403:
-            MessageBus.$emit('message', {message: 'U bent niet bevoegd om deze pagina te bezoeken', variant: 'danger'});
-            return router.go({name: 'login'});
+            MessageBus.$emit('message', {message: `U bent niet bevoegd om deze pagina te bezoeken (${router.currentRoute.name})`, variant: 'danger'});
+            
+            store.dispatch('AuthenticationStore/logout');
+
+            return Promise.reject(error);
         default:
-            Promise.reject(error); 
+            return Promise.reject(error);
     } 
 });

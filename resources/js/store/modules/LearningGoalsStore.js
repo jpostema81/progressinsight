@@ -105,7 +105,6 @@ export const LearningGoalsStore = {
                     resolve();
                 }).catch(function (errors) {
                     MessageBus.$emit('message', {message: 'There was an error while updating user learninggoal', variant: 'danger'}); 
-
                     commit('setErrors', errors);
                     reject(errors);
                 });

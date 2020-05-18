@@ -56,5 +56,9 @@ class UsersSeeder extends Seeder
 
         $user->save();
         $user->roles()->attach($student_role);
+
+        factory(User::class, 50)->create()->each(function ($user) use ($student_role) {
+            $user->roles()->attach($student_role);
+        });
     }
 }

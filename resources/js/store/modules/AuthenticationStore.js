@@ -111,9 +111,13 @@ export const AuthenticationStore =
         // no serverside logout to keep tokens stateless.
         // Just remove tokens from client
         localStorage.removeItem('user-token');
-        MessageBus.$emit('message', { message: 'U bent nu ingelogd', variant: 'success' });
+        MessageBus.$emit('message', { message: 'U bent nu uitgelogd', variant: 'success' });
         commit('logout');
-        router.push('/login');
+
+        if(router.currentRoute.name !== 'login') 
+        {
+            router.push('/login');
+        }
     },
     // register a new user
     register: function({commit, dispatch, context}, user) {

@@ -67023,15 +67023,6 @@ var render = function() {
                                   return [
                                     _c(
                                       "b-form-group",
-                                      {
-                                        on: {
-                                          "progress-level-change": function(
-                                            $event
-                                          ) {
-                                            return _vm.console.log("test")
-                                          }
-                                        }
-                                      },
                                       [
                                         _c("b-form-radio-group", {
                                           attrs: {
@@ -67959,9 +67950,17 @@ var render = function() {
   return _c(
     "div",
     [
-      _c("h3", [_vm._v("Gebruiker ... bewerken")]),
+      _c("h3", [_vm._v("Gebruiker " + _vm._s(_vm.user) + " bewerken")]),
       _vm._v(" "),
-      _c("user-form")
+      _c("user-form", {
+        model: {
+          value: _vm.userData,
+          callback: function($$v) {
+            _vm.userData = $$v
+          },
+          expression: "userData"
+        }
+      })
     ],
     1
   )
@@ -84677,9 +84676,11 @@ axios__WEBPACK_IMPORTED_MODULE_0___default.a.interceptors.response.use(function 
 }, function (error) {
   // Any status codes that falls outside the range of 2xx cause this function to trigger
   // Do something with response error
-  _store_store__WEBPACK_IMPORTED_MODULE_3__["default"].commit('AuthenticationStore/authError', error); // if the request fails, remove any possible user token if possible
+  _store_store__WEBPACK_IMPORTED_MODULE_3__["default"].commit('AuthenticationStore/authError', error); // refresh token reply should stay silent
 
-  localStorage.removeItem('user-token');
+  if (error.request.responseURL.indexOf('get_user_by_token') > -1) {
+    return Promise.reject(error);
+  }
 
   switch (error.response.status) {
     /**
@@ -84689,47 +84690,24 @@ axios__WEBPACK_IMPORTED_MODULE_0___default.a.interceptors.response.use(function 
     */
     case 401:
       _messageBus__WEBPACK_IMPORTED_MODULE_2__["default"].$emit('message', {
-        message: 'U bent niet bevoegd om deze pagina te bezoeken',
+        message: "U bent niet bevoegd om deze pagina te bezoeken (".concat(_router_index__WEBPACK_IMPORTED_MODULE_1__["default"].currentRoute.name, ")"),
         variant: 'danger'
       });
+      _store_store__WEBPACK_IMPORTED_MODULE_3__["default"].dispatch('AuthenticationStore/logout'); // break promise and return error
 
-      if (console.log(_router_index__WEBPACK_IMPORTED_MODULE_1__["default"].currentRoute.name !== 'login')) {
-        return _router_index__WEBPACK_IMPORTED_MODULE_1__["default"].go({
-          name: 'login'
-        });
-      }
-
-      Promise.reject(error);
-      break;
-    // return Vue.http.get('/refresh-token').then((result) => {
-    //     // Save the new token on local storage
-    //     window.localStorage.setItem('user-token', result.data.token)
-    //     // Resend the failed request whatever it was (GET, POST, PATCH) and return its resposne
-    //     return Vue.http(request).then((response) => {
-    //         return response;
-    //     })
-    // })
-    // .catch(() => {
-    //     /**
-    //      * We weren't able to refresh the token so the best thing to do is 
-    //      * logout the user (removing any user information from storage)
-    //      * and redirecting to login page
-    //      */
-    //     return router.go({name: 'login'})
-    // })
+      return Promise.reject(error);
     // user tried to access unauthorized resource
 
     case 403:
       _messageBus__WEBPACK_IMPORTED_MODULE_2__["default"].$emit('message', {
-        message: 'U bent niet bevoegd om deze pagina te bezoeken',
+        message: "U bent niet bevoegd om deze pagina te bezoeken (".concat(_router_index__WEBPACK_IMPORTED_MODULE_1__["default"].currentRoute.name, ")"),
         variant: 'danger'
       });
-      return _router_index__WEBPACK_IMPORTED_MODULE_1__["default"].go({
-        name: 'login'
-      });
+      _store_store__WEBPACK_IMPORTED_MODULE_3__["default"].dispatch('AuthenticationStore/logout');
+      return Promise.reject(error);
 
     default:
-      Promise.reject(error);
+      return Promise.reject(error);
   }
 });
 
@@ -85544,8 +85522,10 @@ router.beforeEach(function (to, from, next) {
   if (authenticationRequired) {
     if (!loggedIn) {
       // not logged in so redirect to login page
-      console.log('Vue router: you are not authenticated to access this page!');
-      return next('/login');
+      console.log('Vue router: you are not authenticated to access this page! ' + to.fullPath);
+      return next({
+        path: '/login'
+      });
     } // check if route is restricted by role
 
 
@@ -85555,7 +85535,7 @@ router.beforeEach(function (to, from, next) {
 
     if (authorize.length && !intersection.length) {
       // role not authorised so redirect to home page
-      console.log('Vue router: you are not authorized to access this page!');
+      console.log('Vue router: you are not authorized to access this page! ' + to.fullPath);
       return next({
         path: '/login'
       });
@@ -85831,11 +85811,14 @@ var AuthenticationStore = {
       // Just remove tokens from client
       localStorage.removeItem('user-token');
       _messageBus__WEBPACK_IMPORTED_MODULE_1__["default"].$emit('message', {
-        message: 'U bent nu ingelogd',
+        message: 'U bent nu uitgelogd',
         variant: 'success'
       });
       commit('logout');
-      _router_index__WEBPACK_IMPORTED_MODULE_0__["default"].push('/login');
+
+      if (_router_index__WEBPACK_IMPORTED_MODULE_0__["default"].currentRoute.name !== 'login') {
+        _router_index__WEBPACK_IMPORTED_MODULE_0__["default"].push('/login');
+      }
     },
     // register a new user
     register: function register(_ref4, user) {
@@ -86205,9 +86188,17 @@ var UsersStore = {
     // },
 
   },
-  getters: {// users: (state, commit, rootState) => {
+  getters: {
+    // users: (state, commit, rootState) => {
     //     return state.users;
     // },
+    getUserById: function getUserById(state) {
+      return function (userId) {
+        return state.users.filter(function (item) {
+          return item.id != userId;
+        });
+      };
+    }
   }
 };
 

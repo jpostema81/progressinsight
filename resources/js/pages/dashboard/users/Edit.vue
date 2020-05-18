@@ -1,8 +1,8 @@
 <template>
     <div>
-        <h3>Gebruiker ... bewerken</h3>
+        <h3>Gebruiker {{ user }} bewerken</h3>
 
-        <user-form></user-form>
+        <user-form v-model="userData"></user-form>
     </div>
 </template>
 
