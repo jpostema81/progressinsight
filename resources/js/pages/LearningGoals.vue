@@ -20,7 +20,7 @@
                                     </div>
                                 </template>
                                 <template v-slot:cell(progressLevel)="item" class="align-right">
-                                    <b-form-group>
+                                    <b-form-group v-on:progress-level-change="console.log('test')">
                                         <b-form-radio-group
                                             v-model="item.item.progress_level.id"
                                             :options="progressLevels"
@@ -66,6 +66,7 @@
 
 <script>
     import { mapGetters, mapState } from "vuex";
+    import learningGoalsFilters from '../mixins/learningGoalsFilters';
 
     export default 
     {
@@ -101,6 +102,7 @@
                 ]
             }
         },
+        mixins: [learningGoalsFilters],
         created() {
             // fetch learningGoals from store and clone it as otherwise it will change state in VueX outside mutation handlers.
             // Use created instead mounted as mounted is called after DOM is ready and DOM is dependent on learningGoals data being loaded before DOM is loaded
@@ -116,17 +118,6 @@
             },
             getTopicCardVariant(topic) {
                 return 'info';
-            },
-            getLearningGoalsByTopic(topic) {
-                return this.learningGoals.filter((learningGoal) => { return learningGoal.topic.id === topic.id });
-            },
-            // count users LearningGoals which have a ProgressLevel of 100%
-            getCompletedLearningGoals() {
-                return this.learningGoals.filter((learningGoal) => learningGoal.progress_level.id === this.hundredPercentProgressLevel.id);
-            },
-            // count users LearningGoals by topic which have a ProgressLevel of 100%
-            getCompletedLearningGoalsByTopic(topic) {
-                return this.getLearningGoalsByTopic(topic).filter((learningGoal) => learningGoal.progress_level.id === this.hundredPercentProgressLevel.id);
             },
         },
         computed: {

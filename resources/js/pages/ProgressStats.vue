@@ -11,6 +11,7 @@
 <script>
     import { Chart } from 'frappe-charts/dist/frappe-charts.esm.js';
     import { mapGetters } from 'vuex';
+    import learningGoalsFilters from '../mixins/learningGoalsFilters';
 
     export default {
         data () {
@@ -22,6 +23,7 @@
                 chartColors: [['#4dcd32', '#4dcd32', '#dd0453', '#4dcd32', '#dd0453','#4dcd32', '#4dcd32', '#dd0453', '#4dcd32', '#dd0453']],
             }
         },
+        mixins: [learningGoalsFilters],
         mounted() {
             this.chartPercentages = this.topics.map(
                 topic => (this.getCompletedLearningGoalsByTopic(topic).length / this.getLearningGoalsByTopic(topic).length * 100).toFixed()
@@ -49,12 +51,14 @@
                 },
             });
         },
+        methods: {
+ 
+        },
         computed: {
             ...mapGetters({
                 topics: 'LearningGoalsStore/topics',
-                getLearningGoalsByTopic: 'LearningGoalsStore/getLearningGoalsByTopic',
-                getCompletedLearningGoals: 'LearningGoalsStore/getCompletedLearningGoals',
-                getCompletedLearningGoalsByTopic: 'LearningGoalsStore/getCompletedLearningGoalsByTopic',
+                learningGoals: 'LearningGoalsStore/learningGoals',
+                hundredPercentProgressLevel: 'LearningGoalsStore/hundredPercentProgressLevel',
             }),
         },
     }

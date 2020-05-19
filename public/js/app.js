@@ -2230,6 +2230,7 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var _mixins_learningGoalsFilters__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../mixins/learningGoalsFilters */ "./resources/js/mixins/learningGoalsFilters.js");
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -2303,6 +2304,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2323,6 +2325,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       progressColors: ['success', 'info', 'warning', 'danger', 'primary', 'secondary', 'dark']
     };
   },
+  mixins: [_mixins_learningGoalsFilters__WEBPACK_IMPORTED_MODULE_1__["default"]],
   created: function created() {
     // fetch learningGoals from store and clone it as otherwise it will change state in VueX outside mutation handlers.
     // Use created instead mounted as mounted is called after DOM is ready and DOM is dependent on learningGoals data being loaded before DOM is loaded
@@ -2342,27 +2345,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     },
     getTopicCardVariant: function getTopicCardVariant(topic) {
       return 'info';
-    },
-    getLearningGoalsByTopic: function getLearningGoalsByTopic(topic) {
-      return this.learningGoals.filter(function (learningGoal) {
-        return learningGoal.topic.id === topic.id;
-      });
-    },
-    // count users LearningGoals which have a ProgressLevel of 100%
-    getCompletedLearningGoals: function getCompletedLearningGoals() {
-      var _this = this;
-
-      return this.learningGoals.filter(function (learningGoal) {
-        return learningGoal.progress_level.id === _this.hundredPercentProgressLevel.id;
-      });
-    },
-    // count users LearningGoals by topic which have a ProgressLevel of 100%
-    getCompletedLearningGoalsByTopic: function getCompletedLearningGoalsByTopic(topic) {
-      var _this2 = this;
-
-      return this.getLearningGoalsByTopic(topic).filter(function (learningGoal) {
-        return learningGoal.progress_level.id === _this2.hundredPercentProgressLevel.id;
-      });
     }
   },
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])({
@@ -2584,6 +2566,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var frappe_charts_dist_frappe_charts_esm_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! frappe-charts/dist/frappe-charts.esm.js */ "./node_modules/frappe-charts/dist/frappe-charts.esm.js");
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var _mixins_learningGoalsFilters__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../mixins/learningGoalsFilters */ "./resources/js/mixins/learningGoalsFilters.js");
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -2602,6 +2585,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 
 
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -2612,6 +2596,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       chartColors: [['#4dcd32', '#4dcd32', '#dd0453', '#4dcd32', '#dd0453', '#4dcd32', '#4dcd32', '#dd0453', '#4dcd32', '#dd0453']]
     };
   },
+  mixins: [_mixins_learningGoalsFilters__WEBPACK_IMPORTED_MODULE_2__["default"]],
   mounted: function mounted() {
     var _this = this;
 
@@ -2640,11 +2625,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }
     });
   },
+  methods: {},
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapGetters"])({
     topics: 'LearningGoalsStore/topics',
-    getLearningGoalsByTopic: 'LearningGoalsStore/getLearningGoalsByTopic',
-    getCompletedLearningGoals: 'LearningGoalsStore/getCompletedLearningGoals',
-    getCompletedLearningGoalsByTopic: 'LearningGoalsStore/getCompletedLearningGoalsByTopic'
+    learningGoals: 'LearningGoalsStore/learningGoals',
+    hundredPercentProgressLevel: 'LearningGoalsStore/hundredPercentProgressLevel'
   }))
 });
 
@@ -67023,6 +67008,15 @@ var render = function() {
                                   return [
                                     _c(
                                       "b-form-group",
+                                      {
+                                        on: {
+                                          "progress-level-change": function(
+                                            $event
+                                          ) {
+                                            return _vm.console.log("test")
+                                          }
+                                        }
+                                      },
                                       [
                                         _c("b-form-radio-group", {
                                           attrs: {
@@ -84899,6 +84893,43 @@ var messageHandler = function messageHandler(_ref) {
 
 MessageBus.$on('message', messageHandler);
 /* harmony default export */ __webpack_exports__["default"] = (MessageBus);
+
+/***/ }),
+
+/***/ "./resources/js/mixins/learningGoalsFilters.js":
+/*!*****************************************************!*\
+  !*** ./resources/js/mixins/learningGoalsFilters.js ***!
+  \*****************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ({
+  methods: {
+    getLearningGoalsByTopic: function getLearningGoalsByTopic(topic) {
+      return this.learningGoals.filter(function (learningGoal) {
+        return learningGoal.topic.id === topic.id;
+      });
+    },
+    // count users LearningGoals which have a ProgressLevel of 100%
+    getCompletedLearningGoals: function getCompletedLearningGoals() {
+      var _this = this;
+
+      return this.learningGoals.filter(function (learningGoal) {
+        return learningGoal.progress_level.id === _this.hundredPercentProgressLevel.id;
+      });
+    },
+    // count users LearningGoals by topic which have a ProgressLevel of 100%
+    getCompletedLearningGoalsByTopic: function getCompletedLearningGoalsByTopic(topic) {
+      var _this2 = this;
+
+      return this.getLearningGoalsByTopic(topic).filter(function (learningGoal) {
+        return learningGoal.progress_level.id === _this2.hundredPercentProgressLevel.id;
+      });
+    }
+  }
+});
 
 /***/ }),
 
