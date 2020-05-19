@@ -51,13 +51,11 @@
 
             <div id="progressBars" class="fixed-bottom">
                 <b-progress :max="learningGoals.length" show-progress>
-                    <b-progress-bar v-if="getCompletedLearningGoals().length > 0" :value="getCompletedLearningGoals().length">
-                        Totale voortgang: {{ getCompletedLearningGoals().length }}%
-                    </b-progress-bar>
+                    <b-progress-bar :value="getCompletedLearningGoals().length" :label="`Totale voortgang: ${((getCompletedLearningGoals().length / learningGoals.length) * 100).toFixed()}%`"></b-progress-bar>
                 </b-progress>
 
                 <b-progress class="mt-2" height="2rem" :max="learningGoals.length" show-value>
-                    <b-progress-bar v-for="(topic, index) in topics" :key="topic.id" :value="getCompletedLearningGoalsByTopic(topic).length" :variant="progressColors[index % progressColors.length]" v-html="getProgressPercentageByTopic(topic, true)"></b-progress-bar>
+                    <b-progress-bar v-for="(topic, index) in topics" :key="topic.id" :value="getCompletedLearningGoalsByTopic(topic).length" :variant="progressColors[index % progressColors.length]" :label="getProgressPercentageByTopic(topic, true)"></b-progress-bar>
                 </b-progress>
             </div>
         </div>

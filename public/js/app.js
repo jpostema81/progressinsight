@@ -2301,8 +2301,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -67111,21 +67109,19 @@ var render = function() {
               "b-progress",
               { attrs: { max: _vm.learningGoals.length, "show-progress": "" } },
               [
-                _vm.getCompletedLearningGoals().length > 0
-                  ? _c(
-                      "b-progress-bar",
-                      {
-                        attrs: { value: _vm.getCompletedLearningGoals().length }
-                      },
-                      [
-                        _vm._v(
-                          "\n                    Totale voortgang: " +
-                            _vm._s(_vm.getCompletedLearningGoals().length) +
-                            "%\n                "
-                        )
-                      ]
-                    )
-                  : _vm._e()
+                _c("b-progress-bar", {
+                  attrs: {
+                    value: _vm.getCompletedLearningGoals().length,
+                    label:
+                      "Totale voortgang: " +
+                      (
+                        (_vm.getCompletedLearningGoals().length /
+                          _vm.learningGoals.length) *
+                        100
+                      ).toFixed() +
+                      "%"
+                  }
+                })
               ],
               1
             ),
@@ -67146,12 +67142,8 @@ var render = function() {
                   attrs: {
                     value: _vm.getCompletedLearningGoalsByTopic(topic).length,
                     variant:
-                      _vm.progressColors[index % _vm.progressColors.length]
-                  },
-                  domProps: {
-                    innerHTML: _vm._s(
-                      _vm.getProgressPercentageByTopic(topic, true)
-                    )
+                      _vm.progressColors[index % _vm.progressColors.length],
+                    label: _vm.getProgressPercentageByTopic(topic, true)
                   }
                 })
               }),
