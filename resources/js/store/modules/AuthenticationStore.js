@@ -183,7 +183,7 @@ export const AuthenticationStore =
         return !!state.user;
     },
     isAdmin: (state) => {
-        return state.user.roles.includes('admin');
+        return !!state.user && state.user.roles.includes('admin');
     },
     user: (state) => {
         return state.user;

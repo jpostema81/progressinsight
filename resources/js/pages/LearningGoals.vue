@@ -4,11 +4,11 @@
             <h3 class="mb-4">Leerdoelen en persoonlijke voortgang</h3>
 
             <div role="tablist">
-                <b-card no-body class="my-2" v-for="topic in topics" :key="topic.id">
+                <b-card no-body class="my-2" v-for="(topic, index) in topics" :key="topic.id">
                     <b-card-header header-tag="header" class="p-1" role="tab">
-                        <b-button block href="#" v-b-toggle.accordion-1 :variant="getTopicCardVariant(topic)" v-html="getProgressPercentageByTopic(topic, true)"></b-button>
+                        <b-button block href="#" v-b-toggle="'accordion-'+index" :variant="getTopicCardVariant(topic)" v-html="getProgressPercentageByTopic(topic, true)"></b-button>
                     </b-card-header>
-                    <b-collapse id="accordion-1" visible accordion="my-accordion" role="tabpanel">
+                    <b-collapse :id="'accordion-'+index" visible accordion="my-accordion" role="tabpanel">
                         <b-card-body>
                             <b-card-text v-if="topic.info">{{ topic.info }}</b-card-text>
 
