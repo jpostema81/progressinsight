@@ -6,7 +6,6 @@ export const UsersStore = {
     state: 
     {
         users: [],
-        errors: {},
         status: '',
     },
     mutations: 
@@ -15,14 +14,33 @@ export const UsersStore = {
         {
             state.users = users;
         },
-        setErrors: (state, errors) => {
-            state.errors = errors;
-        },
-
+       
         // removeUser mutations
         removeUser: (state, userId)  =>
         {
             state.users = state.users.filter(item => item.id != userId)
+        },
+
+        // registration state
+        registerRequest: (state) => {
+            state.status = 'registering';
+        },
+        registerSuccess: (state) => {
+            state.status = 'success';
+        },
+        registerError: (state, errors) => {
+            state.status = 'error';
+        },
+
+        // user update state
+        userUpdateRequest: (state) => {
+            state.status = 'updating';
+        },
+        userUpdateSuccess: (state, user) => {
+            state.status = 'success';
+        },
+        userUpdateError: (state, errors) => {
+            state.status = 'error';
         },
     },
     actions: 
@@ -40,7 +58,7 @@ export const UsersStore = {
                     resolve();
                 }).catch(function (errors) {
                     MessageBus.$emit('message', {message: 'There was an error while fetching users', variant: 'danger'}); 
-                    commit('setErrors', errors);
+                    commit('ErrorsStore/setErrors', errors, { root: true });
                     reject(errors);
                 });
             });   
@@ -59,7 +77,7 @@ export const UsersStore = {
                     resolve();
                 }).catch(function (error) {
                     MessageBus.$emit('message', {message: 'Something went wrong', variant: 'danger'});
-                    commit('setErrors', error);
+                    commit('ErrorsStore/setErrors', errors, { root: true });
                     reject(error);
                 });
             });   
@@ -79,36 +97,77 @@ export const UsersStore = {
                 });
             });
         },
+        // register a new user
+        register: function({commit, dispatch, context}, user) {
+            commit('ErrorsStore/resetErrors', null, { root: true });
+            commit('registerRequest');
 
-        
-        // updateUser({ commit, state, rootState, rootGetters }, { progressLevelId, learningGoalId }) 
-        // {
-        //     return new Promise((resolve, reject) => {
-        //         let url = `/api/users/${rootState.AuthenticationStore.user.id}/learning_goals/${learningGoalId}`;
+            return new Promise((resolve, reject) => { 
+                axios({ url: '/api/register', data: user, method: 'POST' }).then(resp => 
+                {
+                    commit('ErrorsStore/resetErrors', null, { root: true });
+                    commit('registerSuccess');
+                    router.push('/login');
 
-        //         axios({
-        //             method: 'put',
-        //             url: url,
-        //             params: { progressLevelId },
-        //         }).then(response => {
-        //             commit('updateUserLearningGoal', response.data.learningGoal);
-        //             resolve();
-        //         }).catch(function (errors) {
-        //             MessageBus.$emit('message', {message: 'There was an error while updating user learninggoal', variant: 'danger'}); 
+                    setTimeout(() => {
+                        // display success message after route change completes
+                        MessageBus.$emit('message', {message: 'Registratie succesvol', variant: 'success'});
+                    })
 
-        //             commit('setErrors', errors);
-        //             reject(errors);
-        //         });
-        //     });   
-        // },
+                    resolve(resp);
+                })
+                .catch(errors => 
+                {
+                    Object.values(errors.response.data.errors).forEach(error => {
+                        MessageBus.$emit('message', {message: error, variant: 'danger'}); 
+                    });
+                    
+                    // MessageBus.$emit('message', {message: 'Something went wrong', variant: 'danger'});
+                    commit('ErrorsStore/setErrors', errors, { root: true });
+                    commit('registerError', error.response.data.errors);
+                    reject(errors);
+                });
+            });
+        },
+        updateUser: function({commit, dispatch, context}, user) {
+            commit('ErrorsStore/resetErrors', null, { root: true });
+            commit('userUpdateRequest');
+
+            return new Promise((resolve, reject) => {
+                axios({ 
+                    url: '/api/users/' + user.id, 
+                    data: user,
+                    method: 'PATCH'}).then((resp) => {
+                        commit('ErrorsStore/resetErrors', null, { root: true });
+                        commit('userUpdateSuccess', user);
+
+                        setTimeout(() => {
+                            // display success message after route change completes
+                            MessageBus.$emit('message',
+                                { message: 'Profiel succesvol bijgewerkt', variant: 'success' }
+                            );
+                        });
+
+                        resolve(resp);
+                    })
+                    .catch((error) => {
+                        MessageBus.$emit('message',
+                        {
+                            message: 'Er ging iets fout tijdens het bijwerken van uw profielgegevens',
+                            variant: 'danger',
+                        });
+
+                        commit('ErrorsStore/resetErrors', error, { root: true });
+                        commit('userUpdateError', error.response.data.errors);
+                        reject(error);
+                    });
+                });
+        },
     },
     getters: 
     {
-        // users: (state, commit, rootState) => {
-        //     return state.users;
-        // },
         getUserById: (state) => (userId) => {
-            return state.users.filter(item => item.id != userId)
+            return state.users.find(item => item.id == userId);
         },
-    }
+    },
 }

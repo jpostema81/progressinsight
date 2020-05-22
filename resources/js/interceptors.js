@@ -32,7 +32,7 @@ axios.interceptors.response.use(function (response) {
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     // Do something with response error
 
-    store.commit('AuthenticationStore/authError', error);
+    store.commit('ErrorsStore/setErrors', error);
 
     // refresh token reply should stay silent
     if(error.request.responseURL.indexOf('get_user_by_token') > -1)

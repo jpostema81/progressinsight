@@ -70,8 +70,8 @@
         computed: {
             ...mapState('AuthenticationStore', {
                 status: state => state.status,
-                errors: state => state.errors,
             }),
+            ...mapState('ErrorsStore', { errors: state => state.errors, }),
         },
         methods: 
         {

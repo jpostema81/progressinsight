@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h3>Register</h3>
+        <h3>Registreren</h3>
 
         <form @submit.prevent="handleSubmit">
             <div class="form-group">
@@ -68,12 +68,12 @@
         {
             ...mapState('AuthenticationStore', {
                 status: state => state.status,
-                errors: state => state.errors
-            })
+            }),
+            ...mapState('ErrorsStore', { errors: state => state.errors, }),
         },
         methods: 
         {
-            ...mapActions('AuthenticationStore', {
+            ...mapActions('UsersStore', {
                 register: 'register'
             }),
             handleSubmit(e) 

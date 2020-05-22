@@ -1,1 +1,25 @@
-// TODO: refactor alle errors die nu in de states van de diverse modules zitten naar deze centrale store module
+import MessageBus from './../../messageBus';
+
+
+export const ErrorsStore = {
+    namespaced: true,
+    state: 
+    {
+        errors: {},
+    },
+    mutations: 
+    {
+        setErrors: (state, errors) => {
+            state.errors = errors;
+        },
+        resetErrors: (state) => {
+            state.errors = {};
+        }
+    },
+    getters: 
+    {
+        getErrors: (state, commit, rootState) => {
+            return state.errors;
+        },
+    }
+}

@@ -1,8 +1,14 @@
 <template>
     <div>
-        <h3>Gebruiker {{ user }} bewerken</h3>
+        <h3 class="mb-4">Gebruiker <i>{{ user.full_name }}</i> bewerken</h3>
 
-        <user-form v-model="userData"></user-form>
+        <user-form v-model="userData" submitted="submitted"></user-form>
+
+        <div class="form-group">
+            <b-button variant="primary" @click="updateUser" :disabled="status.updating">Bijwerken</b-button>
+            <img v-show="status === 'updating'" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
+            <b-link @click="$router.go(-1)">Terug</b-link>
+        </div>
     </div>
 </template>
 
@@ -15,27 +21,30 @@
         data() {
             return {
                userData: {},
+               submitted: false,
             }
         },
         components: { UserForm },
         computed: {
             user() {
-                const user = this.$store.getters['UsersStore/getUserById'](this.$route.params.id);
-
+                const user = this.$store.getters['UsersStore/getUserById'](this.$route.params.blogPostId);
                 this.userData = JSON.parse(JSON.stringify(user));
-
                 return user;
             },
+            ...mapState('UsersStore', {
+                status: state => state.status,
+            })
         },
         methods: {
-  
-        },
-        computed: {
-            // ...mapState('UserStore', {
-                // users: state => state.users,
-                // status: state => state.status,
-                // errors: state => state.errors,
-            // })
+            updateUser() 
+            {
+                this.submitted = true;
+
+                this.$store.dispatch('UsersStore/updateUser', this.user).then(() => 
+                {
+                    this.$router.push('/users');
+                });
+            },
         },
     }
 </script>

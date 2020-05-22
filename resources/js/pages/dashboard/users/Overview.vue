@@ -109,8 +109,13 @@
             }
         },
         created() {
+            // REFACTOREN!
             this.$store.dispatch('UsersStore/fetchUsers').then(() => {
                 this.fetchUsersFromStore();
+
+                this.$store.dispatch('RolesStore/fetchRoles').then(() => {
+                    
+                });
             });
         },
         methods: {

@@ -1,57 +1,51 @@
 <template>
     <div>
-        <h3>Nieuwe gebruiker(s) toevoegen</h3>
+        <h3 class="mb-4">Nieuwe gebruiker(s) toevoegen</h3>
 
-        
+        <user-form v-model="userData" submitted="submitted"></user-form>
+
+        <div class="form-group">
+            <b-button variant="primary" @click="updateUser" :disabled="status.updating">Bijwerken</b-button>
+            <img v-show="status === 'updating'" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
+            <b-link @click="$router.go(-1)">Terug</b-link>
+        </div>
     </div>
 </template>
 
 <script>
     import { mapState } from 'vuex';
+    import UserForm from '../../../components/forms/UserForm';
 
     export default 
     {
         data() {
             return {
-                
+                userData: {},
+                user: {
+                    first_name: '',
+                    last_name: '',
+                    email: '',
+                    roles: ['student'],     // bijwerken?
+                },
+                submitted: false,
             }
         },
-        created() {
-            // this.$store.dispatch('UsersStore/fetchUsers').then(() => {
-            //     this.users = JSON.parse(JSON.stringify(this.$store.state.UsersStore.users));
-            // });
+        components: { UserForm },
+        computed: {
+            ...mapState('UsersStore', {
+                status: state => state.status,
+            })
         },
         methods: {
-            // applyBulkAction() 
-            // {
-            //     switch(this.bulkAction.selected)
-            //     {
-            //         case 'delete':
-            //         {
-            //             Object.filter = (obj, predicate) => Object.fromEntries(Object.entries(obj).filter(predicate));
-            //             let filteredMessages = Object.keys(Object.filter(this.selectedItems, ([id, selected]) => selected === true)); 
+            updateUser() 
+            {
+                this.submitted = true;
 
-            //             this.$store.dispatch('DashboardMessageStore/deleteMessages', filteredMessages).then(() => {
-            //                 this.$store.dispatch('DashboardMessageStore/fetchMessages');
-            //                 this.currentPage = 1;
-            //                 this.selectedItems = {};
-            //             });
-                        
-            //         }
-            //         case 'edit':
-            //         {
-
-                        
-            //         }
-            //     }
-            // },
-        },
-        computed: {
-            // ...mapState('UserStore', {
-                // users: state => state.users,
-                // status: state => state.status,
-                // errors: state => state.errors,
-            // })
+                this.$store.dispatch('UsersStore/updateUser', this.user).then(() => 
+                {
+                    this.$router.push('/users');
+                });
+            },
         },
     }
 </script>

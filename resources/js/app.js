@@ -9,9 +9,8 @@ import Multiselect from 'vue-multiselect';
 import MessageBus from './messageBus';
 import App from './App.vue';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
-import VueSidebarMenu from 'vue-sidebar-menu'
-import 'vue-sidebar-menu/dist/vue-sidebar-menu.css'
-import VueScrollTo from 'vue-scrollto';
+import VueSidebarMenu from 'vue-sidebar-menu';
+import 'vue-sidebar-menu/dist/vue-sidebar-menu.css';
 
 window.moment = require('moment');
 
@@ -22,7 +21,6 @@ window.onload = function() {
   Vue.use(moment);
   Vue.component('Multiselect', Multiselect);
   Vue.use(VueSidebarMenu);
-  Vue.use(VueScrollTo)
 
   const app = new Vue({
     store,

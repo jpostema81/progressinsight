@@ -37,10 +37,8 @@
             }
         },
         computed: {
-            ...mapState('AuthenticationStore', {
-                status: state => state.status,
-                errors: state => state.errors,
-            })
+            ...mapState('AuthenticationStore', { status: state => state.status, }),
+            ...mapState('ErrorsStore', { errors: state => state.errors, }),
         },
         methods: 
         {

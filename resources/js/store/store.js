@@ -5,10 +5,10 @@ import Vuex from 'vuex';
 import { LearningGoalsStore } from './modules/LearningGoalsStore';
 import { AuthenticationStore } from './modules/AuthenticationStore';
 import { UsersStore } from './modules/UsersStore';
-
+import { ErrorsStore } from './modules/ErrorsStore';
+import { RolesStore } from './modules/RolesStore';
 
 Vue.use(Vuex);
-
 
 export default new Vuex.Store({
     strict: process.env.NODE_ENV !== 'production',
@@ -16,5 +16,7 @@ export default new Vuex.Store({
         LearningGoalsStore,
         AuthenticationStore,
         UsersStore,
+        ErrorsStore,
+        RolesStore,
     },
 });

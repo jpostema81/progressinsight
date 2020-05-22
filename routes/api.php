@@ -39,4 +39,6 @@ Route::group(['middleware' => ['auth:api']], function()
 Route::group(['middleware' => ['auth:api', 'role:admin']], function() 
 {
     Route::resource('/admin/users', 'Admin\UserController');
+
+    Route::resource('/admin/roles', 'Admin\RoleController');
 });
