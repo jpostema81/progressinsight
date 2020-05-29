@@ -63,7 +63,9 @@ router.beforeEach((to, from, next) =>
         }
 
         // check if route is restricted by role
-        const intersection = authorize.filter(element => user.roles.includes(element));
+        const intersection = authorize.filter(element => user.roles.map(function (role) {
+            return role.name;
+          }).includes(element));
 
         if (authorize.length && !intersection.length) {
             // role not authorised so redirect to home page

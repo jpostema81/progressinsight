@@ -29,6 +29,10 @@ axios.interceptors.response.use(function (response) {
     // do nothing, return response
     return response;
   }, function (error) {
+    if (!error.response) 
+    {
+        return Promise.reject(error);
+    }
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     // Do something with response error
 
@@ -39,6 +43,8 @@ axios.interceptors.response.use(function (response) {
     {
         return Promise.reject(error);
     }
+
+    MessageBus.$emit('message', { message: error.response.data.message, variant: 'danger' });
     
     switch(error.response.status) 
     {
@@ -48,17 +54,16 @@ axios.interceptors.response.use(function (response) {
          * This means that probably our token has expired and we need to get a new one.
          */
         case 401:
-            MessageBus.$emit('message', {message: `U bent niet bevoegd om deze pagina te bezoeken (${router.currentRoute.name})`, variant: 'danger'});
-
-            store.dispatch('AuthenticationStore/logout');
+            if(router.currentRoute.name !== 'login') 
+            {
+                store.dispatch('AuthenticationStore/logout', false);
+            }
 
             // break promise and return error
-            return Promise.reject(error);
+            return Promise.reject(error, false);
         // user tried to access unauthorized resource
-        case 403:
-            MessageBus.$emit('message', {message: `U bent niet bevoegd om deze pagina te bezoeken (${router.currentRoute.name})`, variant: 'danger'});
-            
-            store.dispatch('AuthenticationStore/logout');
+        case 403:            
+            store.dispatch('AuthenticationStore/logout', false);
 
             return Promise.reject(error);
         default:

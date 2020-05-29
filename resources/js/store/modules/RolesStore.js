@@ -9,8 +9,8 @@ export const RolesStore = {
     },
     mutations: 
     {
-        setRoles: (state, errors) => {
-            state.errors = errors;
+        setRoles: (state, roles) => {
+            state.roles = roles;
         },
     },
     actions:

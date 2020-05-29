@@ -44,7 +44,6 @@ export const AuthenticationStore =
                 })
                 .catch(errors => 
                 {
-                    commit('ErrorsStore/setErrors', errors, { root: true });
                     commit('authError');
                     dispatch('logout');
                     reject(errors);
@@ -78,17 +77,18 @@ export const AuthenticationStore =
                 });
             });
         },
-        logout: function({commit, dispatch, context}) {
+        logout: function({commit, dispatch, context}, showToast = false) {
             // no serverside logout to keep tokens stateless.
             // Just remove tokens from client
             localStorage.removeItem('user-token');
-            MessageBus.$emit('message', { message: 'U bent nu uitgelogd', variant: 'success' });
-            commit('logout');
-
-            if(router.currentRoute.name !== 'login') 
+            
+            if(showToast) 
             {
-                router.push('/login');
+                MessageBus.$emit('message', { message: 'U bent nu uitgelogd', variant: 'success' });
             }
+
+            commit('logout');
+            router.push('/login');
         },
     },
     getters:
@@ -97,7 +97,7 @@ export const AuthenticationStore =
             return !!state.user;
         },
         isAdmin: (state) => {
-            return !!state.user && state.user.roles.includes('admin');
+            return !!state.user && state.user.roles.map(role => role.name).includes('admin');
         },
         user: (state) => {
             return state.user;

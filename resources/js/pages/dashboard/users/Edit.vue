@@ -40,9 +40,9 @@
             {
                 this.submitted = true;
 
-                this.$store.dispatch('UsersStore/updateUser', this.user).then(() => 
+                this.$store.dispatch('UsersStore/updateUser', this.userData).then(() => 
                 {
-                    this.$router.push('/users');
+                    this.$router.push('/dashboard/users/overview');
                 });
             },
         },

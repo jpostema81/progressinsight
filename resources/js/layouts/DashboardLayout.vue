@@ -62,8 +62,8 @@
                                 title: 'Overzicht'
                             },
                             {
-                                href: '/dashboard/users/create',
-                                title: 'Nieuwe gebruiker'
+                                href: '/dashboard/users/invite',
+                                title: 'Nieuwe gebruiker uitnodigen'
                             }
                         ]
                     },

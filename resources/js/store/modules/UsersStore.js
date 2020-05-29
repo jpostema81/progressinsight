@@ -1,4 +1,5 @@
 import MessageBus from './../../messageBus';
+import router from '../../router/index';
 
 
 export const UsersStore = {
@@ -28,7 +29,7 @@ export const UsersStore = {
         registerSuccess: (state) => {
             state.status = 'success';
         },
-        registerError: (state, errors) => {
+        registerError: (state) => {
             state.status = 'error';
         },
 
@@ -77,7 +78,7 @@ export const UsersStore = {
                     resolve();
                 }).catch(function (error) {
                     MessageBus.$emit('message', {message: 'Something went wrong', variant: 'danger'});
-                    commit('ErrorsStore/setErrors', errors, { root: true });
+                    commit('ErrorsStore/setErrors', error, { root: true });
                     reject(error);
                 });
             });   
@@ -107,24 +108,17 @@ export const UsersStore = {
                 {
                     commit('ErrorsStore/resetErrors', null, { root: true });
                     commit('registerSuccess');
-                    router.push('/login');
-
-                    setTimeout(() => {
-                        // display success message after route change completes
-                        MessageBus.$emit('message', {message: 'Registratie succesvol', variant: 'success'});
-                    })
 
                     resolve(resp);
                 })
                 .catch(errors => 
                 {
                     Object.values(errors.response.data.errors).forEach(error => {
-                        MessageBus.$emit('message', {message: error, variant: 'danger'}); 
+                        MessageBus.$emit('message', { message: error, variant: 'danger' }); 
                     });
                     
-                    // MessageBus.$emit('message', {message: 'Something went wrong', variant: 'danger'});
-                    commit('ErrorsStore/setErrors', errors, { root: true });
-                    commit('registerError', error.response.data.errors);
+                    commit('ErrorsStore/setErrors', errors.response.data.errors, { root: true });
+                    commit('registerError');
                     reject(errors);
                 });
             });

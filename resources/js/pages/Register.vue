@@ -46,7 +46,7 @@
 
 <script>
     import { mapState, mapActions } from 'vuex';
-
+    import MessageBus from './../messageBus';
 
     export default 
     {
@@ -80,6 +80,13 @@
             {
                 this.submitted = true;
                 this.register(this.user);
+
+                this.$router.push('/login');
+
+                setTimeout(() => {
+                    // display success message after route change completes
+                    MessageBus.$emit('message', {message: 'Registratie succesvol', variant: 'success'});
+                });
             }
         }
     };

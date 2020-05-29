@@ -19,7 +19,7 @@ class RoleMiddleware
         {
             if ($request->expectsJson()) 
             {
-                return response()->json(['error' => 'Not authorized.'], 403);
+                return response()->json(['message' => 'Not authorized.'], 403);
             } 
             else 
             {

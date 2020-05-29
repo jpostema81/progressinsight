@@ -12,6 +12,7 @@ import 'bootstrap-vue/dist/bootstrap-vue.css';
 import VueSidebarMenu from 'vue-sidebar-menu';
 import 'vue-sidebar-menu/dist/vue-sidebar-menu.css';
 
+
 window.moment = require('moment');
 
 

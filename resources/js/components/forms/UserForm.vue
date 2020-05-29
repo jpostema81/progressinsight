@@ -1,3 +1,11 @@
+<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
+
+<!-- This form is used by:
+    * registration page
+    * dashboard edit user page
+    * user profile page
+-->
+
 <template>
     <b-form>
         <b-card class="mb-2">
@@ -9,20 +17,34 @@
             </b-form-group>
 
             <b-form-group label-cols-sm="3" label="Achternaam">
-                <input type="text" v-model="data.last_name" required name="last_name" class="form-control" :class="{ 'is-invalid': submitted && errors.hasOwnProperty('last_name') }" />
+                <b-form-input type="text" v-model="data.last_name" required name="last_name" class="form-control" :class="{ 'is-invalid': submitted && errors.hasOwnProperty('last_name') }" />
                 <div v-if="submitted && errors.hasOwnProperty('last_name')" class="invalid-feedback">{{ errors.last_name.join(' ') }}</div>
             </b-form-group>
 
             <b-form-group label-cols-sm="3" label="Emailadres">
-                <input type="text" v-model="data.email" required name="email" class="form-control" :class="{ 'is-invalid': submitted && errors.hasOwnProperty('email') }" />
+                <b-form-input type="text" v-model="data.email" required name="email" class="form-control" :class="{ 'is-invalid': submitted && errors.hasOwnProperty('email') }" />
                 <div v-if="submitted && errors.hasOwnProperty('email')" class="invalid-feedback">{{ errors.email.join(' ') }}</div>
             </b-form-group>
 
-            <multiselect v-bind:value="value" :options="roles" 
-                @input="updateSelectedCategories"
-                :placeholder="placeholder" 
-                label="name" track-by="id" :multiple="true" :taggable="false">
-            </multiselect>
+            <b-form-group label-cols-sm="3" label="Wachtwoord">
+                <b-form-input type="password" v-model="data.password" required title="Gebruik a.u.b. ten minste 6 tekens" name="password" class="form-control" 
+                :class="{ 'is-invalid': submitted && errors.hasOwnProperty('password') }" />
+                <div v-if="submitted && errors.hasOwnProperty('password')" class="invalid-feedback">{{ errors.password.join(' ') }}</div>
+            </b-form-group>
+
+            <b-form-group label-cols-sm="3" label="Wachtwoord bevestiging">
+                <b-form-input type="password" v-model="data.password_confirmation" required title="Gebruik a.u.b. ten minste 6 tekens" name="password_confirmation" class="form-control" 
+                :class="{ 'is-invalid': submitted && errors.hasOwnProperty('password') }" />
+                <div v-if="submitted && errors.hasOwnProperty('password')" class="invalid-feedback">{{ errors.password.join(' ') }}</div>
+            </b-form-group>
+
+            <b-form-group label-cols-sm="3" label="Rol">
+                <multiselect v-model="data.roles" :options="roles" 
+                    @input="updateSelectedRoles"
+                    placeholder="Rollen" 
+                    label="name" track-by="id" :multiple="true" :taggable="false">
+                </multiselect>
+            </b-form-group>
         </b-card>
     </b-form>
 </template>
@@ -45,20 +67,21 @@ export default {
         submitted: {
             type: Boolean,
             required: true,
-        }
+        },
     },
     components: {
         Multiselect,
     },
     computed: {
         ...mapState('ErrorsStore', { errors: state => state.errors, }),
-
-        // companies() {
-        //     return this.$store.getters['companies/getAll'];
-        // },
         roles() {
-            return this.$store.state['rolesStore/roles'];
+            return this.$store.state.RolesStore.roles;
         },
+    },
+    methods: {
+        updateSelectedRoles() {
+
+        }
     },
     mounted() {
         // this.$store.dispatch('companies/getCompanies');

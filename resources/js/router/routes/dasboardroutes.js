@@ -13,10 +13,10 @@ const routes = [
         component: Vue.component('UsersOverview', require( '../../pages/dashboard/Users/Overview.vue').default)
     },
     {
-        path: '/dashboard/users/create',
-        alias: '/users_create',
-        name: 'users_create',
-        component: Vue.component('UsersCreate', require( '../../pages/dashboard/Users/Create.vue').default)
+        path: '/dashboard/users/invite',
+        alias: '/users_invite',
+        name: 'users_invite',
+        component: Vue.component('UsersInvite', require( '../../pages/dashboard/Users/Invite.vue').default)
     },
     {
         path: '/dashboard/users/:blogPostId/edit',

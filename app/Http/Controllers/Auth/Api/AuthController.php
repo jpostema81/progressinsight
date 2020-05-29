@@ -15,6 +15,7 @@ use App\User;
 use App\LearningGoal;
 use App\ProgressLevel;
 use Mail;
+use App\Role;
 
 // https://jwt-auth.readthedocs.io/en/docs/quick-start/
 
@@ -41,12 +42,28 @@ class AuthController extends Controller
         $validatedInput = $request->validated();
         $user = User::create($validatedInput);
 
+        // sync role(s) when applicable
+        // only sync roles when authenticated from backend
+        // TODO: refactoren naar twee seperate functies voor betere leesbaarheid?
+        if($this->guard()->user() instanceof User) 
+        {
+            $roles = array_map(function($value) { return $value["id"]; }, $request->get("roles"));
+            $user->roles()->sync($roles);
+        }
+        // registration from front-end by not-authenticated user
+        else {
+            // attach default student role
+            $student_role = Role::where('name', 'student')->first();
+            $user->roles()->attach($student_role);
+        }
+
         // add LearningGoals to new user
         $learningGoals = LearningGoal::all();
         $defaultLearningGoals = [];
         $defaultProgressLevel = ProgressLevel::where('default', '=', true)->first();
 
-        foreach($learningGoals as $learningGoal) {
+        foreach($learningGoals as $learningGoal) 
+        {
             $defaultLearningGoals[$learningGoal["id"]] = ['progress_level_id' => $defaultProgressLevel->id];
         }
 
@@ -60,7 +77,7 @@ class AuthController extends Controller
         }
         catch(\Exception $e)
         {
-            return response()->json(['message' => 'Error while sending mail: ' . $e->getMessage()], 500);
+            return response()->json(['message' => 'Fout tijdens verzenden mail: ' . $e->getMessage()], 500);
         }
 
         return $this->respondWithToken($token, $user);
@@ -70,19 +87,26 @@ class AuthController extends Controller
     {
         $validatedInput = $request->validated();
 
-        if($token = $this->guard()->attempt($validatedInput)) 
+        try 
         {
-            $user = $this->guard()->user();
-            return $this->respondWithToken($token, new UserResource($user));
+            if($token = $this->guard()->attempt($validatedInput)) 
+            {
+                $user = $this->guard()->user();
+                return $this->respondWithToken($token, new UserResource($user));
+            }
+        } 
+        catch (\Exception $e) 
+        {
+            return response()->json(['message' => 'Fout bij het genereren van token'], 500);
         }
 
-        return response()->json(['errors' => ['Invalid Login Credentials']], 401);
+        return response()->json(['message' => ['Ongeldige gebruikersnaam / wachtwoord combinatie']], 401);
     }
 
     public function logout()
     {
         $this->guard()->logout();
-        return response()->json(['message' => 'Successfully logged out']);
+        return response()->json(['message' => 'U bent nu uitgelogd']);
     }
 
     protected function respondWithToken($token, $user)

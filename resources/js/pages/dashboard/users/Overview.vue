@@ -2,7 +2,7 @@
     <div>
         <h3>Gebruikersoverzicht</h3>
 
-        <b-button class="my-2 h-75" variant="outline-primary" to="/dashboard/users/create">Nieuwe gebruiker</b-button>
+        <b-button class="my-2 h-75" variant="outline-primary" to="/dashboard/users/invite">Nieuwe gebruiker uitnodigen</b-button>
 
         <b-form inline>
             <!-- <b-pagination
@@ -90,7 +90,7 @@
                         sortable: true,
                         label: 'Rollen',
                         formatter: (value) => {
-                            return value.map(a => a).join(', ');
+                            return value.map(a => a.name).join(', ');
                         },
                     },
                     {   
@@ -112,11 +112,8 @@
             // REFACTOREN!
             this.$store.dispatch('UsersStore/fetchUsers').then(() => {
                 this.fetchUsersFromStore();
-
-                this.$store.dispatch('RolesStore/fetchRoles').then(() => {
-                    
-                });
             });
+            this.$store.dispatch('RolesStore/fetchRoles');
         },
         methods: {
             fetchUsersFromStore() {
