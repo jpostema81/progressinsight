@@ -11,7 +11,7 @@ const messageHandler = function({ message, variant })
         title: 'Notificatie',
         toaster: 'b-toaster-top-right',
         solid: true,
-        autoHideDelay: 5000,
+        autoHideDelay: 2000,
         appendToast: true,
         variant,
     })

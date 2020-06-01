@@ -37,16 +37,16 @@ export const UsersStore = {
         userUpdateRequest: (state) => {
             state.status = 'updating';
         },
-        userUpdateSuccess: (state, user) => {
+        userUpdateSuccess: (state) => {
             state.status = 'success';
         },
-        userUpdateError: (state, errors) => {
+        userUpdateError: (state) => {
             state.status = 'error';
         },
     },
     actions: 
     {
-        fetchUsers({commit, state, rootState, rootGetters}) 
+        fetchUsers({commit}) 
         {
             return new Promise((resolve, reject) => {
                 let url = `/api/admin/users`;
@@ -64,7 +64,7 @@ export const UsersStore = {
                 });
             });   
         },
-        deleteUser({commit, state, rootState, rootGetters}, userId) 
+        deleteUser({commit}, userId) 
         {
             return new Promise((resolve, reject) => {
                 let url = `/api/admin/users/${userId}`;
@@ -83,7 +83,7 @@ export const UsersStore = {
                 });
             });   
         },
-        deleteUsers({ dispatch, commit, state, rootState, rootGetters }, userIds) {
+        deleteUsers({ dispatch }, userIds) {
             return new Promise((resolve, reject) => {
                 let promises = [];
 
@@ -99,7 +99,7 @@ export const UsersStore = {
             });
         },
         // register a new user
-        register: function({commit, dispatch, context}, user) {
+        register: function({commit}, user) {
             commit('ErrorsStore/resetErrors', null, { root: true });
             commit('registerRequest');
 
@@ -123,7 +123,7 @@ export const UsersStore = {
                 });
             });
         },
-        updateUser: function({commit, dispatch, context}, user) {
+        updateUser: function({commit}, user) {
             commit('ErrorsStore/resetErrors', null, { root: true });
             commit('userUpdateRequest');
 

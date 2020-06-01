@@ -34,7 +34,7 @@ export const LearningGoalsStore = {
     },
     actions: 
     {
-        fetchLearningGoals({commit, state, rootState, rootGetters}) 
+        fetchLearningGoals({commit, rootState}) 
         {
             return new Promise((resolve, reject) => {
                 let url = `/api/users/${rootState.AuthenticationStore.user.id}/learning_goals`;
@@ -53,7 +53,7 @@ export const LearningGoalsStore = {
                 });
             });   
         },
-        fetchTopics({commit, state, rootState, rootGetters}) 
+        fetchTopics({commit}) 
         {
             return new Promise((resolve, reject) => {
                 let url = '/api/topics';
@@ -72,7 +72,7 @@ export const LearningGoalsStore = {
                 });
             });   
         },
-        fetchProgressLevels({commit, state, rootState, rootGetters}) 
+        fetchProgressLevels({commit}) 
         {
             return new Promise((resolve, reject) => {
                 let url = '/api/progress_levels';
@@ -91,7 +91,7 @@ export const LearningGoalsStore = {
                 });
             });   
         },
-        updateUserLearningGoal({ commit, state, rootState, rootGetters }, { progressLevelId, learningGoalId }) 
+        updateUserLearningGoal({ commit, rootState }, { progressLevelId, learningGoalId }) 
         {
             return new Promise((resolve, reject) => {
                 let url = `/api/users/${rootState.AuthenticationStore.user.id}/learning_goals/${learningGoalId}`;
@@ -117,20 +117,22 @@ export const LearningGoalsStore = {
     },
     getters: 
     {
-        learningGoals: (state, commit, rootState) => {
+        learningGoals: (state) => {
             return state.learningGoals;
         },
         progressLevels: (state) => {
             return state.progressLevels;
         },
+        getProgressPercentageByProgressLevelId: (state) => {
+            return (progressId) => {
+                return state.progressLevels.find(element => element.id == progressId).percentage;
+            }
+        },
         topics: (state) => {
             return state.topics;
         },
-        hundredPercentProgressLevel: (state) => {
-            return state.progressLevels.find((progressLevel) => { return progressLevel.percentage == 100; });
-        },
         // tells whether all required data is loaded into the store state
-        isBusy: (state) => {
+        isBusy: () => {
             return learningGoals.length && progressLevels.length && topics.length;
         }
     }

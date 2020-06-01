@@ -58,7 +58,6 @@
             ...mapGetters({
                 topics: 'LearningGoalsStore/topics',
                 learningGoals: 'LearningGoalsStore/learningGoals',
-                hundredPercentProgressLevel: 'LearningGoalsStore/hundredPercentProgressLevel',
             }),
         },
     }

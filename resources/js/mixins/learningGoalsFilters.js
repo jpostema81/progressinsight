@@ -4,12 +4,14 @@ export default {
             return this.learningGoals.filter((learningGoal) => { return learningGoal.topic.id === topic.id });
         },
         // count users LearningGoals which have a ProgressLevel of 100%
-        getCompletedLearningGoals() {
-            return this.learningGoals.filter((learningGoal) => learningGoal.progress_level.id === this.hundredPercentProgressLevel.id);
+        getLearningGoalsTotalProgressPercentage() {
+            const reducer = (accumulator, learningGoal) => +accumulator + +this.getProgressPercentageByProgressLevelId(learningGoal.progress_level.id);
+            return (this.learningGoals.reduce(reducer, 0) / (this.learningGoals.length * 100) * 100).toFixed();
         },
-        // count users LearningGoals by topic which have a ProgressLevel of 100%
-        getCompletedLearningGoalsByTopic(topic) {
-            return this.getLearningGoalsByTopic(topic).filter((learningGoal) => learningGoal.progress_level.id === this.hundredPercentProgressLevel.id);
+        // count progress percentages of all users LearningGoals by topic
+        getLearningGoalsTotalProgressByTopicPercentage(topic) {
+            const reducer = (accumulator, learningGoal) => +accumulator + +this.getProgressPercentageByProgressLevelId(learningGoal.progress_level.id);
+            return (this.getLearningGoalsByTopic(topic).reduce(reducer, 0) / (this.getLearningGoalsByTopic(topic).length * 100) * 100).toFixed();
         },
     }
 }

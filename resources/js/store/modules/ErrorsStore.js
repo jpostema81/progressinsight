@@ -18,7 +18,7 @@ export const ErrorsStore = {
     },
     getters: 
     {
-        getErrors: (state, commit, rootState) => {
+        getErrors: (state) => {
             return state.errors;
         },
     }

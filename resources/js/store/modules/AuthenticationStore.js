@@ -29,7 +29,7 @@ export const AuthenticationStore =
     actions:
     {
         // authenticate by JWT token (token from login or local storage)
-        authenticateByToken: ({commit, state, dispatch}) => 
+        authenticateByToken: ({commit, dispatch}) => 
         {
             commit('ErrorsStore/resetErrors', null, { root: true });
             commit('authRequest');
@@ -51,7 +51,7 @@ export const AuthenticationStore =
             });
         },
         // authenticate by user login (email & password)
-        login: ({commit, dispatch}, user) => 
+        login: ({commit}, user) => 
         {
             return new Promise((resolve, reject) => 
             { 
@@ -71,23 +71,17 @@ export const AuthenticationStore =
                     resolve(resp);
                 })
                 .catch(error => {
-                    commit('ErrorsStore/setErrors', errors, { root: true });   
                     commit('authError');
                     reject(error);
                 });
             });
         },
-        logout: function({commit, dispatch, context}, showToast = false) {
+        logout: function({commit}) {
             // no serverside logout to keep tokens stateless.
             // Just remove tokens from client
             localStorage.removeItem('user-token');
-            
-            if(showToast) 
-            {
-                MessageBus.$emit('message', { message: 'U bent nu uitgelogd', variant: 'success' });
-            }
-
             commit('logout');
+            MessageBus.$emit('message', { message: 'U bent nu uitgelogd', variant: 'success' });
             router.push('/login');
         },
     },

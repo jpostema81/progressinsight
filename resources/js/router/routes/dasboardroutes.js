@@ -1,11 +1,6 @@
 import Vue from 'vue';
 
 const routes = [
-    // {
-    //     path: '/dashboard',
-    //     name: 'dashboard',
-    //     component: Vue.component('Dashboard', require( '../../pages/dashboard/Dashboard.vue').default)
-    // },
     {
         path: '/dashboard/users/overview',
         alias: '/users_overview',
@@ -23,6 +18,12 @@ const routes = [
         alias: '/users_edit',
         name: 'users_edit',
         component: Vue.component('UsersCreate', require( '../../pages/dashboard/Users/Edit.vue').default)
+    },
+    {
+        path: '/dashboard/invitations/overview',
+        alias: '/invitations_overview',
+        name: 'invitations_overview',
+        component: Vue.component('InvitationsOverview', require( '../../pages/dashboard/Invitations/Overview.vue').default)
     },
 ];
 

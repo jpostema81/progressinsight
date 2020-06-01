@@ -15,7 +15,7 @@ export const RolesStore = {
     },
     actions:
     {
-        fetchRoles({commit, state, rootState, rootGetters}) 
+        fetchRoles({commit}) 
         {
             return new Promise((resolve, reject) => {
                 let url = `/api/admin/roles`;

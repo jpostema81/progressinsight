@@ -68,6 +68,16 @@
                         ]
                     },
                     {
+                        title: 'Uitnodigingen',
+                        icon: 'fa fa-file-alt',
+                        child: [
+                            {
+                                href: '/dashboard/invitations/overview',
+                                title: 'Overzicht'
+                            },
+                        ]
+                    },
+                    {
                         href: '/dashboard/profile',
                         title: 'Profiel',
                         icon: 'fa fa-user'

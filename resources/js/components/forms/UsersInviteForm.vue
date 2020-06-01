@@ -62,10 +62,5 @@ export default {
             return this.$store.state.RolesStore.roles;
         },
     },
-    methods: {
-        inviteUsers() {
-
-        }
-    },
 };
 </script>

@@ -6,47 +6,36 @@ export const InvitesStore = {
     namespaced: true,
     state: 
     {
-        users: [],
+        invites: [],
         status: '',
     },
     mutations: 
     {
-        setUsers(state, users) 
+        setInvites(state, invites) 
         {
-            state.users = users;
+            state.invites = invites;
         },
        
-        // removeUser mutations
-        removeUser: (state, userId)  =>
+        // removeInvite mutations
+        removeInvite: (state, inviteId)  =>
         {
-            state.users = state.users.filter(item => item.id != userId)
+            state.invites = state.invites.filter(item => item.id != inviteId)
         },
 
-        // registration state
-        registerRequest: (state) => {
+        // send invite state
+        sendInviteRequest: (state) => {
             state.status = 'registering';
         },
-        registerSuccess: (state) => {
+        sendInviteSuccess: (state) => {
             state.status = 'success';
         },
-        registerError: (state) => {
-            state.status = 'error';
-        },
-
-        // user update state
-        userUpdateRequest: (state) => {
-            state.status = 'updating';
-        },
-        userUpdateSuccess: (state, user) => {
-            state.status = 'success';
-        },
-        userUpdateError: (state, errors) => {
+        sendInviteError: (state) => {
             state.status = 'error';
         },
     },
     actions: 
     {
-        fetchUsers({commit, state, rootState, rootGetters}) 
+        fetchInvites({commit}) 
         {
             return new Promise((resolve, reject) => {
                 let url = `/api/admin/users`;
@@ -64,31 +53,12 @@ export const InvitesStore = {
                 });
             });   
         },
-        deleteUser({commit, state, rootState, rootGetters}, userId) 
-        {
-            return new Promise((resolve, reject) => {
-                let url = `/api/admin/users/${userId}`;
-
-                axios({
-                    method: 'delete',
-                    url: url,
-                }).then(messages => {
-                    commit('removeUser', userId);
-                    MessageBus.$emit('message', {message: 'User deleted', variant: 'success'});
-                    resolve();
-                }).catch(function (error) {
-                    MessageBus.$emit('message', {message: 'Something went wrong', variant: 'danger'});
-                    commit('ErrorsStore/setErrors', error, { root: true });
-                    reject(error);
-                });
-            });   
-        },
-        deleteUsers({ dispatch, commit, state, rootState, rootGetters }, userIds) {
+        deleteInvite({ dispatch }, inviteIds) {
             return new Promise((resolve, reject) => {
                 let promises = [];
 
-                userIds.forEach(userId => {
-                    promises.push(dispatch('deleteUser' , userId));
+                inviteIds.forEach(inviteId => {
+                    promises.push(dispatch('deleteInvite' , inviteId));
                 });
 
                 Promise.all(promises).then((values) => {
@@ -98,16 +68,16 @@ export const InvitesStore = {
                 });
             });
         },
-        // register a new user
-        register: function({commit, dispatch, context}, user) {
+        // invite a new user
+        invite: function({commit}, invites) {
             commit('ErrorsStore/resetErrors', null, { root: true });
-            commit('registerRequest');
+            commit('sendInviteRequest');
 
             return new Promise((resolve, reject) => { 
-                axios({ url: '/api/register', data: user, method: 'POST' }).then(resp => 
+                axios({ url: '/api/invite', data: user, method: 'POST' }).then(resp => 
                 {
                     commit('ErrorsStore/resetErrors', null, { root: true });
-                    commit('registerSuccess');
+                    commit('sendInviteSuccess');
 
                     resolve(resp);
                 })
@@ -118,49 +88,15 @@ export const InvitesStore = {
                     });
                     
                     commit('ErrorsStore/setErrors', errors.response.data.errors, { root: true });
-                    commit('registerError');
+                    commit('sendInviteError');
                     reject(errors);
                 });
             });
-        },
-        updateUser: function({commit, dispatch, context}, user) {
-            commit('ErrorsStore/resetErrors', null, { root: true });
-            commit('userUpdateRequest');
-
-            return new Promise((resolve, reject) => {
-                axios({ 
-                    url: '/api/users/' + user.id, 
-                    data: user,
-                    method: 'PATCH'}).then((resp) => {
-                        commit('ErrorsStore/resetErrors', null, { root: true });
-                        commit('userUpdateSuccess', user);
-
-                        setTimeout(() => {
-                            // display success message after route change completes
-                            MessageBus.$emit('message',
-                                { message: 'Profiel succesvol bijgewerkt', variant: 'success' }
-                            );
-                        });
-
-                        resolve(resp);
-                    })
-                    .catch((error) => {
-                        MessageBus.$emit('message',
-                        {
-                            message: 'Er ging iets fout tijdens het bijwerken van uw profielgegevens',
-                            variant: 'danger',
-                        });
-
-                        commit('ErrorsStore/resetErrors', error, { root: true });
-                        commit('userUpdateError', error.response.data.errors);
-                        reject(error);
-                    });
-                });
-        },
+        },       
     },
     getters: 
     {
-        getUserById: (state) => (userId) => {
+        getInviteById: (state) => (userId) => {
             return state.users.find(item => item.id == userId);
         },
     },

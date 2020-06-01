@@ -40,7 +40,6 @@
 
             <b-form-group label-cols-sm="3" label="Rol">
                 <multiselect v-model="data.roles" :options="roles" 
-                    @input="updateSelectedRoles"
                     placeholder="Rollen" 
                     label="name" track-by="id" :multiple="true" :taggable="false">
                 </multiselect>
@@ -77,15 +76,6 @@ export default {
         roles() {
             return this.$store.state.RolesStore.roles;
         },
-    },
-    methods: {
-        updateSelectedRoles() {
-
-        }
-    },
-    mounted() {
-        // this.$store.dispatch('companies/getCompanies');
-        // this.$store.dispatch('roles/getRoles');
     },
 };
 </script>
