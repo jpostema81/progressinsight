@@ -58,7 +58,7 @@
                     </b-progress-bar>
                 </b-progress>
 
-                <b-progress class="mt-2" height="2rem" :max="learningGoals.length" show-value>
+                <b-progress class="mt-2" height="2rem" :max="topics.length * 100" show-value>
                     <b-progress-bar
                         v-for="(topic, index) in topics"
                         :key="topic.id"
