@@ -24,7 +24,6 @@
                 description="Selecteer welke rollen de uit te nodigen gebruikers toegekend krijgen"
             >
                 <multiselect v-model="data.roles" :options="roles" 
-                    @input="inviteUsers"
                     placeholder="Rollen" 
                     label="name" track-by="id" :multiple="true" :taggable="false">
                 </multiselect>

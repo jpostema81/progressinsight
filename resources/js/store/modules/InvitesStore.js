@@ -69,7 +69,11 @@ export const InvitesStore = {
             });
         },
         // invite a new user
-        invite: function({commit}, invites) {
+        invite: function({commit}, { emailAddresses, roles }) {
+            console.log(emailAddresses);
+            console.log(roles);
+            return;
+            
             commit('ErrorsStore/resetErrors', null, { root: true });
             commit('sendInviteRequest');
 
