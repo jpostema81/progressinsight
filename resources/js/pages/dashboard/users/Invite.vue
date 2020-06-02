@@ -21,7 +21,7 @@
         data() {
             return {
                 inviteData: {
-                    emailAddresses: '',
+                    email: '',
                     roles: [],
                 },
                 submitted: false,
@@ -38,10 +38,10 @@
             {
                 this.submitted = true;
 
-                // this.$store.dispatch('InvitesStore/invite', this.inviteData).then(() => 
-                // {
-                //     this.$router.push('/dashboard/invites/overview');
-                // });
+                this.$store.dispatch('InvitesStore/invite', this.inviteData).then(() => 
+                {
+                    this.$router.push('/dashboard/invites/overview');
+                });
             },
         },
     }

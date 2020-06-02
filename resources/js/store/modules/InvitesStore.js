@@ -69,16 +69,14 @@ export const InvitesStore = {
             });
         },
         // invite a new user
-        invite: function({commit}, { emailAddresses, roles }) {
-            console.log(emailAddresses);
-            console.log(roles);
-            return;
-            
+        invite: function({commit}, { email, roles }) {
             commit('ErrorsStore/resetErrors', null, { root: true });
             commit('sendInviteRequest');
 
             return new Promise((resolve, reject) => { 
-                axios({ url: '/api/invite', data: user, method: 'POST' }).then(resp => 
+                const data = { emails: email.split(',').map(elem => { return { email: elem }}), roles };
+
+                axios({ url: '/api/admin/invites', data, method: 'POST' }).then(resp => 
                 {
                     commit('ErrorsStore/resetErrors', null, { root: true });
                     commit('sendInviteSuccess');
@@ -86,12 +84,7 @@ export const InvitesStore = {
                     resolve(resp);
                 })
                 .catch(errors => 
-                {
-                    Object.values(errors.response.data.errors).forEach(error => {
-                        MessageBus.$emit('message', { message: error, variant: 'danger' }); 
-                    });
-                    
-                    commit('ErrorsStore/setErrors', errors.response.data.errors, { root: true });
+                {                    
                     commit('sendInviteError');
                     reject(errors);
                 });

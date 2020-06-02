@@ -6,7 +6,7 @@
             <div role="tablist">
                 <b-card no-body class="my-2" v-for="(topic, index) in topics" :key="topic.id">
                     <b-card-header header-tag="header" class="p-1" role="tab">
-                        <b-button block href="#" v-b-toggle="'accordion-'+index" :variant="getTopicCardVariant(topic)" v-html="`${getLearningGoalsTotalProgressByTopicPercentage(topic)}%`"></b-button>
+                        <b-button block href="#" v-b-toggle="'accordion-'+index" :variant="getTopicCardVariant(topic)" v-html="`${topic.name} ${getLearningGoalsTotalProgressByTopicPercentage(topic)}%`"></b-button>
                     </b-card-header>
                     <b-collapse :id="'accordion-'+index" visible accordion="my-accordion" role="tabpanel">
                         <b-card-body>

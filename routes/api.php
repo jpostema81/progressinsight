@@ -42,5 +42,5 @@ Route::group(['middleware' => ['auth:api', 'role:admin']], function()
 
     Route::resource('/admin/roles', 'Admin\RoleController');
 
-    Route::resource('/admin/invites', 'Admin\InviteController');
+    Route::resource('/admin/invites', 'Admin\InvitesController');
 });

@@ -14,7 +14,7 @@
                 label="Emailadres"
                 description="Geef een of meerdere emailadressen (komma gescheiden) op om een uitnodiging per email te versturen"
             >
-                <b-form-input type="text" v-model="data.emailAddresses" required name="email" class="form-control" :class="{ 'is-invalid': submitted && errors.hasOwnProperty('email') }" />
+                <b-form-input type="text" v-model="data.email" required name="email" class="form-control" :class="{ 'is-invalid': submitted && errors.hasOwnProperty('email') }" />
                 <div v-if="submitted && errors.hasOwnProperty('email')" class="invalid-feedback">{{ errors.email.join(' ') }}</div>
             </b-form-group>
 
