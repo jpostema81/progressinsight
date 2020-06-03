@@ -15,7 +15,7 @@
                 description="Geef een of meerdere emailadressen (komma gescheiden) op om een uitnodiging per email te versturen"
             >
                 <b-form-input type="text" v-model="data.email" required name="email" class="form-control" :class="{ 'is-invalid': submitted && errors.hasOwnProperty('email') }" />
-                <div v-if="submitted && errors.hasOwnProperty('email')" class="invalid-feedback">{{ errors.email.join(' ') }}</div>
+                <div v-if="submitted && Object.keys(errors).filter(error => error.startsWith('emails.')).length" class="text-danger">{{ Object.keys(errors).filter(key => key.startsWith('emails')).map(elem => errors[elem]).join() }}</div>
             </b-form-group>
 
             <b-form-group 
@@ -27,6 +27,7 @@
                     placeholder="Rollen" 
                     label="name" track-by="id" :multiple="true" :taggable="false">
                 </multiselect>
+                <div v-if="submitted && errors.hasOwnProperty('roles')" class="text-danger">{{ errors.roles.join(' ') }}</div>
             </b-form-group>
         </b-card>
     </b-form>

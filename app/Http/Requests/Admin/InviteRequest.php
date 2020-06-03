@@ -25,8 +25,7 @@ class InviteRequest extends FormRequest
     {
         // TODO: custom role validators toevoegen?
         return [
-            'emails' => 'required|array|min:1',
-            'email.*' => 'required|string|email|max:255|unique:users',
+            'emails.*.email' => 'required|string|email|max:255|unique:users',
             'roles' => 'required|array|min:1',
         ];
     }

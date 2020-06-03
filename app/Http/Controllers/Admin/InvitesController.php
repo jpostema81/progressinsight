@@ -38,6 +38,7 @@ class InvitesController extends Controller
     public function store(InviteRequest $request)
     {
         $validatedInput = $request->validated();
+        // dd($validatedInput);
 
         $invitation = new Invitation();
         //$category->name = Input::get('name');

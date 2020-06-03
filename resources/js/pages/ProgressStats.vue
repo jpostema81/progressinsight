@@ -26,7 +26,7 @@
         mixins: [learningGoalsFilters],
         mounted() {
             this.chartPercentages = this.topics.map(
-                topic => (this.getCompletedLearningGoalsByTopic(topic).length / this.getLearningGoalsByTopic(topic).length * 100).toFixed()
+                topic => this.getLearningGoalsTotalProgressByTopicPercentage(topic)
             );
 
             this.chartData = {
@@ -58,6 +58,7 @@
             ...mapGetters({
                 topics: 'LearningGoalsStore/topics',
                 learningGoals: 'LearningGoalsStore/learningGoals',
+                getProgressPercentageByProgressLevelId: 'LearningGoalsStore/getProgressPercentageByProgressLevelId',
             }),
         },
     }
