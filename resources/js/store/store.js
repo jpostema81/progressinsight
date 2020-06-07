@@ -7,7 +7,7 @@ import { AuthenticationStore } from './modules/AuthenticationStore';
 import { UsersStore } from './modules/UsersStore';
 import { ErrorsStore } from './modules/ErrorsStore';
 import { RolesStore } from './modules/RolesStore';
-import { InvitesStore } from './modules/InvitesStore';
+import { InvitationsStore } from './modules/InvitationsStore';
 
 
 Vue.use(Vuex);
@@ -20,6 +20,6 @@ export default new Vuex.Store({
         UsersStore,
         ErrorsStore,
         RolesStore,
-        InvitesStore,
+        InvitationsStore,
     },
 });

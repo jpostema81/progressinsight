@@ -24,6 +24,7 @@ window.onload = function() {
   Vue.use(VueSidebarMenu);
 
   const app = new Vue({
+    el: '#app',
     store,
     router,
     created() {
@@ -48,7 +49,7 @@ window.onload = function() {
       }
     },
     render: (h) => h(App),
-  }).$mount('#app');
+  });
 
   MessageBus.$app = app;
 };

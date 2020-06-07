@@ -10,6 +10,7 @@ const dashboardRoutes = require('../router/routes/dasboardroutes').default;
 
 
 const router = new VueRouter({
+    mode: 'history',
 	routes: [
         {   
             path: '/',
