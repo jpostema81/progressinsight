@@ -14,4 +14,9 @@ class Invitation extends Model
     protected $fillable = [
         'email',
     ];
+
+    public function roles() 
+    {
+        return $this->belongsToMany(Role::class, 'invitations_roles');
+    }
 }

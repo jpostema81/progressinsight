@@ -74,4 +74,9 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->attributes['password'] = Hash::needsRehash($value) ? Hash::make($value) : $value;
     }
+
+    public function roles() 
+    {
+        return $this->belongsToMany(Role::class, 'users_roles');
+    }
 }

@@ -44,10 +44,13 @@ class InvitationsController extends Controller
         foreach($validatedInput["emails"] as $email)
         {
             $activationToken = bin2hex(random_bytes(20));
+            $roles = array_map(function($value) { return $value["id"]; }, $request->get("roles"));
+
             $invitation = new Invitation();
             $invitation->email = $email["email"];
             $invitation->activation_token = $activationToken;
             $invitation->save();
+            $invitation->roles()->sync($roles);
 
             try 
             {

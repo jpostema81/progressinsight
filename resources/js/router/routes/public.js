@@ -1,7 +1,5 @@
 import Vue from 'vue';
 
-const NotFound = { template: "<div>not found</div>" };
-
 const routes = [
     {
         path: '/login',
@@ -20,9 +18,6 @@ const routes = [
         name: 'activate_invitation',
         component: Vue.component('AcitvateInvitation', require( '../../pages/Invitations/AcitvateInvitation.vue').default)
     },
-    {   path: "*", 
-        component: NotFound ,
-    }
 ];
 
 export default routes.map(route => 

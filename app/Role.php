@@ -26,5 +26,10 @@ class Role extends Model
 
     public function users() {
         return $this->belongsToMany(User::class, 'users_roles');
-     }
+    }
+
+    public function invitations() 
+    {
+        return $this->belongsToMany(Invitation::class, 'invitations_roles');
+    }
 }

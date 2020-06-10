@@ -26,8 +26,8 @@
         },
         components: { UserForm },
         computed: {
-            user() {
-                const user = this.$store.getters['UsersStore/getUserById'](this.$route.params.blogPostId);
+            invitation() {
+                const invitation = this.$store.getters['InvitationsStore/getInvitationByToken'](this.$route.params.activationToken);
                 this.userData = JSON.parse(JSON.stringify(user));
                 return user;
             },

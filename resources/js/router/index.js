@@ -7,6 +7,7 @@ Vue.use(VueRouter);
 const publicRoutes = require('../router/routes/public').default;
 const privateRoutes = require('../router/routes/private').default;
 const dashboardRoutes = require('../router/routes/dasboardroutes').default;
+const NotFound = { template: "<div>Page not found</div>" };
 
 
 const router = new VueRouter({
@@ -22,6 +23,10 @@ const router = new VueRouter({
             path: '/dashboard/',
             component: Vue.component('Dashboard', require( '../layouts/DashboardLayout.vue').default),
             children: dashboardRoutes,
+        },
+        {   
+            path: "*", 
+            component: NotFound ,
         },
     ],
     scrollBehavior: function(to, from, savedPosition) 
