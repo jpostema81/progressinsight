@@ -23,6 +23,8 @@ Route::post('/login', 'Auth\Api\AuthController@login')->name('api.login');
 Route::post('/logout', 'Auth\Api\AuthController@logout')->name('api.logout');
 Route::post('/get_user_by_token', 'Auth\Api\AuthController@getUserByToken')->name('api.get_user_by_token');
 
+Route::resource('/user_invitations', 'UserInvitationController');
+
 Route::group(['middleware' => ['auth:api']], function() 
 {
     Route::resource('/learning_goals', 'LearningGoalsController');

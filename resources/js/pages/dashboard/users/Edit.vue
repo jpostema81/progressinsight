@@ -2,7 +2,7 @@
     <div>
         <h3 class="mb-4">Gebruiker <i>{{ user.full_name }}</i> bewerken</h3>
 
-        <user-form v-model="userData" submitted="submitted"></user-form>
+        <user-form v-model="userData" :submitted="submitted" :config="config"></user-form>
 
         <div class="form-group">
             <b-button variant="primary" @click="updateUser" :disabled="status === 'updating'">Bijwerken</b-button>
@@ -22,6 +22,13 @@
             return {
                userData: {},
                submitted: false,
+               config: {
+                    firstName: true,
+                    lastName: true,
+                    email: true,
+                    password: true,
+                    roles: true,
+                },
             }
         },
         components: { UserForm },

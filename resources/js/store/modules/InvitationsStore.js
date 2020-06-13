@@ -30,6 +30,17 @@ export const InvitationsStore = {
         sendInvitationError: (state) => {
             state.status = 'error';
         },
+
+        // send invitation activation request state
+        sendInvitationActivationRequest: (state) => {
+            state.status = 'sending';
+        },
+        sendInvitationActivationSuccess: (state) => {
+            state.status = 'success';
+        },
+        sendInvitationActivationError: (state) => {
+            state.status = 'error';
+        },
     },
     actions: 
     {
@@ -87,7 +98,26 @@ export const InvitationsStore = {
                     reject(errors);
                 });
             });
-        },       
+        }, 
+        activateInvitation: function({commit}, payload) {
+            commit('ErrorsStore/resetErrors', null, { root: true });
+            commit('sendInvitationActivationRequest');
+
+            return new Promise((resolve, reject) => { 
+                axios({ url: '/api/user_invitations/', data: payload, method: 'POST' }).then(resp => 
+                {
+                    commit('ErrorsStore/resetErrors', null, { root: true });
+                    commit('sendInvitationActivationSuccess');
+
+                    resolve(resp);
+                })
+                .catch(errors => 
+                {                    
+                    commit('sendInvitationActivationError');
+                    reject(errors);
+                });
+            });
+        },      
     },
     getters: 
     {
