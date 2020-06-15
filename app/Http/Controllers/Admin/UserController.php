@@ -32,14 +32,43 @@ class UserController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Register a new user
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\RegisterUser  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
-        //
+    public function store(RegisterUser $request)
+    {  
+        $validatedInput = $request->validated();
+        $user = User::create($validatedInput);
+
+        $roles = array_map(function($value) { return $value["id"]; }, $request->get("roles"));
+        $user->roles()->sync($roles);
+
+        // add LearningGoals to new user
+        $learningGoals = LearningGoal::all();
+        $defaultLearningGoals = [];
+        $defaultProgressLevel = ProgressLevel::where('default', '=', true)->first();
+
+        foreach($learningGoals as $learningGoal) 
+        {
+            $defaultLearningGoals[$learningGoal["id"]] = ['progress_level_id' => $defaultProgressLevel->id];
+        }
+
+        $user->learningGoals()->sync($defaultLearningGoals);
+        $token = auth()->tokenById($user->id);
+
+        try 
+        {
+            $emailAddress = $validatedInput['email'];
+            Mail::to($emailAddress)->send(new RegistrationConfirmation());
+        }
+        catch(\Exception $e)
+        {
+            return response()->json(['message' => 'Fout tijdens verzenden mail: ' . $e->getMessage()], 500);
+        }
+
+        return $this->respondWithToken($token, $user);
     }
 
     /**

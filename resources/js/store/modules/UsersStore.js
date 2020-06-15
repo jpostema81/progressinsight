@@ -104,7 +104,7 @@ export const UsersStore = {
             commit('registerRequest');
 
             return new Promise((resolve, reject) => { 
-                axios({ url: '/api/register', data: user, method: 'POST' }).then(resp => 
+                axios({ url: '/api/users', data: user, method: 'POST' }).then(resp => 
                 {
                     commit('ErrorsStore/resetErrors', null, { root: true });
                     commit('registerSuccess');

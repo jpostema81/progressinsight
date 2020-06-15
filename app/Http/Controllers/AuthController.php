@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Auth\Api;
+namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use App\Mail\RegistrationConfirmation;
 use App\Http\Resources\UserResource;
-use App\Http\Requests\Auth\RegisterUser;
 use App\Http\Requests\Auth\Login;
 use App\User;
 use App\LearningGoal;
@@ -35,52 +34,6 @@ class AuthController extends Controller
     public function getUserByToken()
     {
         return response()->json(new UserResource($this->guard()->user()), 200);
-    }
-
-    public function register(RegisterUser $request)
-    {
-        $validatedInput = $request->validated();
-        $user = User::create($validatedInput);
-
-        // sync role(s) when applicable
-        // only sync roles when authenticated from backend
-        // TODO: refactoren naar twee seperate functies voor betere leesbaarheid?
-        if($this->guard()->user() instanceof User) 
-        {
-            $roles = array_map(function($value) { return $value["id"]; }, $request->get("roles"));
-            $user->roles()->sync($roles);
-        }
-        // registration from front-end by not-authenticated user
-        else {
-            // attach default student role
-            $student_role = Role::where('name', 'student')->first();
-            $user->roles()->attach($student_role);
-        }
-
-        // add LearningGoals to new user
-        $learningGoals = LearningGoal::all();
-        $defaultLearningGoals = [];
-        $defaultProgressLevel = ProgressLevel::where('default', '=', true)->first();
-
-        foreach($learningGoals as $learningGoal) 
-        {
-            $defaultLearningGoals[$learningGoal["id"]] = ['progress_level_id' => $defaultProgressLevel->id];
-        }
-
-        $user->learningGoals()->sync($defaultLearningGoals);
-        $token = auth()->tokenById($user->id);
-
-        try 
-        {
-            $emailAddress = $validatedInput['email'];
-            Mail::to($emailAddress)->send(new RegistrationConfirmation());
-        }
-        catch(\Exception $e)
-        {
-            return response()->json(['message' => 'Fout tijdens verzenden mail: ' . $e->getMessage()], 500);
-        }
-
-        return $this->respondWithToken($token, $user);
     }
 
     public function login(Login $request)
