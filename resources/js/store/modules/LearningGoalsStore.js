@@ -36,83 +36,64 @@ export const LearningGoalsStore = {
     {
         fetchLearningGoals({commit, rootState}) 
         {
-            return new Promise((resolve, reject) => {
-                let url = `/api/users/${rootState.AuthenticationStore.user.id}/learning_goals`;
+            let url = `/api/users/${rootState.AuthenticationStore.user.id}/learning_goals`;
 
-                axios({
-                    method: 'get',
-                    url: url,
-                }).then(response => {
-                    commit('setLearningGoals', response.data.data);
-                    resolve();
-                }).catch(function (errors) {
-                    MessageBus.$emit('message', {message: 'There was an error while fetching learninggoals', variant: 'danger'}); 
-
-                    commit('setErrors', errors);
-                    reject(errors);
-                });
-            });   
+            return axios({
+                method: 'get',
+                url: url,
+            }).then(response => {
+                commit('setLearningGoals', response.data.data);
+            }).catch(function (errors) {
+                MessageBus.$emit('message', {message: 'There was an error while fetching learninggoals', variant: 'danger'}); 
+                commit('setErrors', errors);
+            });
         },
         fetchTopics({commit}) 
         {
-            return new Promise((resolve, reject) => {
-                let url = '/api/topics';
+            let url = '/api/topics';
 
-                axios({
-                    method: 'get',
-                    url: url,
-                }).then(response => {
-                    commit('setTopics', response.data.data);
-                    resolve();
-                }).catch(function (errors) {
-                    MessageBus.$emit('message', {message: 'There was an error while fetching topics', variant: 'danger'}); 
-
-                    commit('setErrors', errors);
-                    reject(errors);
-                });
-            });   
+            return axios({
+                method: 'get',
+                url: url,
+            }).then(response => {
+                commit('setTopics', response.data.data);
+            }).catch(function (errors) {
+                MessageBus.$emit('message', {message: 'There was an error while fetching topics', variant: 'danger'}); 
+                commit('setErrors', errors);
+            });
         },
         fetchProgressLevels({commit}) 
         {
-            return new Promise((resolve, reject) => {
-                let url = '/api/progress_levels';
+            let url = '/api/progress_levels';
 
-                axios({
-                    method: 'get',
-                    url: url,
-                }).then(response => {
-                    commit('setProgressLevels', response.data.data);
-                    resolve();
-                }).catch(function (errors) {
-                    MessageBus.$emit('message', {message: 'There was an error while fetching progresslevels', variant: 'danger'}); 
-
-                    commit('setErrors', errors);
-                    reject(errors);
-                });
-            });   
+            return axios({
+                method: 'get',
+                url: url,
+            }).then(response => {
+                commit('setProgressLevels', response.data.data);
+            }).catch(function (errors) {
+                MessageBus.$emit('message', {message: 'There was an error while fetching progresslevels', variant: 'danger'}); 
+                commit('setErrors', errors);
+            });
         },
         updateUserLearningGoal({ commit, rootState }, { progressLevelId, learningGoalId }) 
         {
-            return new Promise((resolve, reject) => {
-                let url = `/api/users/${rootState.AuthenticationStore.user.id}/learning_goals/${learningGoalId}`;
+            let url = `/api/users/${rootState.AuthenticationStore.user.id}/learning_goals/${learningGoalId}`;
 
-                axios({
-                    method: 'put',
-                    url: url,
-                    params: { progressLevelId },
-                }).then(response => {
-                    commit('updateUserLearningGoal', response.data.learningGoal);
-                    resolve();
-                }).catch(function (errors, showToast = false) {
-                    if(showToast) 
-                    {
-                        MessageBus.$emit('message', { message: 'There was an error while updating user learninggoal', variant: 'danger' }); 
-                    }
+            return axios({
+                method: 'put',
+                url: url,
+                params: { progressLevelId },
+            }).then(response => {
+                commit('updateUserLearningGoal', response.data.learningGoal);
+            }).catch(function (errors, showToast = false) {
+                if(showToast) 
+                {
+                    MessageBus.$emit('message', { message: 'There was an error while updating user learninggoal', variant: 'danger' }); 
+                }
 
-                    commit('setErrors', errors);
-                    reject(errors);
-                });
-            });   
+                commit('setErrors', errors);
+            });
         },
     },
     getters: 

@@ -46,23 +46,20 @@ export const InvitationsStore = {
     {
         fetchInvitations({commit}) 
         {
-            return new Promise((resolve, reject) => {
-                let url = `/api/invitations`;
+            let url = `/api/invitations`;
 
-                axios({
-                    method: 'get',
-                    url: url,
-                }).then(response => {
-                    commit('setUsers', response.data.data);
-                    resolve();
-                }).catch(function (errors) {
-                    MessageBus.$emit('message', {message: 'There was an error while fetching users', variant: 'danger'}); 
-                    commit('ErrorsStore/setErrors', errors, { root: true });
-                    reject(errors);
-                });
-            });   
+            return axios({
+                method: 'get',
+                url: url,
+            }).then(response => {
+                commit('setUsers', response.data.data);
+            }).catch(function (errors) {
+                MessageBus.$emit('message', {message: 'There was an error while fetching users', variant: 'danger'}); 
+                commit('ErrorsStore/setErrors', errors, { root: true });
+            });
         },
         deleteInvitation({ dispatch }, invitationIds) {
+            // refactoren
             return new Promise((resolve, reject) => {
                 let promises = [];
 
@@ -82,40 +79,30 @@ export const InvitationsStore = {
             commit('ErrorsStore/resetErrors', null, { root: true });
             commit('sendInvitationRequest');
 
-            return new Promise((resolve, reject) => { 
-                const data = { emails: email.split(',').map(elem => { return { email: elem }}), roles };
+            const data = { emails: email.split(',').map(elem => { return { email: elem }}), roles };
 
-                axios({ url: '/api/admin/invitations', data, method: 'POST' }).then(resp => 
-                {
-                    commit('ErrorsStore/resetErrors', null, { root: true });
-                    commit('sendInvitationSuccess');
-
-                    resolve(resp);
-                })
-                .catch(errors => 
-                {                    
-                    commit('sendInvitationError');
-                    reject(errors);
-                });
+            return axios({ url: '/api/admin/invitations', data, method: 'POST' }).then(resp => 
+            {
+                commit('ErrorsStore/resetErrors', null, { root: true });
+                commit('sendInvitationSuccess');
+            })
+            .catch(errors => 
+            {                    
+                commit('sendInvitationError');
             });
         }, 
         activateInvitation: function({commit}, payload) {
             commit('ErrorsStore/resetErrors', null, { root: true });
             commit('sendInvitationActivationRequest');
 
-            return new Promise((resolve, reject) => { 
-                axios({ url: '/api/user_invitations/', data: payload, method: 'POST' }).then(resp => 
-                {
-                    commit('ErrorsStore/resetErrors', null, { root: true });
-                    commit('sendInvitationActivationSuccess');
-
-                    resolve(resp);
-                })
-                .catch(errors => 
-                {                    
-                    commit('sendInvitationActivationError');
-                    reject(errors);
-                });
+            return axios({ url: '/api/user_invitations/', data: payload, method: 'POST' }).then(resp => 
+            {
+                commit('ErrorsStore/resetErrors', null, { root: true });
+                commit('sendInvitationActivationSuccess');
+            })
+            .catch(errors => 
+            {                    
+                commit('sendInvitationActivationError');
             });
         },      
     },
