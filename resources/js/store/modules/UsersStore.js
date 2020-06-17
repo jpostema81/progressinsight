@@ -113,6 +113,7 @@ export const UsersStore = {
                 })
                 .catch(errors => 
                 {
+                    // kan er uit?
                     Object.values(errors.response.data.errors).forEach(error => {
                         MessageBus.$emit('message', { message: error, variant: 'danger' }); 
                     });
@@ -129,7 +130,7 @@ export const UsersStore = {
 
             return new Promise((resolve, reject) => {
                 axios({ 
-                    url: '/api/users/' + user.id, 
+                    url: '/api/admin/users/' + user.id, 
                     data: user,
                     method: 'PATCH'}).then((resp) => {
                         commit('ErrorsStore/resetErrors', null, { root: true });
@@ -145,6 +146,7 @@ export const UsersStore = {
                         resolve(resp);
                     })
                     .catch((error) => {
+                        // kan er uit?
                         MessageBus.$emit('message',
                         {
                             message: 'Er ging iets fout tijdens het bijwerken van uw profielgegevens',

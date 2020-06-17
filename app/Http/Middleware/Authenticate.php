@@ -47,13 +47,15 @@ class Authenticate extends BaseMiddleware
         {
             if($e instanceof TokenInvalidException) 
             {
-                return response()->json(['message' => 'Authorization Token is niet geldig'], 401);
+                return response()->json(['message' => 'Authentication Token is niet geldig'], 401);
             } 
             else if($e instanceof TokenExpiredException) 
             {
-                return response()->json(['message' => 'Authorization Token is verlopen'], 401);
-            } else {
-                return response()->json(['message' => 'Authorization Token niet gevonden'], 401);
+                return response()->json(['message' => 'Authentication Token is verlopen'], 401);
+            } 
+            else 
+            {
+                return response()->json(['message' => 'Authentication Token niet gevonden'], 401);
             }
         }
 

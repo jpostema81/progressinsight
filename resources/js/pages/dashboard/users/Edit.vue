@@ -26,7 +26,7 @@
                     firstName: true,
                     lastName: true,
                     email: true,
-                    password: true,
+                    password: false,
                     roles: true,
                 },
             }

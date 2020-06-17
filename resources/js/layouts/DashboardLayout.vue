@@ -77,11 +77,6 @@
                             },
                         ]
                     },
-                    {
-                        href: '/dashboard/profile',
-                        title: 'Profiel',
-                        icon: 'fa fa-user'
-                    },
                 ]
             }
         },
