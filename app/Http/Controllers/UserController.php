@@ -6,7 +6,12 @@ use Illuminate\Http\Request;
 use App\User;
 use App\Http\Requests\UpdateUser;
 use App\Http\Requests\Auth\RegisterUser;
-
+use Illuminate\Support\Facades\Auth;
+use App\Role;
+use App\LearningGoal;
+use App\ProgressLevel;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\RegistrationConfirmation;
 
 class UserController extends Controller
 {
@@ -68,7 +73,13 @@ class UserController extends Controller
             return response()->json(['message' => 'Fout tijdens verzenden mail: ' . $e->getMessage()], 500);
         }
 
-        return $this->respondWithToken($token, $user);
+        return response()->json([
+            'access_token' => $token,
+            'token_type'   => 'bearer',
+            'expires_in'   => auth()->factory()->getTTL() * 60,
+            'user'         => $user,
+            'message'      => 'U bent succesvol geregistreerd',
+        ]);
     }
 
     /**
@@ -122,15 +133,5 @@ class UserController extends Controller
     public function destroy($id)
     {
         //
-    }
-
-    protected function respondWithToken($token, $user)
-    {
-        return response()->json([
-            'access_token' => $token,
-            'token_type'   => 'bearer',
-            'expires_in'   => auth()->factory()->getTTL() * 60,
-            'user'         => $user,
-        ]);
     }
 }

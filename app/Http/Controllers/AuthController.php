@@ -4,17 +4,11 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
-use App\Mail\RegistrationConfirmation;
 use App\Http\Resources\UserResource;
 use App\Http\Requests\Auth\Login;
 use App\User;
-use App\LearningGoal;
-use App\ProgressLevel;
-use Mail;
-use App\Role;
 
 // https://jwt-auth.readthedocs.io/en/docs/quick-start/
 
@@ -45,7 +39,14 @@ class AuthController extends Controller
             if($token = $this->guard()->attempt($validatedInput)) 
             {
                 $user = $this->guard()->user();
-                return $this->respondWithToken($token, new UserResource($user));
+
+                return response()->json([
+                    'access_token' => $token,
+                    'token_type'   => 'bearer',
+                    'expires_in'   => auth()->factory()->getTTL() * 60,
+                    'user'         => new UserResource($user),
+                    'message'      => 'U bent ingelogd',
+                ]);
             }
         } 
         catch (\Exception $e) 
@@ -60,16 +61,6 @@ class AuthController extends Controller
     {
         $this->guard()->logout();
         return response()->json(['message' => 'U bent nu uitgelogd']);
-    }
-
-    protected function respondWithToken($token, $user)
-    {
-        return response()->json([
-            'access_token' => $token,
-            'token_type'   => 'bearer',
-            'expires_in'   => auth()->factory()->getTTL() * 60,
-            'user'         => $user,
-        ]);
     }
 
     /**

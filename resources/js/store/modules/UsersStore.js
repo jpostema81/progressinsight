@@ -48,42 +48,35 @@ export const UsersStore = {
     {
         fetchUsers({commit}) 
         {
-            return new Promise((resolve, reject) => {
-                let url = `/api/admin/users`;
+            let url = `/api/admin/users`;
 
-                axios({
-                    method: 'get',
-                    url: url,
-                }).then(response => {
-                    commit('setUsers', response.data.data);
-                    resolve();
-                }).catch(function (errors) {
-                    MessageBus.$emit('message', {message: 'There was an error while fetching users', variant: 'danger'}); 
-                    commit('ErrorsStore/setErrors', errors, { root: true });
-                    reject(errors);
-                });
-            });   
+            return axios({
+                method: 'get',
+                url: url,
+            }).then(response => {
+                commit('setUsers', response.data.data);
+            }).catch(function (errors) {
+                MessageBus.$emit('message', {message: 'There was an error while fetching users', variant: 'danger'}); 
+                commit('ErrorsStore/setErrors', errors, { root: true });
+            });
         },
         deleteUser({commit}, userId) 
         {
-            return new Promise((resolve, reject) => {
-                let url = `/api/admin/users/${userId}`;
+            let url = `/api/admin/users/${userId}`;
 
-                axios({
-                    method: 'delete',
-                    url: url,
-                }).then(messages => {
-                    commit('removeUser', userId);
-                    MessageBus.$emit('message', {message: 'User deleted', variant: 'success'});
-                    resolve();
-                }).catch(function (error) {
-                    MessageBus.$emit('message', {message: 'Something went wrong', variant: 'danger'});
-                    commit('ErrorsStore/setErrors', error, { root: true });
-                    reject(error);
-                });
-            });   
+            return axios({
+                method: 'delete',
+                url: url,
+            }).then(messages => {
+                commit('removeUser', userId);
+                MessageBus.$emit('message', {message: 'User deleted', variant: 'success'});
+            }).catch(function (error) {
+                MessageBus.$emit('message', {message: 'Something went wrong', variant: 'danger'});
+                commit('ErrorsStore/setErrors', error, { root: true });
+            });
         },
         deleteUsers({ dispatch }, userIds) {
+            // refactoren
             return new Promise((resolve, reject) => {
                 let promises = [];
 
@@ -103,58 +96,50 @@ export const UsersStore = {
             commit('ErrorsStore/resetErrors', null, { root: true });
             commit('registerRequest');
 
-            return new Promise((resolve, reject) => { 
-                axios({ url: '/api/users', data: user, method: 'POST' }).then(resp => 
-                {
-                    commit('ErrorsStore/resetErrors', null, { root: true });
-                    commit('registerSuccess');
-
-                    resolve(resp);
-                })
-                .catch(errors => 
-                {
-                    Object.values(errors.response.data.errors).forEach(error => {
-                        MessageBus.$emit('message', { message: error, variant: 'danger' }); 
-                    });
-                    
-                    commit('ErrorsStore/setErrors', errors.response.data.errors, { root: true });
-                    commit('registerError');
-                    reject(errors);
+            return axios({ url: '/api/users', data: user, method: 'POST' }).then(resp => 
+            {
+                commit('ErrorsStore/resetErrors', null, { root: true });
+                commit('registerSuccess');
+            })
+            .catch(errors => 
+            {
+                // kan er uit?
+                Object.values(errors.response.data.errors).forEach(error => {
+                    MessageBus.$emit('message', { message: error, variant: 'danger' }); 
                 });
+                
+                commit('ErrorsStore/setErrors', errors.response.data.errors, { root: true });
+                commit('registerError');
             });
         },
         updateUser: function({commit}, user) {
             commit('ErrorsStore/resetErrors', null, { root: true });
             commit('userUpdateRequest');
 
-            return new Promise((resolve, reject) => {
-                axios({ 
-                    url: '/api/users/' + user.id, 
-                    data: user,
-                    method: 'PATCH'}).then((resp) => {
-                        commit('ErrorsStore/resetErrors', null, { root: true });
-                        commit('userUpdateSuccess', user);
+            return axios({ 
+                url: '/api/admin/users/' + user.id, 
+                data: user,
+                method: 'PATCH'}).then((resp) => {
+                    commit('ErrorsStore/resetErrors', null, { root: true });
+                    commit('userUpdateSuccess', user);
 
-                        setTimeout(() => {
-                            // display success message after route change completes
-                            MessageBus.$emit('message',
-                                { message: 'Profiel succesvol bijgewerkt', variant: 'success' }
-                            );
-                        });
-
-                        resolve(resp);
-                    })
-                    .catch((error) => {
+                    setTimeout(() => {
+                        // display success message after route change completes
                         MessageBus.$emit('message',
-                        {
-                            message: 'Er ging iets fout tijdens het bijwerken van uw profielgegevens',
-                            variant: 'danger',
-                        });
-
-                        commit('ErrorsStore/resetErrors', error, { root: true });
-                        commit('userUpdateError', error.response.data.errors);
-                        reject(error);
+                            { message: 'Profiel succesvol bijgewerkt', variant: 'success' }
+                        );
                     });
+                })
+                .catch((error) => {
+                    // kan er uit?
+                    MessageBus.$emit('message',
+                    {
+                        message: 'Er ging iets fout tijdens het bijwerken van uw profielgegevens',
+                        variant: 'danger',
+                    });
+
+                    commit('ErrorsStore/resetErrors', error, { root: true });
+                    commit('userUpdateError', error.response.data.errors);
                 });
         },
     },

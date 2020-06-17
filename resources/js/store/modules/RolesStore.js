@@ -17,21 +17,17 @@ export const RolesStore = {
     {
         fetchRoles({commit}) 
         {
-            return new Promise((resolve, reject) => {
-                let url = `/api/admin/roles`;
+            let url = `/api/admin/roles`;
 
-                axios({
-                    method: 'get',
-                    url: url,
-                }).then(response => {
-                    commit('setRoles', response.data.data);
-                    resolve();
-                }).catch(function (errors) {
-                    MessageBus.$emit('message', {message: 'There was an error while fetching roles', variant: 'danger'}); 
-                    commit('ErrorsStore/setErrors', errors);
-                    reject(errors);
-                });
-            });   
+            return axios({
+                method: 'get',
+                url: url,
+            }).then(response => {
+                commit('setRoles', response.data.data);
+            }).catch(function (errors) {
+                MessageBus.$emit('message', {message: 'There was an error while fetching roles', variant: 'danger'}); 
+                commit('ErrorsStore/setErrors', errors);
+            });
         },
     },
 }
