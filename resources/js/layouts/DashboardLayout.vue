@@ -63,7 +63,7 @@
                             },
                             {
                                 href: '/dashboard/users/invite',
-                                title: 'Nieuwe gebruiker uitnodigen'
+                                title: 'Nieuwe gebruiker(s) uitnodigen'
                             }
                         ]
                     },

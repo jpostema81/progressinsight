@@ -46,16 +46,15 @@ export const InvitationsStore = {
     {
         fetchInvitations({commit}) 
         {
-            let url = `/api/invitations`;
+            let url = `/api/admin/invitations`;
 
             return axios({
                 method: 'get',
                 url: url,
             }).then(response => {
-                commit('setUsers', response.data.data);
+                commit('setInvitations', response.data.data);
             }).catch(function (errors) {
-                MessageBus.$emit('message', {message: 'There was an error while fetching users', variant: 'danger'}); 
-                commit('ErrorsStore/setErrors', errors, { root: true });
+                reject(errors);
             });
         },
         deleteInvitation({ dispatch }, invitationIds) {
@@ -89,6 +88,7 @@ export const InvitationsStore = {
             .catch(errors => 
             {                    
                 commit('sendInvitationError');
+                reject(errors);
             });
         }, 
         activateInvitation: function({commit}, payload) {
@@ -103,13 +103,14 @@ export const InvitationsStore = {
             .catch(errors => 
             {                    
                 commit('sendInvitationActivationError');
+                reject(errors);
             });
         },      
     },
     getters: 
     {
-        getInvitationById: (state) => (userId) => {
-            return state.users.find(item => item.id == userId);
+        getInvitationById: (state) => (invitationId) => {
+            return state.invitations.find(item => item.id == invitationId);
         },
     },
 }

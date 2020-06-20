@@ -15,11 +15,28 @@ export const UsersStore = {
         {
             state.users = users;
         },
+
+        // user remove state
+        usersFetchRequest: (state) => {
+            state.status = 'fetching';
+        },
+        usersFetchSuccess: (state) => {
+            state.status = 'success';
+        },
+        usersFetchError: (state) => {
+            state.status = 'error';
+        },
+
        
-        // removeUser mutations
-        removeUser: (state, userId)  =>
-        {
-            state.users = state.users.filter(item => item.id != userId)
+        // user remove state
+        userRemoveRequest: (state) => {
+            state.status = 'removing';
+        },
+        userRemoveSuccess: (state) => {
+            state.status = 'success';
+        },
+        useRemoveError: (state) => {
+            state.status = 'error';
         },
 
         // registration state
@@ -49,30 +66,33 @@ export const UsersStore = {
         fetchUsers({commit}) 
         {
             let url = `/api/admin/users`;
+            commit('usersFetchRequest');
 
             return axios({
                 method: 'get',
                 url: url,
             }).then(response => {
+                commit('usersFetchSuccess');
                 commit('setUsers', response.data.data);
             }).catch(function (errors) {
-                MessageBus.$emit('message', {message: 'There was an error while fetching users', variant: 'danger'}); 
-                commit('ErrorsStore/setErrors', errors, { root: true });
+                commit('usersFetchError');
+                reject(errors);
             });
         },
         deleteUser({commit}, userId) 
         {
             let url = `/api/admin/users/${userId}`;
+            commit('userRemoveRequest');
 
             return axios({
                 method: 'delete',
                 url: url,
             }).then(messages => {
-                commit('removeUser', userId);
+                commit('userRemoveSuccess');
                 MessageBus.$emit('message', {message: 'User deleted', variant: 'success'});
             }).catch(function (error) {
-                MessageBus.$emit('message', {message: 'Something went wrong', variant: 'danger'});
-                commit('ErrorsStore/setErrors', error, { root: true });
+                commit('userRemoveError');
+                reject(error);
             });
         },
         deleteUsers({ dispatch }, userIds) {
@@ -98,18 +118,12 @@ export const UsersStore = {
 
             return axios({ url: '/api/users', data: user, method: 'POST' }).then(resp => 
             {
-                commit('ErrorsStore/resetErrors', null, { root: true });
                 commit('registerSuccess');
             })
             .catch(errors => 
             {
-                // kan er uit?
-                Object.values(errors.response.data.errors).forEach(error => {
-                    MessageBus.$emit('message', { message: error, variant: 'danger' }); 
-                });
-                
-                commit('ErrorsStore/setErrors', errors.response.data.errors, { root: true });
                 commit('registerError');
+                reject(errors);
             });
         },
         updateUser: function({commit}, user) {
@@ -120,7 +134,6 @@ export const UsersStore = {
                 url: '/api/admin/users/' + user.id, 
                 data: user,
                 method: 'PATCH'}).then((resp) => {
-                    commit('ErrorsStore/resetErrors', null, { root: true });
                     commit('userUpdateSuccess', user);
 
                     setTimeout(() => {
@@ -131,15 +144,8 @@ export const UsersStore = {
                     });
                 })
                 .catch((error) => {
-                    // kan er uit?
-                    MessageBus.$emit('message',
-                    {
-                        message: 'Er ging iets fout tijdens het bijwerken van uw profielgegevens',
-                        variant: 'danger',
-                    });
-
-                    commit('ErrorsStore/resetErrors', error, { root: true });
-                    commit('userUpdateError', error.response.data.errors);
+                    commit('userUpdateError');
+                    reject(error);
                 });
         },
     },

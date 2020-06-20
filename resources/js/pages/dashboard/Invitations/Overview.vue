@@ -21,7 +21,7 @@
             <b-button class="mx-1" variant="outline-primary" type="button" @click="applyBulkAction">Toepassen</b-button>
         </b-form>
 
-        <b-table class="mt-5" hover :items="users" :fields="fields">
+        <b-table class="mt-5" hover :items="invitations" :fields="fields">
             <template v-slot:head(select)="data">
                 <b-form-checkbox
                     id="checkboxSelectAll"
@@ -41,11 +41,11 @@
             </template>
 
             <template v-slot:cell(actions)="row">
-                <b-button size="sm" @click="editUser(row.item)" class="mr-1">
+                <b-button size="sm" @click="editInvitation(row.item)" class="mr-1">
                     Bewerk
                 </b-button>
 
-                <b-button size="sm" @click="deleteUser(row.item)" class="mr-1">
+                <b-button size="sm" @click="deleteInvitation(row.item)" class="mr-1">
                     Verwijder
                 </b-button>
             </template>
@@ -65,7 +65,7 @@
                         { value: 'delete', text: 'Verwijder' },
                     ]
                 },
-                users: [],
+                invitations: [],
                 selectAll: false,
                 selectedItems: [],
                 fields: [
@@ -74,22 +74,19 @@
                         label: '', 
                     },
                     { 
-                        key: 'full_name',
-                        sortable: true,
-                        label: 'Naam',
-                    },
-                    { 
                         key: 'email',
                         sortable: true,
                         label: 'Email',
                     },
                     { 
-                        key: 'roles',
+                        key: 'activation_token',
                         sortable: true,
-                        label: 'Rollen',
-                        formatter: (value) => {
-                            return value.map(a => a.name).join(', ');
-                        },
+                        label: 'Activatie token',
+                    },
+                    { 
+                        key: 'expiration_date',
+                        sortable: true,
+                        label: 'Expiratie datum',
                     },
                     {   
                         key: 'created_at',
@@ -108,20 +105,19 @@
         },
         created() {
             // REFACTOREN!
-            this.$store.dispatch('UsersStore/fetchUsers').then(() => {
-                this.fetchUsersFromStore();
+            this.$store.dispatch('InvitationsStore/fetchInvitations').then(() => {
+                this.fetchInvitationsFromStore();
             });
-            this.$store.dispatch('RolesStore/fetchRoles');
         },
         methods: {
-            fetchUsersFromStore() {
-                this.users = JSON.parse(JSON.stringify(this.$store.state.UsersStore.users));
+            fetchInvitationsFromStore() {
+                this.invitations = JSON.parse(JSON.stringify(this.$store.state.InvitationsStore.invitations));
             },
             toggleSelectAll()
             {
                 this.selectAll = !this.selectAll;
 
-                this.users.forEach(element => {
+                this.invitations.forEach(element => {
                     this.selectedItems[element.id] = this.selectAll;  
                 });
             },
@@ -132,10 +128,10 @@
                     case 'delete':
                     {
                         Object.filter = (obj, predicate) => Object.fromEntries(Object.entries(obj).filter(predicate));
-                        let filteredUsers = Object.keys(Object.filter(this.selectedItems, ([id, selected]) => selected === true)); 
+                        let filteredInvitations = Object.keys(Object.filter(this.selectedItems, ([id, selected]) => selected === true)); 
 
-                        this.$store.dispatch('UsersStore/deleteUsers', filteredUsers).then(() => {
-                            this.fetchUsersFromStore();
+                        this.$store.dispatch('InvitationsStore/deleteInvitations', filteredInvitations).then(() => {
+                            this.fetchInvitationsFromStore();
                             // this.currentPage  = 1;
                             this.selectedItems = [];
                         });
@@ -143,11 +139,11 @@
                 }
             },
             editUser(item) {
-                this.$router.push(`/dashboard/users/${item.id}/edit`);
+                this.$router.push(`/dashboard/invitations/${item.id}/edit`);
             },
-            deleteUser(item) {
-                this.$store.dispatch('UsersStore/deleteUser', item.id).then(() => {
-                    this.fetchUsersFromStore();
+            deleteInvitation(item) {
+                this.$store.dispatch('InvitationsStore/deleteInvitation', item.id).then(() => {
+                    this.fetchInvitationsFromStore();
                     // this.currentPage = 1;
                 });
             },

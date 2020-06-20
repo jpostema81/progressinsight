@@ -2,7 +2,7 @@
     <div>
         <h3>Gebruikersoverzicht</h3>
 
-        <b-button class="my-2 h-75" variant="outline-primary" to="/dashboard/users/invite">Nieuwe gebruiker uitnodigen</b-button>
+        <b-button class="my-2 h-75" variant="outline-primary" to="/dashboard/users/invite">Nieuwe gebruiker(s) uitnodigen</b-button>
 
         <b-form inline>
             <!-- <b-pagination

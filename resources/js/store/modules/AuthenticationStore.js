@@ -64,6 +64,7 @@ export const AuthenticationStore =
             })
             .catch(error => {
                 commit('authError');
+                reject(error);
             });
         },
         logout: function({commit}) {

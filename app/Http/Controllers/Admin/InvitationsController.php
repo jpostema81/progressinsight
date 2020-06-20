@@ -8,6 +8,7 @@ use App\Http\Requests\Admin\InviteRequest;
 use App\Invitation;
 use App\Mail\NewUserInvitation;
 use Mail;
+use App\Http\Resources\InvitationResource;
 
 class InvitationsController extends Controller
 {
@@ -18,7 +19,9 @@ class InvitationsController extends Controller
      */
     public function index()
     {
-        //
+        $invitations = Invitation::all();
+
+        return InvitationResource::collection($invitations);
     }
 
     /**

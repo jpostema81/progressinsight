@@ -25,8 +25,7 @@ export const RolesStore = {
             }).then(response => {
                 commit('setRoles', response.data.data);
             }).catch(function (errors) {
-                MessageBus.$emit('message', {message: 'There was an error while fetching roles', variant: 'danger'}); 
-                commit('ErrorsStore/setErrors', errors);
+                reject(errors);
             });
         },
     },
