@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\UserInvitationActivation;
 use App\Invitation;
 use App\User;
+use Carbon\Carbon;
 
 
 class UserInvitationController extends Controller
@@ -46,6 +47,12 @@ class UserInvitationController extends Controller
 
         if($invitation instanceof Invitation)
         {
+            if(Carbon::parse($invitation->expiration_date)->isPast()) {
+                return response()->json([
+                    'error' => "Deze uitnodiging is verlopen",
+                ], 500);
+            }
+
             $user = new User();
             $user->fill($validatedInput);
             $user->email = $invitation->email;

@@ -18,8 +18,7 @@ class Invitations extends Migration
             $table->bigIncrements('id');
             $table->string('email');
             $table->string('activation_token');
-            $expiration_date = Carbon::now()->add(14, 'day');
-            $table->dateTime('expiration_date')->default($expiration_date);
+            $table->dateTime('expiration_date');
             $table->timestamps();
         });
     }

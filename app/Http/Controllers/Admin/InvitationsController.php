@@ -9,6 +9,7 @@ use App\Invitation;
 use App\Mail\NewUserInvitation;
 use Mail;
 use App\Http\Resources\InvitationResource;
+use Carbon\Carbon;
 
 class InvitationsController extends Controller
 {
@@ -52,6 +53,7 @@ class InvitationsController extends Controller
             $invitation = new Invitation();
             $invitation->email = $email["email"];
             $invitation->activation_token = $activationToken;
+            $invitation->expiration_date = Carbon::now()->add(14, 'day');
             $invitation->save();
             $invitation->roles()->sync($roles);
 
