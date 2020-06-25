@@ -143,7 +143,7 @@ export const UsersStore = {
             commit('ErrorsStore/resetErrors', null, { root: true });
             commit('sendActivateRegistrationRequest');
 
-            return axios({ url: '/api/user_registrations/', data: { activationToken }, method: 'PUT' }).then(resp => 
+            return axios({ url: '/api/user_registrations', data: { activationToken }, method: 'PUT' }).then(resp => 
             {
                 commit('ErrorsStore/resetErrors', null, { root: true });
                 commit('sendActivateRegistrationSuccess');
