@@ -44,7 +44,7 @@ export const LearningGoalsStore = {
             }).then(response => {
                 commit('setLearningGoals', response.data.data);
             }).catch(function (errors) {
-                reject(errors);
+                return Promise.reject(errors);
             });
         },
         fetchTopics({commit}) 
@@ -57,7 +57,7 @@ export const LearningGoalsStore = {
             }).then(response => {
                 commit('setTopics', response.data.data);
             }).catch(function (errors) {
-                reject(errors);
+                return Promise.reject(errors);
             });
         },
         fetchProgressLevels({commit}) 
@@ -70,7 +70,7 @@ export const LearningGoalsStore = {
             }).then(response => {
                 commit('setProgressLevels', response.data.data);
             }).catch(function (errors) {
-                reject(errors);
+                Promise.reject(errors);
             });
         },
         updateUserLearningGoal({ commit, rootState }, { progressLevelId, learningGoalId }) 
@@ -84,7 +84,7 @@ export const LearningGoalsStore = {
             }).then(response => {
                 commit('updateUserLearningGoal', response.data.learningGoal);
             }).catch(function (errors) {
-                reject(errors);
+                return Promise.reject(errors);
             });
         },
     },

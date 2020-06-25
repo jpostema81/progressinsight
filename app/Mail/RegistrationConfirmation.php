@@ -16,9 +16,9 @@ class RegistrationConfirmation extends Mailable
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($activationToken)
     {
-        //
+        $this->activationToken = $activationToken;
     }
 
     /**
@@ -28,8 +28,10 @@ class RegistrationConfirmation extends Mailable
      */
     public function build()
     {
+        $url = secure_url("/register/$this->activationToken/activate");
+
         return $this->markdown('mails.registration_confirmation')->with([
-            'greeting' => 'Thanks for registering',
-        ]);
+            'activationLink' => $url,
+        ])->subject('Bevestig je registratie op ' . config('app.name'));
     }
 }

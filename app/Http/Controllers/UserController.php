@@ -44,7 +44,11 @@ class UserController extends Controller
     public function store(RegisterUser $request)
     {  
         $validatedInput = $request->validated();
-        $user = User::create($validatedInput);
+        $user = new User();
+        $user->fill($validatedInput);
+        $activationToken = bin2hex(random_bytes(20));
+        $user->activation_token = $activationToken;
+        $user->save();
 
         // attach default student role
         $student_role = Role::where('name', 'student')->first();
@@ -66,7 +70,7 @@ class UserController extends Controller
         try 
         {
             $emailAddress = $validatedInput['email'];
-            Mail::to($emailAddress)->send(new RegistrationConfirmation());
+            Mail::to($emailAddress)->send(new RegistrationConfirmation($activationToken));
         }
         catch(\Exception $e)
         {
@@ -119,7 +123,7 @@ class UserController extends Controller
         $user->fill($validatedInput)->save();
 
         return response()->json([
-            'message' => "User successfully updated",
+            'message' => "Gebruikersgegevens zijn bijgewerkt",
             'user'    => $user,
         ]);
     }

@@ -1,12 +1,11 @@
 @component('mail::message')
-# Registration successful
+# Bevestig je registratie
 
-{{ $greeting }}
+Bedankt voor je registratie. Klik op onderstaande knop om je registratie te bevestigen:
 
-@component('mail::button', ['url' => config('app.url')])
-Visit ProgressInsight
+@component('mail::button', ['url' => $activationLink])
+Bevestig registratie
 @endcomponent
 
-Thanks,<br>
-{{ config('app.name') }}
+Succes en veel plezier met het gebruik van de {{ config('app.name') }} app!
 @endcomponent

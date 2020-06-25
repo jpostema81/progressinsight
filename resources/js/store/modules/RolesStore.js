@@ -25,7 +25,7 @@ export const RolesStore = {
             }).then(response => {
                 commit('setRoles', response.data.data);
             }).catch(function (errors) {
-                reject(errors);
+                return Promise.reject(errors);
             });
         },
     },

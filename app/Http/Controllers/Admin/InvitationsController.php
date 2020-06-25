@@ -68,7 +68,7 @@ class InvitationsController extends Controller
         }
         
         return response()->json([
-            'message' => "invitations were sent successfully",
+            'message' => "Uitnodiging(en) zijn succesvol verzonden",
         ]);
     }
 

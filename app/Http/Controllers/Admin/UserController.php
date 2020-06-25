@@ -97,7 +97,7 @@ class UserController extends Controller
         $user->delete();
 
         return response()->json([
-            'message' => "user deleted",
+            'message' => "Gebruikersaccount is verwijderd",
         ]);
     }
 }

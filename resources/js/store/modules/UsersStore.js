@@ -16,6 +16,8 @@ export const UsersStore = {
             state.users = users;
         },
 
+        // onderstaande refactoren?
+
         // user remove state
         usersFetchRequest: (state) => {
             state.status = 'fetching';
@@ -50,6 +52,17 @@ export const UsersStore = {
             state.status = 'error';
         },
 
+        // registration activation state
+        sendActivateRegistrationRequest: (state) => {
+            state.status = 'registering';
+        },
+        sendActivateRegistrationSuccess: (state) => {
+            state.status = 'success';
+        },
+        sendActivateRegistrationError: (state) => {
+            state.status = 'error';
+        },
+
         // user update state
         userUpdateRequest: (state) => {
             state.status = 'updating';
@@ -76,7 +89,7 @@ export const UsersStore = {
                 commit('setUsers', response.data.data);
             }).catch(function (errors) {
                 commit('usersFetchError');
-                reject(errors);
+                return Promise.reject(errors);
             });
         },
         deleteUser({commit}, userId) 
@@ -92,7 +105,7 @@ export const UsersStore = {
                 MessageBus.$emit('message', {message: 'User deleted', variant: 'success'});
             }).catch(function (error) {
                 commit('userRemoveError');
-                reject(error);
+                return Promise.reject(error);
             });
         },
         deleteUsers({ dispatch }, userIds) {
@@ -107,7 +120,7 @@ export const UsersStore = {
                 Promise.all(promises).then((values) => {
                     resolve();
                 }).catch(function (error) {
-                    reject(error);
+                    return Promise.reject(error);
                 });
             });
         },
@@ -123,9 +136,24 @@ export const UsersStore = {
             .catch(errors => 
             {
                 commit('registerError');
-                reject(errors);
+                return Promise.reject(error);
             });
         },
+        activateRegistration: function({commit}, activationToken) {
+            commit('ErrorsStore/resetErrors', null, { root: true });
+            commit('sendActivateRegistrationRequest');
+
+            return axios({ url: '/api/user_registrations/', data: { activationToken }, method: 'PUT' }).then(resp => 
+            {
+                commit('ErrorsStore/resetErrors', null, { root: true });
+                commit('sendActivateRegistrationSuccess');
+            })
+            .catch(errors => 
+            {                    
+                commit('sendActivateRegistrationError');
+                return Promise.reject(errors);
+            });
+        },      
         updateUser: function({commit}, user) {
             commit('ErrorsStore/resetErrors', null, { root: true });
             commit('userUpdateRequest');
@@ -145,7 +173,7 @@ export const UsersStore = {
                 })
                 .catch((error) => {
                     commit('userUpdateError');
-                    reject(error);
+                    return Promise.reject(error);
                 });
         },
     },

@@ -54,7 +54,7 @@ export const InvitationsStore = {
             }).then(response => {
                 commit('setInvitations', response.data.data);
             }).catch(function (errors) {
-                reject(errors);
+                return Promise.reject(errors);
             });
         },
         deleteInvitation({ dispatch }, invitationIds) {
@@ -69,7 +69,7 @@ export const InvitationsStore = {
                 Promise.all(promises).then((values) => {
                     resolve();
                 }).catch(function (error) {
-                    reject(error);
+                    return Promise.reject(error);
                 });
             });
         },
@@ -88,7 +88,7 @@ export const InvitationsStore = {
             .catch(errors => 
             {                    
                 commit('sendInvitationError');
-                reject(errors);
+                return Promise.reject(errors);
             });
         }, 
         activateInvitation: function({commit}, payload) {
@@ -103,7 +103,7 @@ export const InvitationsStore = {
             .catch(errors => 
             {                    
                 commit('sendInvitationActivationError');
-                reject(errors);
+                return Promise.reject(errors);
             });
         },      
     },
