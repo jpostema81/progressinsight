@@ -88,7 +88,7 @@
             {
                 this.submitted = true;
 
-                this.$store.dispatch('AuthenticationStore/updateUser', this.user).then(() => 
+                this.$store.dispatch('UsersStore/updateUser', this.user).then(() => 
                 {
                     this.$router.push('/learning_goals');
                 });
